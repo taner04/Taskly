@@ -1,0 +1,16 @@
+{
+  "name": "taskly.web",
+  "version": "1.0.0",
+  "description": "Todo planner",
+  "license": "MIT",
+  "author": "taner.gadomski",
+  "type": "commonjs",
+  "main": "./src/scripts/main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "electron": "^39.1.2"
+  }
+}
