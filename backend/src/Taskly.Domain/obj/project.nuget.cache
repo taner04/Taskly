@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "FyutpRgbDuk=",
+  "success": true,
+  "projectFilePath": "/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Domain/Taskly.Domain.csproj",
+  "expectedPackageFiles": [
+    "/Users/taner/.nuget/packages/mediator.abstractions/3.0.1/mediator.abstractions.3.0.1.nupkg.sha512",
+    "/Users/taner/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "/Users/taner/.nuget/packages/vogen/8.0.2/vogen.8.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}

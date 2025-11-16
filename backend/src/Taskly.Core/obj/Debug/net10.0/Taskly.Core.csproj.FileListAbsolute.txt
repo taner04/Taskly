@@ -1,0 +1,13 @@
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/bin/Debug/net10.0/Taskly.Core.deps.json
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/bin/Debug/net10.0/Taskly.Core.dll
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/bin/Debug/net10.0/Taskly.Core.pdb
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/obj/Debug/net10.0/Taskly.Core.csproj.AssemblyReference.cache
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/obj/Debug/net10.0/Taskly.Core.GeneratedMSBuildEditorConfig.editorconfig
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/obj/Debug/net10.0/Taskly.Core.AssemblyInfoInputs.cache
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/obj/Debug/net10.0/Taskly.Core.AssemblyInfo.cs
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/obj/Debug/net10.0/Taskly.Core.csproj.CoreCompileInputs.cache
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/obj/Debug/net10.0/Taskly.Core.sourcelink.json
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/obj/Debug/net10.0/Taskly.Core.dll
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/obj/Debug/net10.0/refint/Taskly.Core.dll
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/obj/Debug/net10.0/Taskly.Core.pdb
+/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/obj/Debug/net10.0/ref/Taskly.Core.dll

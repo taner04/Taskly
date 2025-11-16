@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "uWX1tPt7dRo=",
+  "success": true,
+  "projectFilePath": "/Users/taner/Desktop/Programming/Taskly/backend/src/Taskly.Core/Taskly.Core.csproj",
+  "expectedPackageFiles": [
+    "/Users/taner/.nuget/packages/mediator.abstractions/3.0.1/mediator.abstractions.3.0.1.nupkg.sha512",
+    "/Users/taner/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
