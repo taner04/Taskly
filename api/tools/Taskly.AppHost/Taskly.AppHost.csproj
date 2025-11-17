@@ -10,6 +10,12 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Taskly.Api\Taskly.Api.csproj"/>
+        <ProjectReference Include="..\Taskly.MigrationService\Taskly.MigrationService.csproj" />
+        <ProjectReference Include="..\Taskly.ServiceDefaults\Taskly.ServiceDefaults.csproj" IsAspireProjectResource="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Aspire.Hosting.PostgreSQL" />
     </ItemGroup>
 
 </Project>

@@ -11,8 +11,11 @@ public sealed class Todo : Aggregate<TodoId>
 {
     public const int MinTitleLength = 3;
     public const int MaxTitleLength = 100;
-
+    
+    public const int MinDescriptionLength = 3;
     public const int MaxDescriptionLength = 512;
+    
+    public const int MaxUserIdLength = 256;
 
     private Todo(string title, string description, DateTime dueDate, TodoPriority priority, string userId)
     {
@@ -38,9 +41,9 @@ public sealed class Todo : Aggregate<TodoId>
             return Error.Conflict("Todo.MaxTitleLength",
                 $"The title can not be longer than {MaxTitleLength} characters or less than {MinTitleLength} characters.");
 
-        if (!string.IsNullOrEmpty(description) && description.Length > MaxDescriptionLength)
+        if (!string.IsNullOrEmpty(description) &&  description.Length is > MaxDescriptionLength or < MinDescriptionLength)
             return Error.Conflict("Todo.Description",
-                $"The description can not be longer than {MaxDescriptionLength} characters.");
+                $"The description can not be longer than {MaxDescriptionLength} characters or less then {MinDescriptionLength} characters.");
 
         if (dueDate < DateTime.Today)
             return Error.Conflict("TaskItem.DueDate", "The due date can only be in the future.");

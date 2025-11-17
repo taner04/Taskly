@@ -2,6 +2,9 @@
 
 public abstract class Auditable : IAuditable
 {
+    public const int MaxCreatedByLength = 256;
+    public const int MaxUpdatedByLength = 256;
+    
     public DateTimeOffset CreatedAt { get; private set; }
     public string CreatedBy { get; private set; } = null!;
 

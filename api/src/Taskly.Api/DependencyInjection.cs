@@ -6,6 +6,7 @@ using Taskly.Api.Behaviors;
 using Taskly.Api.Features.Shared;
 using Taskly.Api.Infrastructure.Data;
 using Taskly.Api.Infrastructure.Data.Interceptors;
+using Taskly.ServiceDefaults;
 
 namespace Taskly.Api;
 
@@ -16,7 +17,7 @@ public static class DependencyInjection
         public IServiceCollection AddApplication()
         {
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            
+
             services.AddMediator(opt =>
             {
                 opt.ServiceLifetime = ServiceLifetime.Scoped;
@@ -44,7 +45,7 @@ public static class DependencyInjection
 
                 opt.EnableSensitiveDataLogging();
                 opt.EnableDetailedErrors();
-                opt.UseNpgsql(configuration.GetConnectionString(Constants.Database));
+                opt.UseNpgsql(configuration.GetConnectionString(AppHostConstants.Database));
             });
 
             return services;

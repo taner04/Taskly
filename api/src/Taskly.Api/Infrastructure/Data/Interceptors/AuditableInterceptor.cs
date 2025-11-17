@@ -24,7 +24,7 @@ public class AuditableInterceptor(CurrentUserService currentUserService) : SaveC
             .Where(e => e.Entity is IAuditable)
             .ToList();
 
-        var changeMadeBy = currentUserService.GetCurrentUserId() ?? "system";
+        var changeMadeBy = currentUserService.GetCurrentUserId();
 
         foreach (var entry in auditableEntities)
         {
