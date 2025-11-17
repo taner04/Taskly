@@ -16,11 +16,8 @@ public sealed class CurrentUserEnricherBehaviour<TMessage, TResponse>(IHttpConte
         var userId = accessor.HttpContext?.User.Claims
             .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        if (string.IsNullOrEmpty(userId))
-        {
-            throw new UnauthorizedAccessException("The user is not authenticated.");
-        }
-        
+        if (string.IsNullOrEmpty(userId)) throw new UnauthorizedAccessException("The user is not authenticated.");
+
         message.UserId = userId;
         return await next(message, cancellationToken);
     }

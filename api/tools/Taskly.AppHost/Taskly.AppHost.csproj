@@ -2,14 +2,14 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <UserSecretsId>16cb04c7-fce5-44a4-b30e-660e97d4e505</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Taskly.Api\Taskly.Api.csproj" />
+        <ProjectReference Include="..\..\src\Taskly.Api\Taskly.Api.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using Taskly.Domain.TaskItems;
+using Taskly.Domain.TodoAggregate;
 
 namespace Taskly.Api.Infrastructure.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
-    public DbSet<TaskItem>  TaskItems =>  Set<TaskItem>();
+    public DbSet<Todo> Todos => Set<Todo>();
 }

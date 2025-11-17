@@ -15,20 +15,16 @@ public sealed class LoggingBehaviour<TMessage, TResponse>(
         CancellationToken cancellationToken)
     {
         var messageType = typeof(TMessage).Name;
-        
+
         // ReSharper disable once SuspiciousTypeConversion.Global
         if (message is IUserRequestBase userRequest)
-        {
             logger.LogInformation(
                 "Handling {MessageType} for User {UserId} with content: {@Message}",
                 messageType, userRequest.UserId, message);
-        }
         else
-        {
             logger.LogInformation(
                 "Handling {MessageType} with content: {@Message}",
                 messageType, message);
-        }
 
         var sw = Stopwatch.StartNew();
 
