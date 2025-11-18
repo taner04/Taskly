@@ -8,7 +8,11 @@ public static class ScalarExtension
     {
         public WebApplication MapScalar()
         {
-            app.MapScalarApiReference(opt => { opt.Layout = ScalarLayout.Classic; });
+            app.MapScalarApiReference(opt =>
+            {
+                opt.Layout = ScalarLayout.Classic;
+                opt.Theme = ScalarTheme.DeepSpace;
+            });
 
             return app;
         }

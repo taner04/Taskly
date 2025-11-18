@@ -1,6 +1,6 @@
 using Taskly.Api;
+using Taskly.Api.ExceptionHandlers;
 using Taskly.Api.Extensions;
-using Taskly.Api.Middleware;
 using Taskly.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +10,9 @@ builder.AddServiceDefaults();
 builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddControllers();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
-builder.Services.AddEndpoints();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -25,9 +26,9 @@ if (app.Environment.IsDevelopment())
     app.MapScalar();
 }
 
-app.UseMiddleware<GlobalExceptionMiddleware>();
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 
-app.MapEndpoints();
+app.MapControllers();
 
 app.Run();
