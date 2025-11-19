@@ -31,7 +31,7 @@ public static partial class CreateTodo
     public sealed partial record Command : UserRequest, IValidationTarget<Command>
     {
         [NotEmpty] public required string Title { get; init; }
-        [NotEmpty] public required string Description { get; init; }
+        [NotEmpty] public string? Description { get; init; }
         public required TodoPriority Priority { get; init; }
     }
 }

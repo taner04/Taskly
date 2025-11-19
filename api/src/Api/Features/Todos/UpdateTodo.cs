@@ -15,7 +15,7 @@ public static partial class UpdateTodo
         var todo = await context.Todos.SingleOrDefaultAsync(
             t => t.Id == command.TodoId && t.UserId == command.UserId, ct);
 
-        if (todo is null)
+        if (todo is null) 
         {
             return Error.NotFound("Todo.NotFound",
                 $"The todo does not exist with the specified id '{command.TodoId}'.");
@@ -40,7 +40,7 @@ public static partial class UpdateTodo
     {
         public required Guid TodoId { get; init; }
         [NotEmpty] public required string Title { get; init; }
-        [NotEmpty] public required string Description { get; init; }
+        [NotEmpty] public string? Description { get; init; }
         public required TodoPriority Priority { get; init; }
         public required bool IsCompleted { get; init; }
     }
