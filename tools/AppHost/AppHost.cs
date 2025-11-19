@@ -16,7 +16,7 @@ var api = builder.AddProject<Api>(AppHostConstants.Api)
     .WaitFor(tasklyDb)
     .WaitForCompletion(migration);
 
-builder.AddProject<Web>("web")
+builder.AddProject<Web>(AppHostConstants.Web)
     .WaitFor(api);
 
 builder.Build().Run();
