@@ -6,21 +6,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{24B1FEA0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{654BBC95-6E46-4EE5-A552-D773C1A33B06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.Domain", "src\Taskly.Domain\Taskly.Domain.csproj", "{081955C8-790A-4792-BCA2-7D37BEEB2E29}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppHost", "tools\AppHost\AppHost.csproj", "{6C93A023-095C-4F4E-8629-8E4997D504D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.AppHost", "tools\Taskly.AppHost\Taskly.AppHost.csproj", "{6C93A023-095C-4F4E-8629-8E4997D504D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceDefaults", "tools\ServiceDefaults\ServiceDefaults.csproj", "{B429E56C-013C-4D25-8D21-0CE723BFC521}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.ServiceDefaults", "tools\Taskly.ServiceDefaults\Taskly.ServiceDefaults.csproj", "{B429E56C-013C-4D25-8D21-0CE723BFC521}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "tests\UnitTests\UnitTests.csproj", "{754C3056-D4F2-4089-A7DB-D558307B088D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.UnitTests", "tests\Taskly.UnitTests\Taskly.UnitTests.csproj", "{754C3056-D4F2-4089-A7DB-D558307B088D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "tests\IntegrationTests\IntegrationTests.csproj", "{728B2DC3-4499-471E-BA6F-75F2F419026F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.IntegrationTests", "tests\Taskly.IntegrationTests\Taskly.IntegrationTests.csproj", "{728B2DC3-4499-471E-BA6F-75F2F419026F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\Api\Api.csproj", "{509037D3-8796-4D97-B265-B34041AF3C14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.Core", "src\Taskly.Core\Taskly.Core.csproj", "{82FB6D2C-C816-468D-ACD9-CB754667535A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.Api", "src\Taskly.Api\Taskly.Api.csproj", "{509037D3-8796-4D97-B265-B34041AF3C14}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.MigrationService", "tools\Taskly.MigrationService\Taskly.MigrationService.csproj", "{75266B16-BADA-49AC-8E43-FE171776A035}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrationService", "tools\MigrationService\MigrationService.csproj", "{75266B16-BADA-49AC-8E43-FE171776A035}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,10 +24,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{081955C8-790A-4792-BCA2-7D37BEEB2E29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{081955C8-790A-4792-BCA2-7D37BEEB2E29}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{081955C8-790A-4792-BCA2-7D37BEEB2E29}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{081955C8-790A-4792-BCA2-7D37BEEB2E29}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6C93A023-095C-4F4E-8629-8E4997D504D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6C93A023-095C-4F4E-8629-8E4997D504D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C93A023-095C-4F4E-8629-8E4997D504D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,10 +40,6 @@ Global
 		{728B2DC3-4499-471E-BA6F-75F2F419026F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{728B2DC3-4499-471E-BA6F-75F2F419026F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{728B2DC3-4499-471E-BA6F-75F2F419026F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{82FB6D2C-C816-468D-ACD9-CB754667535A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{82FB6D2C-C816-468D-ACD9-CB754667535A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{82FB6D2C-C816-468D-ACD9-CB754667535A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{82FB6D2C-C816-468D-ACD9-CB754667535A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{509037D3-8796-4D97-B265-B34041AF3C14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{509037D3-8796-4D97-B265-B34041AF3C14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{509037D3-8796-4D97-B265-B34041AF3C14}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -62,12 +50,10 @@ Global
 		{75266B16-BADA-49AC-8E43-FE171776A035}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{081955C8-790A-4792-BCA2-7D37BEEB2E29} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
 		{6C93A023-095C-4F4E-8629-8E4997D504D1} = {654BBC95-6E46-4EE5-A552-D773C1A33B06}
 		{B429E56C-013C-4D25-8D21-0CE723BFC521} = {654BBC95-6E46-4EE5-A552-D773C1A33B06}
 		{754C3056-D4F2-4089-A7DB-D558307B088D} = {24B1FEA0-EA13-49C0-BB08-1840DBD1A74D}
 		{728B2DC3-4499-471E-BA6F-75F2F419026F} = {24B1FEA0-EA13-49C0-BB08-1840DBD1A74D}
-		{82FB6D2C-C816-468D-ACD9-CB754667535A} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
 		{509037D3-8796-4D97-B265-B34041AF3C14} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
 		{75266B16-BADA-49AC-8E43-FE171776A035} = {654BBC95-6E46-4EE5-A552-D773C1A33B06}
 	EndGlobalSection

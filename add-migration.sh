@@ -3,9 +3,9 @@
 # ---------------------------------------------
 # Configuration
 # ---------------------------------------------
-PROJECT="api/src/Taskly.Api/Taskly.Api.csproj"
-STARTUP_PROJECT="api/src/Taskly.Api/Taskly.Api.csproj"
-CONTEXT="Taskly.Api.Infrastructure.Data.ApplicationDbContext"
+PROJECT="api/src/Api/Api.csproj"
+STARTUP_PROJECT="api/src/Api/Api.csproj"
+CONTEXT="Api.Infrastructure.Data.ApplicationDbContext"
 OUTPUT_DIR="Infrastructure/Data/Migrations"
 CONFIGURATION="Debug"
 
