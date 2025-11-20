@@ -11,6 +11,7 @@
     <PackageReference Include="Immediate.Apis" />
     <PackageReference Include="Immediate.Handlers" />
     <PackageReference Include="Immediate.Validations" />
+    <PackageReference Include="Radzen.Blazor" />
     <ProjectReference Include="..\..\tools\ServiceDefaults\ServiceDefaults.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
   </ItemGroup>

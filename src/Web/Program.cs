@@ -1,6 +1,6 @@
 using Auth0.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Radzen;
 using ServiceDefaults;
 using Web.Components;
 
@@ -13,23 +13,37 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services
     .AddAuth0WebAppAuthentication(options =>
     {
-        options.Domain = builder.Configuration["Auth0:Domain"];
-        options.ClientId = builder.Configuration["Auth0:ClientId"];
+        options.Domain = builder.Configuration["Auth0:Domain"] ?? throw new InvalidOperationException("Auth0 Domain is not configured.");
+        options.ClientId = builder.Configuration["Auth0:ClientId"] ?? throw new InvalidOperationException("Auth0 ClientId is not configured.");
+        options.ClientSecret = builder.Configuration["Auth0:ClientSecret"] ?? throw new InvalidOperationException("Auth0 ClientSecret is not configured.");
+
+        options.OpenIdConnectEvents = new OpenIdConnectEvents()
+        {
+            OnTokenValidated = async context =>
+            {
+                //TODO: Save JWT token in a cookie or session storage for later use
+                await ValueTask.CompletedTask;
+            }
+        };
+    })
+    .WithAccessToken(options =>
+    {
+        options.Audience = builder.Configuration["Auth0:Audience"] ?? throw new InvalidOperationException("Auth0 Audience is not configured.");
     });
 
 builder.Services.AddHttpClient();
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents()
     .AddAuthenticationStateSerialization();
 
+builder.Services.AddRadzenComponents();
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
@@ -37,7 +51,6 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -45,34 +58,7 @@ app.UseHttpsRedirection();
 
 app.UseAntiforgery();
 
-app.MapGet("/account/login", async (HttpContext httpContext, string returnUrl = "/") =>
-{
-    var authenticationProperties = new LoginAuthenticationPropertiesBuilder()
-          .WithRedirectUri(returnUrl)
-          .Build();
-
-    await httpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
-});
-
-app.MapGet("/account/logout", async (HttpContext httpContext) =>
-{
-    var authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
-          .WithRedirectUri("/")
-          .Build();
-
-    await httpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
-    await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-});
-
-app.MapGet("/api/internalData", () =>
-{
-    var data = Enumerable.Range(1, 5).Select(index =>
-        Random.Shared.Next(1, 100))
-        .ToArray();
-
-    return data;
-})
-.RequireAuthorization();
+app.MapWebEndpoints();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
