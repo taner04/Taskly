@@ -8,8 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="Auth0.AspNetCore.Authentication" />
+    <PackageReference Include="Immediate.Apis" />
+    <PackageReference Include="Immediate.Handlers" />
+    <PackageReference Include="Immediate.Validations" />
     <ProjectReference Include="..\..\tools\ServiceDefaults\ServiceDefaults.csproj" />
-    <ProjectReference Include="..\Web.Client\Web.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
   </ItemGroup>
 

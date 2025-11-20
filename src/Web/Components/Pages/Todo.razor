@@ -1,0 +1,58 @@
+﻿@page "/todo"
+@using Web.Models
+@attribute [Authorize]
+@attribute [StreamRendering]
+@inject HttpClient HttpClient
+
+<PageTitle>Todos</PageTitle>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (_todos == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <tbody>
+        @foreach (var todo in _todos)
+        {
+            <tr>
+                <td>@todo.Title</td>
+                <td>@todo.Description</td>
+                <td>@todo.Priority</td>
+                <td>@todo.IsCompleted</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<TodoModel> _todos = [];
+    [CascadingParameter] private Task<AuthenticationState>? authenticationState { get; set; }
+    private string Username = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(500);
+
+        _todos.AddRange(new TodoModel[]
+        {
+            new TodoModel { Id = Guid.NewGuid(), Title = "Learn Blazor", IsCompleted = false },
+            new TodoModel { Id = Guid.NewGuid(), Title = "Build a Blazor app", IsCompleted = false },
+            new TodoModel { Id = Guid.NewGuid(), Title = "Deploy the app", IsCompleted = false }
+        });
+
+        if (authenticationState is not null)
+        {
+            var state = await authenticationState;
+
+            Username = state?.User?.Identity?.Name ?? string.Empty;
+        }
+    }
+}

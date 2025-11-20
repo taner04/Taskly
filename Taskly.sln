@@ -23,8 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrationService", "tools\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "src\Web\Web.csproj", "{E5706BEE-C3FB-E7BE-641A-413C1A61D716}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Client", "src\Web.Client\Web.Client.csproj", "{983E3486-072C-7F4C-6AC4-C8F1DBAE73FC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projectelements", "Projectelements", "{84D27F74-D2BA-6C25-2661-968F101900D9}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Packages.props = Directory.Packages.props
@@ -66,10 +64,6 @@ Global
 		{E5706BEE-C3FB-E7BE-641A-413C1A61D716}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5706BEE-C3FB-E7BE-641A-413C1A61D716}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5706BEE-C3FB-E7BE-641A-413C1A61D716}.Release|Any CPU.Build.0 = Release|Any CPU
-		{983E3486-072C-7F4C-6AC4-C8F1DBAE73FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{983E3486-072C-7F4C-6AC4-C8F1DBAE73FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{983E3486-072C-7F4C-6AC4-C8F1DBAE73FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{983E3486-072C-7F4C-6AC4-C8F1DBAE73FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,6 +76,5 @@ Global
 		{509037D3-8796-4D97-B265-B34041AF3C14} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
 		{75266B16-BADA-49AC-8E43-FE171776A035} = {654BBC95-6E46-4EE5-A552-D773C1A33B06}
 		{E5706BEE-C3FB-E7BE-641A-413C1A61D716} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
-		{983E3486-072C-7F4C-6AC4-C8F1DBAE73FC} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
 	EndGlobalSection
 EndGlobal
