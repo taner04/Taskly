@@ -468,6 +468,13 @@ const Todos = () => {
         todo={selectedTodo}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+        onSave={(updatedTodo) => {
+          setTodos(
+            todos.map((todo) =>
+              todo.id === updatedTodo.id ? updatedTodo : todo
+            )
+          );
+        }}
       />
     </div>
   );
