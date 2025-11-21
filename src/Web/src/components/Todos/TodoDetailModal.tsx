@@ -125,7 +125,9 @@ const TodoDetailModal = ({
             <label className="modal-label">Title</label>
             <input
               type="text"
-              className={`modal-input ${!isTitleValid() && editedTodo.title ? "error" : ""}`}
+              className={`modal-input ${
+                !isTitleValid() && editedTodo.title ? "error" : ""
+              }`}
               value={editedTodo.title}
               onChange={(e) =>
                 setEditedTodo({ ...editedTodo, title: e.target.value })
@@ -133,7 +135,13 @@ const TodoDetailModal = ({
             />
             <div className="modal-field-info">
               <span
-                className={`char-count ${!isTitleValid() && editedTodo.title ? "error" : isTitleValid() ? "valid" : ""}`}
+                className={`char-count ${
+                  !isTitleValid() && editedTodo.title
+                    ? "error"
+                    : isTitleValid()
+                    ? "valid"
+                    : ""
+                }`}
               >
                 {editedTodo.title.length}/{MAX_TITLE_LENGTH}
                 {isTitleValid() && <span className="status-icon">✓</span>}
@@ -147,7 +155,9 @@ const TodoDetailModal = ({
           <div className="modal-field">
             <label className="modal-label">Description</label>
             <textarea
-              className={`modal-textarea ${!isDescriptionValid() && editedTodo.description ? "error" : ""}`}
+              className={`modal-textarea ${
+                !isDescriptionValid() && editedTodo.description ? "error" : ""
+              }`}
               value={editedTodo.description || ""}
               onChange={(e) =>
                 setEditedTodo({ ...editedTodo, description: e.target.value })
@@ -157,7 +167,13 @@ const TodoDetailModal = ({
             />
             <div className="modal-field-info">
               <span
-                className={`char-count ${!isDescriptionValid() && editedTodo.description ? "error" : isDescriptionValid() && editedTodo.description ? "valid" : ""}`}
+                className={`char-count ${
+                  !isDescriptionValid() && editedTodo.description
+                    ? "error"
+                    : isDescriptionValid() && editedTodo.description
+                    ? "valid"
+                    : ""
+                }`}
               >
                 {(editedTodo.description || "").length}/{MAX_DESCRIPTION_LENGTH}
                 {isDescriptionValid() && editedTodo.description && (
@@ -165,7 +181,9 @@ const TodoDetailModal = ({
                 )}
               </span>
               {!isDescriptionValid() && editedTodo.description && (
-                <span className="error-message">{getFieldError("description")}</span>
+                <span className="error-message">
+                  {getFieldError("description")}
+                </span>
               )}
             </div>
           </div>
@@ -219,7 +237,10 @@ const TodoDetailModal = ({
 
       {Object.keys(saveErrors).length > 0 && (
         <div className="error-modal-overlay">
-          <div className="error-modal-content" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="error-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
             <h3 className="error-modal-title">Cannot Save</h3>
             <div className="error-modal-errors">
               {Object.entries(saveErrors).map(([field, message]) => (
