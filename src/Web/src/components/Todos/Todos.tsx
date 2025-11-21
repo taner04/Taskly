@@ -182,6 +182,19 @@ const Todos = () => {
     setContextMenu(null);
   };
 
+  const handleNewTodo = () => {
+    const newTodo: Todo = {
+      id: Date.now().toString(),
+      title: "",
+      description: "",
+      priority: 1,
+      isCompleted: false,
+      userId: "user-1",
+    };
+    setSelectedTodo(newTodo);
+    setIsModalOpen(true);
+  };
+
   const handleContextMenu = (e: React.MouseEvent, todoId: string) => {
     e.preventDefault();
     e.stopPropagation();
@@ -265,6 +278,14 @@ const Todos = () => {
               </svg>
             </button>
           </div>
+          <button
+            onClick={handleNewTodo}
+            className="new-todo-button"
+            aria-label="Create new todo"
+            title="Create new todo"
+          >
+            New todo
+          </button>
           <button
             onClick={loadTodos}
             className="button refresh-button"
@@ -474,11 +495,20 @@ const Todos = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSave={(updatedTodo) => {
-          setTodos(
-            todos.map((todo) =>
-              todo.id === updatedTodo.id ? updatedTodo : todo
-            )
-          );
+          // Check if this is a new todo (not in the list)
+          const isNewTodo = !todos.some((todo) => todo.id === updatedTodo.id);
+
+          if (isNewTodo) {
+            // Add new todo
+            setTodos([...todos, updatedTodo]);
+          } else {
+            // Update existing todo
+            setTodos(
+              todos.map((todo) =>
+                todo.id === updatedTodo.id ? updatedTodo : todo
+              )
+            );
+          }
         }}
       />
     </div>

@@ -19,12 +19,20 @@ const Sidebar = ({
   onViewChange,
 }: SidebarProps) => {
   const { user, logout, loginWithRedirect } = useAuth0();
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState<boolean>(() => {
+    const saved = localStorage.getItem("sidebarExpanded");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem("theme");
     return (saved as Theme) || "light";
   });
+
+  // Persist sidebar state to localStorage
+  useEffect(() => {
+    localStorage.setItem("sidebarExpanded", JSON.stringify(isExpanded));
+  }, [isExpanded]);
 
   // Apply theme to document
   useEffect(() => {

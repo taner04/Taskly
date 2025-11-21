@@ -8,7 +8,10 @@ type View = "home" | "todos";
 
 function App() {
   const { isAuthenticated, isLoading, error } = useAuth0();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
+    const saved = localStorage.getItem("sidebarExpanded");
+    return saved !== null ? !JSON.parse(saved) : false;
+  });
   const [currentView, setCurrentView] = useState<View>("home");
 
   if (isLoading) {

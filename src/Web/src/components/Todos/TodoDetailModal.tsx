@@ -23,11 +23,14 @@ const TodoDetailModal = ({
 }: TodoDetailModalProps) => {
   const [editedTodo, setEditedTodo] = useState<Todo | null>(null);
   const [saveErrors, setSaveErrors] = useState<{ [key: string]: string }>({});
+  const [isNewTodo, setIsNewTodo] = useState(false);
 
   useEffect(() => {
     if (todo) {
       setEditedTodo(todo);
       setSaveErrors({});
+      // A todo is "new" if it has an empty title (was just created)
+      setIsNewTodo(!todo.title || todo.title.trim().length === 0);
     }
   }, [todo]);
 
@@ -101,7 +104,9 @@ const TodoDetailModal = ({
     <div className="modal-overlay">
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2 className="modal-title">Edit Todo</h2>
+          <h2 className="modal-title">
+            {isNewTodo ? "New Todo" : "Edit Todo"}
+          </h2>
           <button
             className="modal-close-button"
             onClick={onClose}
@@ -128,6 +133,7 @@ const TodoDetailModal = ({
               className={`modal-input ${
                 !isTitleValid() && editedTodo.title ? "error" : ""
               }`}
+              placeholder="Enter a title..."
               value={editedTodo.title}
               onChange={(e) =>
                 setEditedTodo({ ...editedTodo, title: e.target.value })
