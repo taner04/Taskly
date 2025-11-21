@@ -299,9 +299,14 @@ const Todos = () => {
 
           <select
             value={priorityFilter}
-            onChange={(e) =>
-              setPriorityFilter(e.target.value as PriorityFilter)
-            }
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === "all") {
+                setPriorityFilter("all");
+              } else {
+                setPriorityFilter(parseInt(value) as 0 | 1 | 2);
+              }
+            }}
             className="filter-dropdown"
           >
             <option value="all">All Priorities</option>
