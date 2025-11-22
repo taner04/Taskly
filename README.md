@@ -21,9 +21,10 @@ Taskly is a professional todo application that helps you organize, prioritize, a
 
 ### Prerequisites
 
-- **.NET 9** or later
-- **Node.js** (latest version)
-- **Docker & Docker Compose**
+- [**.NET 9**](https://dotnet.microsoft.com/download) or later
+- [**Node.js**](https://nodejs.org/) (latest version)
+- [**Docker & Docker Compose**](https://www.docker.com/)
+- [**Auth0**](https://auth0.com/) application as "Single Page Application"
 
 ### Installation
 
@@ -215,12 +216,12 @@ The application is pre-configured in the Aspire AppHost to appear in the dashboa
 
 ### Tech Stack Summary
 
-- **Backend**: C#, ASP.NET Core, EF Core, PostgreSQL
-- **Frontend**: TypeScript, React, Vite, CSS
-- **DevOps**: Docker, Docker Compose, .NET Aspire
-- **Testing**: xUnit, Integration Tests
-- **Auth**: Auth0
-- **Package Management**: NuGet, npm
+- **Backend**: [C#](https://docs.microsoft.com/en-us/dotnet/csharp/), [ASP.NET Core](https://dotnet.microsoft.com/apps/aspnet), [EF Core](https://docs.microsoft.com/en-us/ef/core/), [PostgreSQL](https://www.postgresql.org/)
+- **Frontend**: [TypeScript](https://www.typescriptlang.org/), [React](https://react.dev/), [Vite](https://vitejs.dev/), [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
+- **DevOps**: [Docker](https://www.docker.com/), [Docker Compose](https://docs.docker.com/compose/), [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/)
+- **Testing**: [xUnit](https://xunit.net/), Integration Tests
+- **Auth**: [Auth0](https://auth0.com/)
+- **Package Management**: [NuGet](https://www.nuget.org/), [npm](https://www.npmjs.com/)
 
 ### Code Quality
 
