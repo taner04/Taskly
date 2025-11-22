@@ -219,7 +219,7 @@ The application is pre-configured in the Aspire AppHost to appear in the dashboa
 - **Backend**: [C#](https://docs.microsoft.com/en-us/dotnet/csharp/), [ASP.NET Core](https://dotnet.microsoft.com/apps/aspnet), [EF Core](https://docs.microsoft.com/en-us/ef/core/), [PostgreSQL](https://www.postgresql.org/)
 - **Frontend**: [TypeScript](https://www.typescriptlang.org/), [React](https://react.dev/), [Vite](https://vitejs.dev/), [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
 - **DevOps**: [Docker](https://www.docker.com/), [Docker Compose](https://docs.docker.com/compose/), [.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/)
-- **Testing**: [xUnit](https://xunit.net/), Integration Tests
+- **Testing**: [xUnit](https://xunit.net/)
 - **Auth**: [Auth0](https://auth0.com/)
 - **Package Management**: [NuGet](https://www.nuget.org/), [npm](https://www.npmjs.com/)
 
