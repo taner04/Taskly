@@ -10,7 +10,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Api\Api.csproj"/>
-        <ProjectReference Include="..\..\src\Web\Web.csproj"/>
         <ProjectReference Include="..\MigrationService\MigrationService.csproj"/>
         <ProjectReference Include="..\ServiceDefaults\ServiceDefaults.csproj" IsAspireProjectResource="false"/>
     </ItemGroup>

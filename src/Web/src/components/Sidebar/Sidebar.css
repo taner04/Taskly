@@ -2,20 +2,12 @@
   display: grid;
   grid-template-rows: auto 1fr auto;
   height: 100%;
-  width: 100%;
+  width: 260px;
   background: var(--bg-primary);
   color: var(--text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;
   border-right: 1px solid rgba(0, 0, 0, 0.04);
   overflow: hidden;
-}
-
-.sidebar.expanded {
-  width: 260px;
-}
-
-.sidebar.collapsed {
-  width: 80px;
 }
 
 .sidebar-header {
@@ -27,11 +19,6 @@
   flex-shrink: 0;
 }
 
-.sidebar.collapsed .sidebar-header {
-  justify-content: center;
-  padding: 1.5rem;
-}
-
 .sidebar-title {
   font-size: 1.5rem;
   font-weight: 600;
@@ -41,30 +28,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.sidebar-toggle {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 8px;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  width: 36px;
-  height: 36px;
-}
-
-.sidebar-toggle:hover {
-  background: var(--bg-tertiary);
-}
-
-.sidebar-toggle:active {
-  transform: scale(0.95);
 }
 
 .sidebar-nav {
@@ -178,17 +141,6 @@
   color: var(--accent-primary);
 }
 
-.sidebar.collapsed .account-button {
-  width: 44px;
-  padding: 0.875rem;
-  justify-content: center;
-  border-radius: 12px;
-}
-
-.sidebar.collapsed .account-button span {
-  display: none;
-}
-
 .theme-toggle-button {
   display: flex;
   align-items: center;
@@ -217,10 +169,6 @@
 .theme-toggle-button:active {
   transform: scale(0.96) translateY(0);
   box-shadow: 0 1px 4px rgba(0, 113, 227, 0.08);
-}
-
-.sidebar.collapsed .theme-toggle-button {
-  display: none;
 }
 
 @keyframes fadeInThemeToggle {

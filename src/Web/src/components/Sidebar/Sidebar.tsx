@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useUser } from "../../contexts/UserContext";
 import "./Sidebar.css";
 
 type View = "home" | "todos";
@@ -7,32 +7,23 @@ type Theme = "light" | "dark";
 
 interface SidebarProps {
   isAuthenticated: boolean;
-  onToggle?: (collapsed: boolean) => void;
   currentView?: View;
   onViewChange?: (view: View) => void;
+  onShowProfileModal?: () => void;
 }
 
 const Sidebar = ({
   isAuthenticated,
-  onToggle,
   currentView = "home",
   onViewChange,
+  onShowProfileModal,
 }: SidebarProps) => {
-  const { user, logout, loginWithRedirect } = useAuth0();
-  const [isExpanded, setIsExpanded] = useState<boolean>(() => {
-    const saved = localStorage.getItem("sidebarExpanded");
-    return saved !== null ? JSON.parse(saved) : true;
-  });
+  const { user, logout, loginWithRedirect } = useUser();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [theme, setTheme] = useState<Theme>(() => {
     const saved = localStorage.getItem("theme");
     return (saved as Theme) || "light";
   });
-
-  // Persist sidebar state to localStorage
-  useEffect(() => {
-    localStorage.setItem("sidebarExpanded", JSON.stringify(isExpanded));
-  }, [isExpanded]);
 
   // Apply theme to document
   useEffect(() => {
@@ -40,11 +31,16 @@ const Sidebar = ({
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
-  const toggleSidebar = () => {
-    const newState = !isExpanded;
-    setIsExpanded(newState);
-    onToggle?.(!newState);
-  };
+  // Apply accent color on mount
+  useEffect(() => {
+    const savedColor = localStorage.getItem("accentColor");
+    if (savedColor) {
+      document.documentElement.style.setProperty(
+        "--accent-primary",
+        savedColor
+      );
+    }
+  }, []);
 
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
@@ -55,29 +51,9 @@ const Sidebar = ({
   };
 
   return (
-    <aside className={`sidebar ${isExpanded ? "expanded" : "collapsed"}`}>
+    <aside className="sidebar expanded">
       <div className="sidebar-header">
-        {isExpanded && <h2 className="sidebar-title">Taskly</h2>}
-        <button
-          className="sidebar-toggle"
-          onClick={toggleSidebar}
-          aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            {isExpanded ? (
-              <path d="M15 18l-6-6 6-6" />
-            ) : (
-              <path d="M9 18l6-6-6-6" />
-            )}
-          </svg>
-        </button>
+        <h2 className="sidebar-title">Taskly</h2>
       </div>
 
       <nav className="sidebar-nav">
@@ -97,7 +73,7 @@ const Sidebar = ({
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
             <polyline points="9 22 9 12 15 12 15 22" />
           </svg>
-          {isExpanded && <span>Home</span>}
+          <span>Home</span>
         </a>
         <a
           href="#"
@@ -115,7 +91,7 @@ const Sidebar = ({
             <path d="M9 11l3 3L22 4" />
             <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
           </svg>
-          {isExpanded && <span>Todo</span>}
+          <span>Todo</span>
         </a>
       </nav>
 
@@ -126,12 +102,12 @@ const Sidebar = ({
               className="account-button"
               onClick={() => {
                 if (isAuthenticated) {
-                  setShowUserMenu(!showUserMenu);
+                  onShowProfileModal?.();
                 } else {
                   loginWithRedirect();
                 }
               }}
-              aria-label={isAuthenticated ? "Account menu" : "Login"}
+              aria-label={isAuthenticated ? "Profile menu" : "Login"}
             >
               <svg
                 width="20"
@@ -144,12 +120,13 @@ const Sidebar = ({
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
-              {isExpanded && (
-                <span>{isAuthenticated ? "Account" : "Login"}</span>
-              )}
+              <span>{isAuthenticated ? "Account" : "Login"}</span>
             </button>
             {showUserMenu && isAuthenticated && (
-              <div className="user-menu-popup">
+              <div
+                className="user-menu-popup"
+                onMouseLeave={() => setShowUserMenu(false)}
+              >
                 <div className="user-info">
                   <div className="user-avatar">
                     {user?.picture && (

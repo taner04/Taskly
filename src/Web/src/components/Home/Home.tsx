@@ -1,6 +1,8 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import "./Home.css";
 
 const Home = ({ onViewChange }: { onViewChange?: (view: "todos") => void }) => {
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
   const githubUrl = "https://github.com/taner04/Taskly";
 
   const features = [
@@ -34,8 +36,19 @@ const Home = ({ onViewChange }: { onViewChange?: (view: "todos") => void }) => {
     {
       icon: "🔓",
       title: "100% Open Source",
-      description:
-        "Free, transparent, and community-driven. Contribute and make it yours.",
+      description: (
+        <>
+          Free, transparent, and community-driven.{" "}
+          <a
+            href={githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="feature-link"
+          >
+            Contribute and make it yours.
+          </a>
+        </>
+      ),
     },
   ];
 
@@ -60,9 +73,13 @@ const Home = ({ onViewChange }: { onViewChange?: (view: "todos") => void }) => {
         <div className="features-grid">
           {features.map((feature, index) => (
             <div key={index} className="feature-card">
-              <div className="feature-icon">{feature.icon}</div>
-              <h3 className="feature-title">{feature.title}</h3>
-              <p className="feature-description">{feature.description}</p>
+              <div className="feature-card-content">
+                <div className="feature-icon">{feature.icon}</div>
+                <h3 className="feature-title">{feature.title}</h3>
+              </div>
+              <div className="feature-card-content feature-card-back-content">
+                <p className="feature-description">{feature.description}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -82,7 +99,11 @@ const Home = ({ onViewChange }: { onViewChange?: (view: "todos") => void }) => {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              onViewChange?.("todos");
+              if (!isAuthenticated) {
+                loginWithRedirect();
+              } else {
+                onViewChange?.("todos");
+              }
             }}
           >
             Start Building Your List

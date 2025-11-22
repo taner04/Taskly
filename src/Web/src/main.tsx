@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Auth0Provider } from "@auth0/auth0-react";
 import App from "./App.tsx";
+import { UserProvider } from "./contexts/UserContext.tsx";
 import "./styles/index.css";
 
 // Initialize theme and accent color from localStorage
@@ -28,9 +29,9 @@ initializeThemeAndAccent();
 const domain = import.meta.env.VITE_AUTH0_DOMAIN;
 const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
 
-// Validate Auth0 configuration
 if (!domain || !clientId) {
-  console.warn("Auth0 configuration missing. Running in demo mode.");
+  console.error("Auth0 configuration missing. Please check your .env file.");
+  console.error("Required: VITE_AUTH0_DOMAIN and VITE_AUTH0_CLIENT_ID");
 }
 
 const rootElement = document.getElementById("root");
@@ -38,35 +39,24 @@ if (!rootElement) {
   throw new Error("Root element not found");
 }
 
-// Only render Auth0Provider if we have valid credentials
-const authConfig =
-  domain && clientId
-    ? {
-        domain,
-        clientId,
-        authorizationParams: {
-          redirect_uri: window.location.origin,
-          audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-        },
-        onRedirectCallback: (appState: any) => {
-          // Handle redirect after login
-          if (appState?.returnTo) {
-            window.location.href = appState.returnTo;
-          }
-        },
-        useRefreshTokens: true,
-        cacheLocation: "localstorage" as const,
-      }
-    : null;
-
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    {authConfig ? (
-      <Auth0Provider {...authConfig}>
-        <App />
+    {domain && clientId ? (
+      <Auth0Provider
+        domain={domain}
+        clientId={clientId}
+        authorizationParams={{
+          redirect_uri: window.location.origin,
+        }}
+      >
+        <UserProvider>
+          <App />
+        </UserProvider>
       </Auth0Provider>
     ) : (
-      <App />
+      <UserProvider>
+        <App />
+      </UserProvider>
     )}
   </React.StrictMode>
 );

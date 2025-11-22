@@ -3,16 +3,22 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Sidebar from "./components/Sidebar";
 import Home from "./components/Home";
 import Todos from "./components/Todos";
+import { ProfileModal } from "./components/Profile";
 
 type View = "home" | "todos";
 
 function App() {
-  const { isAuthenticated, isLoading, error } = useAuth0();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
-    const saved = localStorage.getItem("sidebarExpanded");
-    return saved !== null ? !JSON.parse(saved) : false;
-  });
+  const { isAuthenticated, isLoading, error, loginWithRedirect } = useAuth0();
   const [currentView, setCurrentView] = useState<View>("home");
+  const [showProfileModal, setShowProfileModal] = useState(false);
+
+  const handleViewChange = (view: View) => {
+    if (view === "todos" && !isAuthenticated) {
+      loginWithRedirect();
+      return;
+    }
+    setCurrentView(view);
+  };
 
   if (isLoading) {
     return (
@@ -31,21 +37,19 @@ function App() {
 
     // Still show the app but with a warning banner
     return (
-      <div className="app-with-error">
-        <div className="error-banner">
-          <p>⚠️ Authentication warning: {error.message}. Using demo mode.</p>
+      <>
+        <div className="app-with-error">
+          <div className="error-banner">
+            <p>⚠️ Authentication warning: {error.message}. Using demo mode.</p>
+          </div>
         </div>
-        <div
-          className={`app-layout ${
-            isSidebarCollapsed ? "sidebar-collapsed" : ""
-          }`}
-        >
+        <div className="app-layout">
           <div className="sidebar-and-header">
             <Sidebar
               isAuthenticated={false}
-              onToggle={(collapsed) => setIsSidebarCollapsed(collapsed)}
               currentView={currentView}
-              onViewChange={setCurrentView}
+              onViewChange={handleViewChange}
+              onShowProfileModal={() => setShowProfileModal(true)}
             />
           </div>
           <div className="app-main">
@@ -60,20 +64,21 @@ function App() {
             </main>
           </div>
         </div>
-      </div>
+        {showProfileModal && (
+          <ProfileModal onClose={() => setShowProfileModal(false)} />
+        )}
+      </>
     );
   }
 
   return (
-    <div
-      className={`app-layout ${isSidebarCollapsed ? "sidebar-collapsed" : ""}`}
-    >
+    <div className="app-layout">
       <div className="sidebar-and-header">
         <Sidebar
           isAuthenticated={isAuthenticated}
-          onToggle={(collapsed) => setIsSidebarCollapsed(collapsed)}
           currentView={currentView}
-          onViewChange={setCurrentView}
+          onViewChange={handleViewChange}
+          onShowProfileModal={() => setShowProfileModal(true)}
         />
       </div>
       <div className="app-main">
@@ -81,6 +86,9 @@ function App() {
           {currentView === "todos" ? <Todos /> : <Home />}
         </main>
       </div>
+      {showProfileModal && (
+        <ProfileModal onClose={() => setShowProfileModal(false)} />
+      )}
     </div>
   );
 }

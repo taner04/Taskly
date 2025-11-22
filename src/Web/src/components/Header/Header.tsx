@@ -1,5 +1,3 @@
-import { useAuth0 } from "@auth0/auth0-react";
-import { LoginButton, LogoutButton } from "../Auth";
 import "./Header.css";
 
 interface HeaderProps {
@@ -13,8 +11,6 @@ const Header = ({
   isExpanded = true,
   title = "Taskly",
 }: HeaderProps) => {
-  const { isAuthenticated } = useAuth0();
-
   return (
     <header className="app-header">
       <div className="header-content">
@@ -42,9 +38,6 @@ const Header = ({
           {isExpanded && <h2 className="header-title">{title}</h2>}
         </div>
         <div className="header-spacer"></div>
-        <div className="header-actions">
-          {isAuthenticated ? <LogoutButton /> : <LoginButton />}
-        </div>
       </div>
     </header>
   );
