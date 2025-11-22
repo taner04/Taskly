@@ -68,7 +68,6 @@ if [ ! -f "$WEB_ENV" ]; then
 # Auth0 Configuration
 VITE_AUTH0_DOMAIN=your-auth0-domain
 VITE_AUTH0_CLIENT_ID=your-auth0-client-id
-VITE_AUTH0_CALLBACK_URL=http://localhost:5173
 EOF
   warning "Please update $WEB_ENV with your configuration values"
 else
