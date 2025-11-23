@@ -25,6 +25,7 @@ Taskly is a professional todo application that helps you organize, prioritize, a
 - [**Node.js**](https://nodejs.org/) (latest version)
 - [**Docker & Docker Compose**](https://www.docker.com/)
 - [**Auth0**](https://auth0.com/) application as "Single Page Application"
+- [**Python 3**](https://www.python.org/) (optional, for build scripts)
 
 ### Installation
 
@@ -38,8 +39,7 @@ cd Taskly
 2. **Run the initialization script**
 
 ```bash
-chmod +x init.sh
-./init.sh
+python3 scripts/init.py
 ```
 
 The init script will:
@@ -92,8 +92,7 @@ The MigrationService will automatically apply all pending migrations to the data
 When you make changes to your data models, you need to create a new migration:
 
 ```bash
-# For macOS/Linux
-./add-migration.sh "YourMigrationName"
+python3 scripts/add-migration.py "YourMigrationName"
 ```
 
 The new migration will be automatically applied the next time you run the Aspire orchestrator.

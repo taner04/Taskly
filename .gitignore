@@ -407,6 +407,9 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 
+# EF Core Migrations (generated)
+src/Api/Infrastructure/Data/Migrations/
+
 # Ionide (cross platform F# VS Code tools) working folder
 **/.ionide/
 

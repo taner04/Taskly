@@ -61,6 +61,12 @@ def main() -> None:
         info(f"Using migration name: {migration_name}")
 
         # =========================================================================
+        # Create migrations folder if it doesn't exist
+        # =========================================================================
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        info(f"Migrations folder ready at {OUTPUT_DIR.relative_to(project_root)}")
+
+        # =========================================================================
         # Check for duplicate migration
         # =========================================================================
         check_for_existing_migration(migration_name, OUTPUT_DIR)
