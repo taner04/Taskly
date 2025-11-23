@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # =========================================================================
-# Add Migration Script
-# Creates a new EF Core migration for the Taskly API
+# Add Migration Script - Creates a new EF Core migration for the Taskly API
 # =========================================================================
 
 import sys
@@ -19,15 +18,19 @@ from shared import (
 )
 
 
+# =========================================================================
+# Check if a migration with the same name already exists
+# =========================================================================
 def check_for_existing_migration(migration_name: str, output_dir: Path) -> None:
-    """Check if a migration with the same name already exists."""
     if output_dir.exists():
         for migration_file in output_dir.glob(f"*{migration_name}*.cs"):
             error(f"A migration containing the name '{migration_name}' already exists in '{output_dir.relative_to(get_project_root())}'.")
 
 
+# =========================================================================
+# Main entry point
+# =========================================================================
 def main() -> None:
-    """Main entry point."""
     try:
         project_root = get_project_root()
         os.chdir(project_root)
@@ -106,10 +109,16 @@ def main() -> None:
 
         success(f"Migration '{migration_name}' created successfully.")
 
+    # =========================================================================
+    # Handle keyboard interrupt
+    # =========================================================================
     except KeyboardInterrupt:
         print("\n")
         warning("Migration creation interrupted by user")
         sys.exit(1)
+    # =========================================================================
+    # Handle unexpected errors
+    # =========================================================================
     except Exception as e:
         error(f"Unexpected error: {str(e)}")
 

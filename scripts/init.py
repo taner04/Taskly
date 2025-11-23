@@ -26,11 +26,12 @@ from shared import (
 )
 
 
+# =========================================================================
+# Check if all required tools are installed
+# =========================================================================
 def check_prerequisites() -> None:
-    """Check if all required tools are installed."""
     info("Checking prerequisites...")
 
-    # Check dotnet
     if not command_exists("dotnet"):
         error("dotnet SDK not installed or not in PATH.")
 
@@ -44,14 +45,12 @@ def check_prerequisites() -> None:
 
     success(f"dotnet {dotnet_version_output} found")
 
-    # Check Node.js
     if not command_exists("node"):
         error("Node.js not installed or not in PATH.")
 
     node_version = get_command_output(["node", "--version"])
     success(f"Node.js {node_version} found")
 
-    # Check npm
     if not command_exists("npm"):
         error("npm not installed or not in PATH.")
 
@@ -59,8 +58,10 @@ def check_prerequisites() -> None:
     success(f"npm {npm_version} found")
 
 
+# =========================================================================
+# Setup environment files
+# =========================================================================
 def setup_env_files() -> None:
-    """Setup environment files."""
     info("Setting up environment files...")
 
     project_root = get_project_root()
@@ -79,8 +80,10 @@ VITE_AUTH0_CLIENT_ID=your-auth0-client-id
         success(f"{web_env.relative_to(project_root)} already exists")
 
 
+# =========================================================================
+# Setup appsettings configuration
+# =========================================================================
 def setup_appsettings() -> None:
-    """Setup appsettings configuration."""
     info("Checking appsettings configuration...")
 
     project_root = get_project_root()
@@ -108,8 +111,10 @@ def setup_appsettings() -> None:
         success(f"{api_appsettings.relative_to(project_root)} already exists")
 
 
+# =========================================================================
+# Build .NET projects
+# =========================================================================
 def build_dotnet_projects() -> None:
-    """Build .NET projects."""
     info("Building .NET projects...")
 
     project_root = get_project_root()
@@ -131,8 +136,10 @@ def build_dotnet_projects() -> None:
     success("Test projects built")
 
 
+# =========================================================================
+# Build Web project
+# =========================================================================
 def build_web_project() -> None:
-    """Build Web project."""
     info("Building Web project...")
 
     project_root = get_project_root()
@@ -154,8 +161,10 @@ def build_web_project() -> None:
         os.chdir(original_dir)
 
 
+# =========================================================================
+# Build Docker images
+# =========================================================================
 def build_docker_images() -> None:
-    """Build Docker images."""
     info("Building Docker images...")
 
     project_root = get_project_root()
@@ -169,8 +178,10 @@ def build_docker_images() -> None:
         warning("Docker not found. Skipping Docker image builds.")
 
 
+# =========================================================================
+# Print build summary
+# =========================================================================
 def print_summary() -> None:
-    """Print build summary."""
     print("")
     print("=" * 81)
     success("Build completed successfully!")
@@ -187,8 +198,10 @@ def print_summary() -> None:
     print("=" * 81)
 
 
+# =========================================================================
+# Main entry point
+# =========================================================================
 def main() -> None:
-    """Main entry point."""
     try:
         check_prerequisites()
         setup_env_files()

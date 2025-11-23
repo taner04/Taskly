@@ -17,34 +17,46 @@ ORANGE = '\033[0;33m'
 NC = '\033[0m'  # No Color
 
 
+# =========================================================================
+# Print error message and exit
+# =========================================================================
 def error(message: str) -> None:
-    """Print error message and exit."""
     print(f"{RED}[ERROR]{NC} {message}", file=sys.stderr)
     sys.exit(1)
 
 
+# =========================================================================
+# Print success message
+# =========================================================================
 def success(message: str) -> None:
-    """Print success message."""
     print(f"{GREEN}[SUCCESS]{NC} {message}")
 
 
+# =========================================================================
+# Print info message
+# =========================================================================
 def info(message: str) -> None:
-    """Print info message."""
     print(f"{BLUE}[INFO]{NC} {message}")
 
 
+# =========================================================================
+# Print warning message
+# =========================================================================
 def warning(message: str) -> None:
-    """Print warning message."""
     print(f"{ORANGE}[WARNING]{NC} {message}")
 
 
+# =========================================================================
+# Check if a command exists in PATH
+# =========================================================================
 def command_exists(command: str) -> bool:
-    """Check if a command exists in PATH."""
     return shutil.which(command) is not None
 
 
+# =========================================================================
+# Run a shell command and return the result
+# =========================================================================
 def run_command(command: list, capture_output: bool = False, error_msg: str = None) -> subprocess.CompletedProcess:
-    """Run a shell command and return the result."""
     try:
         result = subprocess.run(command, check=True, capture_output=capture_output, text=True)
         return result
@@ -55,8 +67,10 @@ def run_command(command: list, capture_output: bool = False, error_msg: str = No
             error(f"Command failed: {' '.join(command)}")
 
 
+# =========================================================================
+# Run a command and return its output
+# =========================================================================
 def get_command_output(command: list) -> str:
-    """Run a command and return its output."""
     try:
         result = subprocess.run(command, check=True, capture_output=True, text=True)
         return result.stdout.strip()
@@ -64,6 +78,8 @@ def get_command_output(command: list) -> str:
         return ""
 
 
+# =========================================================================
+# Get the project root directory (parent of scripts folder)
+# =========================================================================
 def get_project_root() -> Path:
-    """Get the project root directory (parent of scripts folder)."""
     return Path(__file__).parent.parent
