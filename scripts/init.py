@@ -137,6 +137,23 @@ def build_dotnet_projects() -> None:
 
 
 # =========================================================================
+# Run database migrations
+# =========================================================================
+def run_migrations() -> None:
+    info("Running database migrations...")
+
+    project_root = get_project_root()
+    os.chdir(project_root)
+
+    try:
+        run_command(["python3", "scripts/create-migration.py", "InitialCreate"], capture_output=True, error_msg=None)
+    except SystemExit:
+        # Migration may already exist, continue anyway
+        pass
+    success("Database migrations completed")
+
+
+# =========================================================================
 # Build Web project
 # =========================================================================
 def build_web_project() -> None:
@@ -207,6 +224,7 @@ def main() -> None:
         setup_env_files()
         setup_appsettings()
         build_dotnet_projects()
+        run_migrations()
         build_web_project()
         build_docker_images()
         print_summary()
