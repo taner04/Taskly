@@ -7,6 +7,7 @@
 import subprocess
 import sys
 import shutil
+import platform
 from pathlib import Path
 
 # Color codes
@@ -58,9 +59,11 @@ def command_exists(command: str) -> bool:
 # =========================================================================
 def run_command(command: list, capture_output: bool = False, error_msg: str = None) -> subprocess.CompletedProcess:
     try:
-        result = subprocess.run(command, check=True, capture_output=capture_output, text=True)
+        # On Windows, use shell=True to properly resolve commands like npm
+        shell = platform.system() == "Windows"
+        result = subprocess.run(command, check=True, capture_output=capture_output, text=True, shell=shell)
         return result
-    except subprocess.CalledProcessError as e:
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
         if error_msg:
             error(error_msg)
         else:
@@ -72,9 +75,11 @@ def run_command(command: list, capture_output: bool = False, error_msg: str = No
 # =========================================================================
 def get_command_output(command: list) -> str:
     try:
-        result = subprocess.run(command, check=True, capture_output=True, text=True)
+        # On Windows, use shell=True to properly resolve commands
+        shell = platform.system() == "Windows"
+        result = subprocess.run(command, check=True, capture_output=True, text=True, shell=shell)
         return result.stdout.strip()
-    except subprocess.CalledProcessError:
+    except (subprocess.CalledProcessError, FileNotFoundError):
         return ""
 
 

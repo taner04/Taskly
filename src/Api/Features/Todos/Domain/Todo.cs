@@ -15,7 +15,7 @@ public sealed class Todo : Aggregate<TodoId>
 
     public const int MaxUserIdLength = 256;
 
-    private Todo(string title, string description, TodoPriority priority, string userId)
+    private Todo(string title, string? description, TodoPriority priority, string userId)
     {
         Id = TodoId.From(Guid.CreateVersion7());
         Title = title;
@@ -50,7 +50,7 @@ public sealed class Todo : Aggregate<TodoId>
     }
 
 
-    public static ErrorOr<Todo> TryCreate(string title, string description, TodoPriority priority,
+    public static ErrorOr<Todo> TryCreate(string title, string? description, TodoPriority priority,
         string userId)
     {
         var validationResult = Validate(title, description);

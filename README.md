@@ -36,23 +36,22 @@ git clone https://github.com/taner04/Taskly.git
 cd Taskly
 ```
 
-2. **Run the initialization script**
+2. **Run the build script**
 
 ```bash
-python3 scripts/init.py
+python3 scripts/build.py
 ```
 
-The init script will:
+The build script will:
 
-- Create necessary `.env` files
-- Set up `appsettings.json` configuration
+- Create necessary `.env` and `appsettings.json` files
 - Build the .NET API
 - Build the Web frontend
 - Build Docker images
 
 3. **Configure Auth0 credentials**
 
-After running the init script, update the generated files with your Auth0 credentials:
+After running the build script, update the generated files with your Auth0 credentials:
 
 **`src/Web/.env`**
 
