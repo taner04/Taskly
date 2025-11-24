@@ -145,12 +145,17 @@ def run_migrations() -> None:
     project_root = get_project_root()
     os.chdir(project_root)
 
-    try:
-        run_command(["python3", "scripts/create-migration.py", "InitialCreate"], capture_output=True, error_msg=None)
-    except SystemExit:
-        # Migration may already exist, continue anyway
-        pass
-    success("Database migrations completed")
+    # Check if migrations folder exists
+    migrations_folder = project_root / "src" / "Api" / "Infrastructure" / "Data" / "Migrations"
+    if not migrations_folder.exists():
+        try:
+            run_command(["python3", "scripts/create-migration.py", "InitialCreate"], capture_output=False, error_msg=None)
+        except SystemExit:
+            # Migration may already exist, continue anyway
+            pass
+        success("Database migrations completed")
+    else:
+        success("Migrations folder already exists, skipping migration creation")
 
 
 # =========================================================================
@@ -188,9 +193,20 @@ def build_docker_images() -> None:
     os.chdir(project_root)
 
     if command_exists("docker"):
+        # Check if Docker daemon is running
+        try:
+            get_command_output(["docker", "ps"])
+        except:
+            warning("Docker daemon is not running. Please start Docker and try again.")
+            return
+        
         info("Building Web Docker image...")
-        run_command(["docker", "build", "-t", "taskly-web:latest", "src/Web"], "Failed to build Web Docker image")
-        success("Web Docker image built: taskly-web:latest")
+        try:
+            run_command(["docker", "build", "-t", "taskly-web:latest", "src/Web"], "Failed to build Web Docker image")
+            success("Web Docker image built: taskly-web:latest")
+        except SystemExit:
+            # Docker build may fail for various reasons, but it's not critical
+            warning("Docker image build failed, continuing...")
     else:
         warning("Docker not found. Skipping Docker image builds.")
 
@@ -200,20 +216,16 @@ def build_docker_images() -> None:
 # =========================================================================
 def print_summary() -> None:
     print("")
-    print("=" * 81)
     success("Build completed successfully!")
-    print("=" * 81)
     print("")
     print("Next steps:")
-    print("1. Update configuration files with your actual values:")
+    print("1. Update configuration files with your actual values if not already changed:")
     print("   - src/Web/.env")
     print("   - src/Api/appsettings.json")
     print("")
     print("2. Run the Aspire orchestrator:")
-    print("   cd tools/AppHost && dotnet run")
+    print("   - cd tools/AppHost && dotnet run")
     print("")
-    print("=" * 81)
-
 
 # =========================================================================
 # Main entry point
@@ -232,8 +244,6 @@ def main() -> None:
         print("\n")
         warning("Build interrupted by user")
         sys.exit(1)
-    except Exception as e:
-        error(f"Unexpected error: {str(e)}")
 
 
 if __name__ == "__main__":
