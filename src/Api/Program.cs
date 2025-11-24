@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Api;
 using Api.Extensions;
 using ServiceDefaults;
@@ -33,3 +34,7 @@ app.UseHttpsRedirection();
 app.MapApiEndpoints();
 
 app.Run();
+
+
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+public partial class Program; // For integration tests
