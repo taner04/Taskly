@@ -17,7 +17,7 @@ var api = builder.AddProject<Api>(AppHostConstants.Api)
     .WaitForCompletion(migration);
 
 builder.AddContainer(AppHostConstants.Web, "taskly-web")
-    .WithHttpEndpoint(3000, 3000, name: "http")
+    .WithHttpEndpoint(3000, 3000, "http")
     .WaitFor(api);
 
 builder.Build().Run();

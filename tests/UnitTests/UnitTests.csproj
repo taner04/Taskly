@@ -11,7 +11,7 @@
         <PackageReference Include="coverlet.collector"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
         <PackageReference Include="xunit.runner.visualstudio"/>
-        <PackageReference Include="xunit.v3" />
+        <PackageReference Include="xunit.v3"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -19,11 +19,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Todos\" />
+        <Folder Include="Todos\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Api\Api.csproj" />
+        <ProjectReference Include="..\..\src\Api\Api.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -67,8 +67,7 @@ public sealed class Todo : Aggregate<TodoId>
         return new Todo(title, description, priority, userId);
     }
 
-    public ErrorOr<Success> Update(string title, string? description, TodoPriority priority,
-        bool isCompleted)
+    public ErrorOr<Success> Update(string title, string? description, TodoPriority priority)
     {
         var validationResult = Validate(title, description);
         if (validationResult.IsError)
@@ -79,9 +78,16 @@ public sealed class Todo : Aggregate<TodoId>
         Title = title;
         Description = description;
         Priority = priority;
-        IsCompleted = isCompleted;
 
         return Result.Success;
+    }
+
+    public void SetCompletionStatus(bool isCompleted)
+    {
+        if (isCompleted != IsCompleted)
+        {
+            IsCompleted = isCompleted;
+        }
     }
 
     public void ChangePriority(TodoPriority priority)

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Features.Todos;
 
 [Handler]
-[MapPut("api/todos/{todoId:guid}")]
+[MapPost("api/todos/{todoId:guid}/complete")]
 [Authorize]
-public static partial class UpdateTodo
+public static partial class CompleteTodo
 {
     internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
     {
@@ -27,13 +27,7 @@ public static partial class UpdateTodo
                 $"The todo does not exist with the specified id '{command.TodoId}'.");
         }
 
-        var updateTodoResult =
-            todo.Update(command.Title, command.Description, command.Priority);
-
-        if (updateTodoResult.IsError)
-        {
-            return updateTodoResult;
-        }
+        todo.SetCompletionStatus(command.Completed);
 
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);
@@ -44,9 +38,7 @@ public static partial class UpdateTodo
     [Validate]
     public sealed partial record Command : UserRequest, IValidationTarget<Command>
     {
-        [FromRoute] [NotEmpty] public required Guid TodoId { get; init; }
-        [NotEmpty] public required string Title { get; init; }
-        [NotEmpty] public string? Description { get; init; }
-        public required TodoPriority Priority { get; init; }
+        [FromRoute] public required Guid TodoId { get; init; }
+        public bool Completed { get; init; }
     }
 }

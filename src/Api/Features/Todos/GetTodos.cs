@@ -1,7 +1,10 @@
-﻿namespace Api.Features.Todos;
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace Api.Features.Todos;
 
 [Handler]
 [MapGet("api/todos")]
+[Authorize]
 public static partial class GetTodos
 {
     internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
@@ -9,12 +12,13 @@ public static partial class GetTodos
         endpoint.WithTags(nameof(Todo));
     }
 
-    private static async ValueTask<ErrorOr<IEnumerable<Todo>>> HandleAsync(Query query, ApplicationDbContext context,
+    private static async ValueTask<ErrorOr<IEnumerable<Todo>>> HandleAsync(
+        Query query, 
+        ApplicationDbContext context,
         CancellationToken ct)
     {
         return await context.Todos.Where(t => t.UserId == query.UserId).ToListAsync(ct);
     }
-
-    // ReSharper disable once ClassNeverInstantiated.Global
+    
     public sealed record Query : UserRequest;
 }

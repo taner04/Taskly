@@ -1,7 +1,10 @@
-﻿namespace Api.Features.Todos;
+﻿using Microsoft.AspNetCore.Authorization;
+
+namespace Api.Features.Todos;
 
 [Handler]
-[MapPost("api/todoss/create")]
+[MapPost("api/todos")]
+[Authorize]
 public static partial class CreateTodo
 {
     internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
@@ -9,7 +12,9 @@ public static partial class CreateTodo
         endpoint.WithTags(nameof(Todo));
     }
 
-    private static async ValueTask<ErrorOr<Success>> HandleAsync(Command command, ApplicationDbContext context,
+    private static async ValueTask<ErrorOr<Success>> HandleAsync(
+        Command command,
+        ApplicationDbContext context,
         CancellationToken ct)
     {
         var createNewTodoResult = Todo.TryCreate(command.Title, command.Description, command.Priority, command.UserId);

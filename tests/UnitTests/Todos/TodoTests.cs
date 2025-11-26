@@ -147,14 +147,14 @@ public class TodoTests
         var newPriority = TodoPriority.High;
 
         // Act
-        var updateResult = todo.Update(UpdatedTitle, UpdatedDescription, newPriority, true);
+        var updateResult = todo.Update(UpdatedTitle, UpdatedDescription, newPriority);
 
         // Assert
         Assert.False(updateResult.IsError);
         Assert.Equal(UpdatedTitle, todo.Title);
         Assert.Equal(UpdatedDescription, todo.Description);
         Assert.Equal(newPriority, todo.Priority);
-        Assert.True(todo.IsCompleted);
+        Assert.False(todo.IsCompleted);
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public class TodoTests
         var todo = result.Value;
 
         // Act
-        var updateResult = todo.Update(InvalidShortString, ValidDescription, TodoPriority.High, false);
+        var updateResult = todo.Update(InvalidShortString, ValidDescription, TodoPriority.High);
 
         // Assert
         Assert.True(updateResult.IsError);
@@ -180,7 +180,7 @@ public class TodoTests
         var todo = result.Value;
 
         // Act
-        var updateResult = todo.Update(UpdatedTitle, null, TodoPriority.High, false);
+        var updateResult = todo.Update(UpdatedTitle, null, TodoPriority.High);
 
         // Assert
         Assert.False(updateResult.IsError);

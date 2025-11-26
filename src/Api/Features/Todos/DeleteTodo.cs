@@ -1,7 +1,11 @@
-﻿namespace Api.Features.Todos;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Api.Features.Todos;
 
 [Handler]
-[MapDelete("api/todos/delete")]
+[MapDelete("api/todos/{todoId:guid}")]
+[Authorize]
 public static partial class DeleteTodo
 {
     internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
@@ -9,7 +13,9 @@ public static partial class DeleteTodo
         endpoint.WithTags(nameof(Todo));
     }
 
-    private static async ValueTask<ErrorOr<Success>> HandleAsync(Command command, ApplicationDbContext context,
+    private static async ValueTask<ErrorOr<Success>> HandleAsync(
+        Command command,
+        ApplicationDbContext context,
         CancellationToken ct)
     {
         var taskItem = await context.Todos.SingleOrDefaultAsync(
@@ -29,6 +35,6 @@ public static partial class DeleteTodo
     [Validate]
     public partial record Command : UserRequest, IValidationTarget<Command>
     {
-        [NotEmpty] public required TodoId TodoId { get; init; }
+        [FromRoute] [NotEmpty] public required TodoId TodoId { get; init; }
     }
 }

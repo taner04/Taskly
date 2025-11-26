@@ -11,6 +11,8 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
     private string _connectionString = null!;
     private DbContextOptions<ApplicationDbContext> _dbContextOptions = null!;
 
+    private List<string> _tableNames = [];
+
     public DbConnection DbConnection => new NpgsqlConnection(_postgresContainer.ConnectionString);
 
     public async ValueTask DisposeAsync()
@@ -32,26 +34,25 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
 
         await using var context = new ApplicationDbContext(_dbContextOptions);
         await context.Database.MigrateAsync();
-        
+
         _tableNames = GetTableNames(context);
     }
-    
+
     private static List<string> GetTableNames(ApplicationDbContext context)
     {
         var excludedTables = new HashSet<string>
         {
             "outboxevents",
-            "__efmigrationshistory" 
+            "__efmigrationshistory"
         };
 
         return context.Model.GetEntityTypes()
-            .Select(t => t.GetTableName()) 
+            .Select(t => t.GetTableName())
             .Where(name => name != null && !excludedTables.Contains(name.ToLower()))
             .Distinct()
             .ToList()!;
     }
-    
-    private List<string> _tableNames = [];
+
     public async Task ResetDatabaseAsync()
     {
         await using var context = new ApplicationDbContext(_dbContextOptions);
