@@ -13,7 +13,7 @@ from shared import project_root, console_logger
 # Content Templates
 # =========================================================================
 
-ENV_CONTENT = """# Auth0 Configuration
+ENV_CONTENT = """
 VITE_AUTH0_DOMAIN=your-auth0-domain
 VITE_AUTH0_CLIENT_ID=your-auth0-client-id
 """
@@ -33,11 +33,14 @@ appsettings_content_api = {
 }
 
 appsettings_content_integration_test = {
-    "client_id":"your-auth0-client-id",
-    "client_secret":"your-auth0-client-secret",
-    "audience":"your-auth0-audience",
-    "grant_type":"client_credentials"
-  }
+   "Auth0": {
+       "Domain": "your-auth0-domain",
+       "Client_Id": "your-auth0-client-id",
+       "Client_Secret": "your-auth0-client-secret",
+       "Audience": "your-auth0-audience",
+       "Grant_Type": "client_credentials"
+   }
+}
 
 # =========================================================================
 # Setup Tasks

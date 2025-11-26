@@ -56,7 +56,7 @@ def does_appsettings_api_exist() -> bool:
     return appsettings_file.exists()
 
 def does_appsettings_integration_exist() -> bool:
-    appsettings_file = project_root / "tests" / "IntegrationTests" / "IntegrationTests.json"
+    appsettings_file = project_root / "tests" / "IntegrationTests" / "appsettings.integration.json"
     return appsettings_file.exists()
 
 
@@ -64,12 +64,31 @@ def check_requirements(docker_required: bool) -> bool:
     missing = []
 
     checks = [
-        ("Docker",           docker_required and not is_docker_running(),
-                             "Docker is not running. Start Docker first."),
-        ("Migrations",       not does_migration_exist(),
-                             "Migrations folder missing! Run the create-migration.py script or via dotnet ef tools."),
-        ("Environment file", not does_env_file_exists() or does_appsettings_api_exist() or does_appsettings_integration_exist(),
-                             ".env/appsettings.json/appsettings.integration.json file is missing! Run init.py"),
+        (
+            "Docker",
+            docker_required and not is_docker_running(),
+            "Docker is not running. Start Docker first."
+        ),
+        (
+            "Migrations",
+            not does_migration_exist(),
+            "Migrations folder missing! Run the create-migration.py script or via dotnet ef tools."
+        ),
+        (
+            ".env file",
+            not does_env_file_exists(),
+            ".env file is missing! Run init.py"
+        ),
+        (
+            "appsettings.json",
+            not does_appsettings_api_exist(),
+            "appsettings.json file is missing! Run init.py"
+        ),
+        (
+            "appsettings.integration.json",
+            not does_appsettings_integration_exist(),
+            "appsettings.integration.json file is missing! Run init.py"
+        ),
     ]
 
     for name, condition, message in checks:
