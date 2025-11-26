@@ -10,7 +10,7 @@ public sealed class Auth0Service(IConfiguration configuration)
     public string GetAccessToken()
     {
         var uri = $"https://{configuration["Auth0:Domain"]}/oauth/token";
-        using var restSharpclient = new RestClient(uri);
+        using var restClient = new RestClient(uri);
         var request = new RestRequest("", Method.Post);
         request.AddHeader("content-type", "application/json");
 
@@ -23,7 +23,7 @@ public sealed class Auth0Service(IConfiguration configuration)
         });
 
         request.AddParameter("application/json", tokenRequestAsJson, ParameterType.RequestBody);
-        var response = restSharpclient.Execute(request);
+        var response = restClient.Execute(request);
 
         if (!response.IsSuccessful || response.Content is null)
         {
