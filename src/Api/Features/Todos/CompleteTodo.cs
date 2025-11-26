@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Features.Todos;
 
 [Handler]
-[MapPost("api/todos/{todoId:guid}/complete")]
+[MapPost(ApiRoutes.Todos.Complete)]
 [Authorize]
 public static partial class CompleteTodo
 {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Features.Todos;
 
 [Handler]
-[MapPut("api/todos/{todoId:guid}")]
+[MapPut(ApiRoutes.Todos.Update)]
 [Authorize]
 public static partial class UpdateTodo
 {

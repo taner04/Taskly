@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Features.Todos;
 
 [Handler]
-[MapDelete("api/todos/{todoId:guid}")]
+[MapDelete(ApiRoutes.Todos.Delete)]
 [Authorize]
 public static partial class DeleteTodo
 {

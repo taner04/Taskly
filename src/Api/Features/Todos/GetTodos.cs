@@ -3,7 +3,7 @@
 namespace Api.Features.Todos;
 
 [Handler]
-[MapGet("api/todos")]
+[MapGet(ApiRoutes.Todos.GetAll)]
 [Authorize]
 public static partial class GetTodos
 {

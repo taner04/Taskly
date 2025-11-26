@@ -207,7 +207,7 @@ def build_web_project() -> None:
 # Docker Build
 # =========================================================================
 
-def build_web_docker_image(force_clean: bool = False) -> None:
+def build_web_docker_image() -> None:
     docker = resolve_cmd("docker")
 
     console_logger.info("Building Docker image (no cache)...")
@@ -267,7 +267,7 @@ def main() -> None:
     build_web_project()
 
     if docker_needed:
-        build_web_docker_image(force_clean=args.prod)
+        build_web_docker_image()
 
     print()
     console_logger.success("Build completed successfully.")
