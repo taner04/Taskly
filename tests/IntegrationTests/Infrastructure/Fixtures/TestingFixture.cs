@@ -37,7 +37,7 @@ public sealed class TestingFixture : IAsyncLifetime
         return _serviceScopeFactory.CreateScope();
     }
 
-    public HttpClient CreateClient()
+    public HttpClient CreateAuthenticatedClient()
     {
         var client = _webApiFactory.CreateClient();
 
@@ -45,6 +45,11 @@ public sealed class TestingFixture : IAsyncLifetime
             new AuthenticationHeaderValue("Bearer", _auth0Service.GetAccessToken());
 
         return client;
+    }
+    
+    public HttpClient CreateUnauthenticatedClient()
+    {
+        return _webApiFactory.CreateClient();
     }
 
     private static IConfiguration InitConfiguration()

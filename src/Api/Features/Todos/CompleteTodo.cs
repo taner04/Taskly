@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Features.Todos;
 
@@ -27,7 +28,7 @@ public static partial class CompleteTodo
         CancellationToken ct)
     {
         var todo = await context.Todos.SingleOrDefaultAsync(
-            t => t.Id == TodoId.From(command.TodoId), ct);
+            t => t.Id == command.TodoId, ct);
 
         if (todo is null)
         {
@@ -53,7 +54,7 @@ public static partial class CompleteTodo
     [Validate]
     public sealed partial record Command : IValidationTarget<Command>
     {
-        [NotEmpty] public Guid TodoId { get; init; }
+        [FromRoute] [NotEmpty] public TodoId TodoId { get; init; }
         [NotNull] public CommandBody Body { get; init; } = null!;
 
         [Validate]

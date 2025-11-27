@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Todos;
 
@@ -10,6 +11,13 @@ public static partial class CreateTodo
     internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
+    }
+    
+    internal static Results<Ok, BadRequest<Error>> TransformResult(ErrorOr<Success> result)
+    {
+        return result.Match<Results<Ok, BadRequest<Error>>>(
+            _ => TypedResults.Ok(),
+            error => TypedResults.BadRequest(error.First()));
     }
 
     private static async ValueTask<ErrorOr<Success>> HandleAsync(
@@ -38,7 +46,7 @@ public static partial class CreateTodo
     public sealed partial record Command : IValidationTarget<Command>
     {
         [NotEmpty] public required string Title { get; init; }
-        [NotEmpty] public string? Description { get; init; }
+        public string? Description { get; init; }
         public required TodoPriority Priority { get; init; }
     }
 }

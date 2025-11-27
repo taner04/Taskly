@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Features.Todos;
@@ -12,6 +13,13 @@ public static partial class DeleteTodo
     {
         endpoint.WithTags(nameof(Todo));
     }
+    
+    internal static Results<Ok, NotFound<Error>> TransformResult(ErrorOr<Success> result)
+    {
+        return result.Match<Results<Ok, NotFound<Error>>>(
+            _ => TypedResults.Ok(),
+            error => TypedResults.NotFound(error.First()));
+    }
 
     private static async ValueTask<ErrorOr<Success>> HandleAsync(
         Command command,
@@ -20,7 +28,7 @@ public static partial class DeleteTodo
         CancellationToken ct)
     {
         var todo = await context.Todos.SingleOrDefaultAsync(
-            t => t.Id == TodoId.From(command.TodoId), ct);
+            t => t.Id == command.TodoId, ct);
 
         if (todo is null)
         {
@@ -44,6 +52,6 @@ public static partial class DeleteTodo
     [Validate]
     public partial record Command : IValidationTarget<Command>
     {
-        [FromRoute] [NotEmpty] public required Guid TodoId { get; init; }
+        [FromRoute] [NotEmpty] public required TodoId TodoId { get; init; }
     }
 }

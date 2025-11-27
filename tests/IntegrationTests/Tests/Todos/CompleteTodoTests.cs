@@ -9,7 +9,7 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
     [Fact]
     public async Task CompleteTodo_WhenTodoExistsAndBelongsToUser_ReturnsSuccessAndUpdatesTodo()
     {
-        var client = CreateClient();
+        var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
         var todo = Todo.TryCreate("Test", "Description", TodoPriority.Medium, userId).Value;
@@ -33,7 +33,7 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
     [Fact]
     public async Task CompleteTodo_WhenTodoDoesNotExist_ReturnsNotFound()
     {
-        var client = CreateClient();
+        var client = CreateAuthenticatedClient();
 
         var url = ApiRoutes.Todos.Complete.WithId(Guid.NewGuid());
         var postBodyObject = new CompleteTodo.Command.CommandBody
@@ -42,14 +42,13 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
         };
 
         var response = await client.PostAsJsonAsync(url, postBodyObject, CurrentCancellationToken);
-        var responseContent = await response.Content.ReadAsStringAsync(CurrentCancellationToken);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     [Fact]
     public async Task CompleteTodo_WhenTodoBelongsToAnotherUser_ReturnsNotFound()
     {
-        var client = CreateClient();
+        var client = CreateAuthenticatedClient();
 
         var todo = Todo.TryCreate("Test", "Desc", TodoPriority.Medium, "auth0|otherUser").Value;
         DbContext.Todos.Add(todo);
@@ -62,7 +61,22 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
         };
 
         var response = await client.PostAsJsonAsync(url, postBodyObject, CurrentCancellationToken);
-        var responseContent = await response.Content.ReadAsStringAsync(CurrentCancellationToken);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+    
+    [Fact]
+    public async Task CompleteTodo_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
+    {
+        var client = CreateUnauthenticatedClient();
+
+        var url = ApiRoutes.Todos.Complete.WithId(Guid.NewGuid());
+        var postBodyObject = new CompleteTodo.Command.CommandBody
+        {
+            Completed = true
+        };
+
+        var response = await client.PostAsJsonAsync(url, postBodyObject, CurrentCancellationToken);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 }

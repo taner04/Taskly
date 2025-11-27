@@ -1,6 +1,6 @@
 using Api.Features.Todos.Domain;
 
-namespace UnitTests.Todos;
+namespace UnitTests.Tests;
 
 public class TodoTests
 {

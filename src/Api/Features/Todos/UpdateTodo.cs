@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Features.Todos;
@@ -12,16 +13,29 @@ public static partial class UpdateTodo
     {
         endpoint.WithTags(nameof(Todo));
     }
+    
+    internal static Results<Ok, NotFound<Error>, BadRequest<Error>> TransformResult(ErrorOr<Success> result)
+    {
+        if(result.FirstError.Type == ErrorType.NotFound)
+        {
+            return result.Match<Results<Ok, NotFound<Error>, BadRequest<Error>>>(
+                _ => TypedResults.Ok(),
+                error => TypedResults.NotFound(error.First()));
+        }
 
+        return result.Match<Results<Ok, NotFound<Error>, BadRequest<Error>>>(
+            _ => TypedResults.Ok(),
+            error => TypedResults.BadRequest(error.First()));
+    }
+    
     private static async ValueTask<ErrorOr<Success>> HandleAsync(
         [AsParameters] Command command,
         ApplicationDbContext context,
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var userId = currentUserService.GetCurrentUserId();
         var todo = await context.Todos.SingleOrDefaultAsync(
-            t => t.Id == command.TodoId && t.UserId == userId, ct);
+            t => t.Id == command.TodoId, ct);
 
         if (todo is null)
         {
@@ -29,8 +43,15 @@ public static partial class UpdateTodo
                 $"The todo does not exist with the specified id '{command.TodoId}'.");
         }
 
+        var userId = currentUserService.GetCurrentUserId();
+        if (todo.UserId != userId)
+        {
+            return Error.NotFound("Todo.IncorrectUser",
+                $"The todo with id '{command.TodoId}' does not belong to the current user.");
+        }
+        
         var updateTodoResult =
-            todo.Update(command.Title, command.Description, command.Priority);
+            todo.Update(command.Body.Title, command.Body.Description, command.Body.Priority);
 
         if (updateTodoResult.IsError)
         {
@@ -46,9 +67,15 @@ public static partial class UpdateTodo
     [Validate]
     public sealed partial record Command : IValidationTarget<Command>
     {
-        [FromRoute] [NotEmpty] public required Guid TodoId { get; init; }
-        [NotEmpty] public required string Title { get; init; }
-        [NotEmpty] public string? Description { get; init; }
-        public required TodoPriority Priority { get; init; }
+        [FromRoute] [NotEmpty] public required TodoId TodoId { get; init; }
+        [NotNull] public CommandBody Body { get; init; } = null!;
+        
+        [Validate]
+        public sealed partial record CommandBody : IValidationTarget<CommandBody>
+        {
+            [NotEmpty] public required string Title { get; init; }
+            public string? Description { get; init; }
+            public required TodoPriority Priority { get; init; }
+        }
     }
 }

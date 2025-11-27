@@ -35,8 +35,13 @@ public abstract class TestingBase : IAsyncLifetime
         return ValueTask.CompletedTask;
     }
 
-    protected HttpClient CreateClient()
+    protected HttpClient CreateAuthenticatedClient()
     {
-        return _fixture.CreateClient();
+        return _fixture.CreateAuthenticatedClient();
+    }
+    
+    protected HttpClient CreateUnauthenticatedClient()
+    {
+        return _fixture.CreateUnauthenticatedClient();
     }
 }
