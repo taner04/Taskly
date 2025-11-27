@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using Api;
 using Api.Infrastructure.Data.Interceptors;
 using IntegrationTests.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
