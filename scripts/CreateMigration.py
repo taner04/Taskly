@@ -7,7 +7,7 @@ import subprocess
 import shutil
 import platform
 import argparse
-from shared import console_logger, project_root
+from Shared import console_logger, project_root
 
 # =========================================================================
 # Configuration

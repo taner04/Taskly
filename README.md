@@ -7,7 +7,7 @@ A modern, full-stack task management application built with .NET and React.
 - **[Docker](https://www.docker.com/)** — Required for containerization
 - **[.NET 9](https://dotnet.microsoft.com/download)** — Required for backend development
 - **[Node.js 20+](https://nodejs.org/)** — Required for frontend development
-- **[Python 3](https://www.python.org/)** *(optional)* — Simplifies project setup and build automation. Without Python,
+- **[Python 3](https://www.python.org/)** _(optional)_ — Simplifies project setup and build automation. Without Python,
   you'll need to manually execute build steps.
 
 ## 🚀 Installation
@@ -23,7 +23,7 @@ git clone https://github.com/taner04/Taskly
 **With Python (Recommended):**
 
 ```bash
-python3 .\scripts\init.py
+python3 .\scripts\Setup.py
 ```
 
 This creates the `.env` and `appsettings.json` files needed for the project.
@@ -49,10 +49,10 @@ AUTH0_CLIENT_ID=your-client-id
 
 ```json
 {
-    "Auth0": {
-        "Domain": "your-auth0-domain",
-        "Audience": "your-auth0-audience"
-    }
+  "Auth0": {
+    "Domain": "your-auth0-domain",
+    "Audience": "your-auth0-audience"
+  }
 }
 ```
 
@@ -60,13 +60,13 @@ AUTH0_CLIENT_ID=your-client-id
 
 ```json
 {
-    "Auth0": {
-        "Domain": "your-auth0-domain",
-        "Client_Id": "your-auth0-client-id",
-        "Client_Secret": "your-auth0-client-secret",
-        "Audience": "your-auth0-audience",
-        "Grant_Type": "client_credentials"
-    }
+  "Auth0": {
+    "Domain": "your-auth0-domain",
+    "Client_Id": "your-auth0-client-id",
+    "Client_Secret": "your-auth0-client-secret",
+    "Audience": "your-auth0-audience",
+    "Grant_Type": "client_credentials"
+  }
 }
 ```
 
@@ -115,7 +115,7 @@ dotnet run --project .\src\Taskly.AppHost
 This module contains Python utility scripts for managing the Taskly project initialization, database migrations, and
 build processes.
 
-### [`build.py`](./scripts/build.py)
+### [`Build.py`](./scripts/Build.py)
 
 **Purpose:** Cross-platform build script for compiling .NET projects, running tests, building the web frontend, and
 optionally building the docker image for the frontend.
@@ -124,20 +124,20 @@ optionally building the docker image for the frontend.
 
 **Requirements:** Migrations folder, .env file, and appsettings.json files must exist
 
-### [`init.py`](./scripts/init.py)
+### [`Setup.py`](./scripts/Setup.py)
 
 **Purpose:** One-time initialization script that creates required configuration files with template values for the
 Taskly project.
 
-**Usage:** `python3 init.py`
+**Usage:** `python3 Setup.py`
 
-**Output:** Creates configuration files with placeholder values requiring manual configuration
+**Output:** Creates configuration files with placeholder values requiring manual configuration and migrations to create the database tables
 
-### [`create-migration.py`](./scripts/create-migration.py)
+### [`CreateMigration.py`](./scripts/CreateMigration.py)
 
 **Purpose:** Wrapper script for creating Entity Framework Core database migrations using dotnet CLI tools.
 
-**Usage:** `python3 create-migration.py <migration-name>`
+**Usage:** `python3 CreateMigration.py <migration-name>`
 
 **Example:** `python3 create-migration.py AddTodoTable`
 
@@ -145,7 +145,7 @@ Taskly project.
 
 ### Shared Dependencies
 
-All scripts import [`shared.py`](./scripts/shared.py) module:
+All scripts import [`Shared.py`](./scripts/Shared.py) module:
 
 - `console_logger` — Logging utility with info(), error(), success() methods
 - `project_root` — Base project directory path
