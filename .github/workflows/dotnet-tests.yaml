@@ -1,0 +1,103 @@
+name: .NET Tests (Unit + Integration) with Summary
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/*.props', '**/*.config') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Create integration test settings (appsettings.integration.json)
+        if: always()
+        env:
+          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+          AUTH0_AUDIENCE: ${{ secrets.AUTH0_AUDIENCE }}
+        run: |
+          mkdir -p tests/IntegrationTests
+          cat > tests/IntegrationTests/appsettings.integration.json <<EOF
+{
+  "Auth0": {
+    "Domain": "${AUTH0_DOMAIN}",
+    "Client_Id": "${AUTH0_CLIENT_ID}",
+    "Client_Secret": "${AUTH0_CLIENT_SECRET}",
+    "Audience": "${AUTH0_AUDIENCE}",
+    "Grant_Type": "client_credentials"
+  }
+}
+EOF
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Ensure Docker is available
+        run: |
+          docker info
+
+      - name: Run Unit Tests
+        run: |
+          dotnet test tests/UnitTests/UnitTests.csproj --configuration Release --no-build --logger "trx;LogFileName=UnitTests.trx" --results-directory ./test-results
+
+      - name: Run Integration Tests
+        run: |
+          dotnet test tests/IntegrationTests/IntegrationTests.csproj --configuration Release --no-build --logger "trx;LogFileName=IntegrationTests.trx" --results-directory ./test-results
+
+      - name: Install trx2junit converter
+        run: |
+          dotnet tool install --global trx2junit
+          export PATH="$PATH:$HOME/.dotnet/tools"
+        # trx2junit converts TRX to JUnit XML which we can publish.
+
+      - name: Convert TRX -> JUnit XML
+        shell: bash
+        run: |
+          export PATH="$PATH:$HOME/.dotnet/tools"
+          shopt -s nullglob
+          mkdir -p test-results
+          for trx in test-results/*.trx; do
+            if [ -f "$trx" ]; then
+              trx2junit "$trx" -o "${trx%.trx}.xml"
+              echo "Converted $trx -> ${trx%.trx}.xml"
+            fi
+          done
+
+      - name: Publish test summary to Checks (GitHub)
+        uses: dorny/test-reporter@v1
+        with:
+          name: Unit + Integration tests
+          path: test-results/*.xml
+          reporter: junit
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload test results (artifacts)
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/*
