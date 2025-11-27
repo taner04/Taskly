@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector"/>
-        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="FluentAssertions"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
         <PackageReference Include="xunit.runner.visualstudio"/>
         <PackageReference Include="xunit.v3"/>
@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Todos\"/>
+        <Folder Include="Tests\"/>
     </ItemGroup>
 
     <ItemGroup>

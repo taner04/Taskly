@@ -1,4 +1,4 @@
-﻿namespace IntegrationTests.Common;
+﻿namespace IntegrationTests.Extensions;
 
 public static class RouteExtensions
 {

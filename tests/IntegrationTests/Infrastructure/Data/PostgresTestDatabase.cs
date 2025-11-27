@@ -1,9 +1,7 @@
 ﻿using System.Data.Common;
-using Api.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
-namespace IntegrationTests.Common.Database;
+namespace IntegrationTests.Infrastructure.Data;
 
 public sealed class PostgresTestDatabase : IAsyncDisposable
 {

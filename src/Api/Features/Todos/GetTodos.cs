@@ -13,12 +13,14 @@ public static partial class GetTodos
     }
 
     private static async ValueTask<ErrorOr<IEnumerable<Todo>>> HandleAsync(
-        Query query, 
+        Query _,
         ApplicationDbContext context,
+        CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        return await context.Todos.Where(t => t.UserId == query.UserId).ToListAsync(ct);
+        var userId = currentUserService.GetCurrentUserId();
+        return await context.Todos.Where(t => t.UserId == userId).ToListAsync(ct);
     }
-    
-    public sealed record Query : UserRequest;
+
+    public sealed record Query;
 }

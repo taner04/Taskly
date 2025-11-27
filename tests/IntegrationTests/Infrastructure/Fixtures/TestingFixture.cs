@@ -1,13 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
-using IntegrationTests.Common.Database;
+using IntegrationTests.Infrastructure.Data;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace IntegrationTests.Common;
-
-[CollectionDefinition("TestingFixtureCollection")]
-public class TestingFixtureCollection : ICollectionFixture<TestingFixture>;
+namespace IntegrationTests.Infrastructure.Fixtures;
 
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 public sealed class TestingFixture : IAsyncLifetime

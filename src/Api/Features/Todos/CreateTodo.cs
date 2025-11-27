@@ -15,9 +15,11 @@ public static partial class CreateTodo
     private static async ValueTask<ErrorOr<Success>> HandleAsync(
         Command command,
         ApplicationDbContext context,
+        CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var createNewTodoResult = Todo.TryCreate(command.Title, command.Description, command.Priority, command.UserId);
+        var userId = currentUserService.GetCurrentUserId();
+        var createNewTodoResult = Todo.TryCreate(command.Title, command.Description, command.Priority, userId);
 
         if (createNewTodoResult.IsError)
         {
@@ -33,7 +35,7 @@ public static partial class CreateTodo
     }
 
     [Validate]
-    public sealed partial record Command : UserRequest, IValidationTarget<Command>
+    public sealed partial record Command : IValidationTarget<Command>
     {
         [NotEmpty] public required string Title { get; init; }
         [NotEmpty] public string? Description { get; init; }

@@ -1,9 +1,8 @@
-﻿using Api.Behaviors;
+﻿using Api.Behaviors.Logger;
 
 [assembly: Behaviors(
     typeof(LoggingBehavior<,>),
-    typeof(ValidationBehavior<,>),
-    typeof(CurrentUserEnricherBehavior<,>)
+    typeof(ValidationBehavior<,>)
 )]
 
 [assembly: VogenDefaults(

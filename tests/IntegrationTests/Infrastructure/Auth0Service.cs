@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using Microsoft.Extensions.Configuration;
 using RestSharp;
 
-namespace IntegrationTests.Common;
+namespace IntegrationTests.Infrastructure;
 
 public sealed class Auth0Service(IConfiguration configuration)
 {

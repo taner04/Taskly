@@ -16,25 +16,34 @@ public static partial class DeleteTodo
     private static async ValueTask<ErrorOr<Success>> HandleAsync(
         Command command,
         ApplicationDbContext context,
+        CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var taskItem = await context.Todos.SingleOrDefaultAsync(
-            t => t.Id == command.TodoId && t.UserId == command.UserId, ct);
+        var todo = await context.Todos.SingleOrDefaultAsync(
+            t => t.Id == TodoId.From(command.TodoId), ct);
 
-        if (taskItem is null)
+        if (todo is null)
         {
-            return Error.NotFound("TaskItem.NotFound", $"The task with the Id '{command.TodoId}' was not found.");
+            return Error.NotFound("Todo.NotFound",
+                $"The todo does not exist with the specified id '{command.TodoId}'.");
         }
 
-        context.Todos.Remove(taskItem);
+        var userId = currentUserService.GetCurrentUserId();
+        if (todo.UserId != userId)
+        {
+            return Error.NotFound("Todo.IncorrectUser",
+                $"The todo with id '{command.TodoId}' does not belong to the current user.");
+        }
+
+        context.Todos.Remove(todo);
         await context.SaveChangesAsync(ct);
 
         return Result.Success;
     }
 
     [Validate]
-    public partial record Command : UserRequest, IValidationTarget<Command>
+    public partial record Command : IValidationTarget<Command>
     {
-        [FromRoute] [NotEmpty] public required TodoId TodoId { get; init; }
+        [FromRoute] [NotEmpty] public required Guid TodoId { get; init; }
     }
 }

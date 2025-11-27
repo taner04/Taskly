@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Todos;
 
@@ -13,13 +13,21 @@ public static partial class CompleteTodo
         endpoint.WithTags(nameof(Todo));
     }
 
+    internal static Results<Ok, NotFound<Error>> TransformResult(ErrorOr<Success> result)
+    {
+        return result.Match<Results<Ok, NotFound<Error>>>(
+            _ => TypedResults.Ok(),
+            error => TypedResults.NotFound(error.First()));
+    }
+
     private static async ValueTask<ErrorOr<Success>> HandleAsync(
         [AsParameters] Command command,
         ApplicationDbContext context,
+        CurrentUserService currentUserService,
         CancellationToken ct)
     {
         var todo = await context.Todos.SingleOrDefaultAsync(
-            t => t.Id == command.TodoId && t.UserId == command.UserId, ct);
+            t => t.Id == TodoId.From(command.TodoId), ct);
 
         if (todo is null)
         {
@@ -27,7 +35,14 @@ public static partial class CompleteTodo
                 $"The todo does not exist with the specified id '{command.TodoId}'.");
         }
 
-        todo.SetCompletionStatus(command.Completed);
+        var userId = currentUserService.GetCurrentUserId();
+        if (todo.UserId != userId)
+        {
+            return Error.NotFound("Todo.IncorrectUser",
+                $"The todo with id '{command.TodoId}' does not belong to the current user.");
+        }
+
+        todo.SetCompletionStatus(command.Body.Completed);
 
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);
@@ -36,9 +51,15 @@ public static partial class CompleteTodo
     }
 
     [Validate]
-    public sealed partial record Command : UserRequest, IValidationTarget<Command>
+    public sealed partial record Command : IValidationTarget<Command>
     {
-        [FromRoute] public required Guid TodoId { get; init; }
-        public bool Completed { get; init; }
+        [NotEmpty] public Guid TodoId { get; init; }
+        [NotNull] public CommandBody Body { get; init; } = null!;
+
+        [Validate]
+        public sealed partial record CommandBody : IValidationTarget<CommandBody>
+        {
+            public required bool Completed { get; init; }
+        }
     }
 }

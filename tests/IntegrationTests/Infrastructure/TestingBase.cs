@@ -1,8 +1,4 @@
-﻿using Api.Infrastructure.Data;
-using Microsoft.Extensions.DependencyInjection;
-using Npgsql;
-
-namespace IntegrationTests.Common;
+﻿namespace IntegrationTests.Infrastructure;
 
 [Collection("TestingFixtureCollection")]
 public abstract class TestingBase : IAsyncLifetime
@@ -18,12 +14,12 @@ public abstract class TestingBase : IAsyncLifetime
         DbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         if (!DbContext.Database.CanConnect())
         {
-            throw new NpgsqlException("Cannot connect to the database");
+            throw new Exception("Test database is not reachable. Ensure the test container is running.");
         }
     }
 
     protected static CancellationToken CurrentCancellationToken => TestContext.Current.CancellationToken;
-    
+
     protected ApplicationDbContext DbContext { get; }
 
     public async ValueTask InitializeAsync()

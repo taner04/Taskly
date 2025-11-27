@@ -1,6 +1,6 @@
 ﻿using Testcontainers.PostgreSql;
 
-namespace IntegrationTests.Common.Database;
+namespace IntegrationTests.Infrastructure.Data;
 
 public sealed class PostgresContainer : IAsyncDisposable
 {

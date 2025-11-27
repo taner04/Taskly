@@ -16,10 +16,12 @@ public static partial class UpdateTodo
     private static async ValueTask<ErrorOr<Success>> HandleAsync(
         [AsParameters] Command command,
         ApplicationDbContext context,
+        CurrentUserService currentUserService,
         CancellationToken ct)
     {
+        var userId = currentUserService.GetCurrentUserId();
         var todo = await context.Todos.SingleOrDefaultAsync(
-            t => t.Id == command.TodoId && t.UserId == command.UserId, ct);
+            t => t.Id == command.TodoId && t.UserId == userId, ct);
 
         if (todo is null)
         {
@@ -42,7 +44,7 @@ public static partial class UpdateTodo
     }
 
     [Validate]
-    public sealed partial record Command : UserRequest, IValidationTarget<Command>
+    public sealed partial record Command : IValidationTarget<Command>
     {
         [FromRoute] [NotEmpty] public required Guid TodoId { get; init; }
         [NotEmpty] public required string Title { get; init; }
