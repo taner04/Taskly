@@ -17,7 +17,7 @@ public class BearerDocumentTransformer(IConfiguration configuration) : IOpenApiD
                 Type = SecuritySchemeType.Http,
                 Scheme = "Bearer",
                 BearerFormat = "JWT",
-                Description = "Enter 'Bearer' followed by a space and then the JWT in the requestheader."
+                Description = "Enter 'Bearer' followed by a space and the JWT in the request header."
             }
         };
 
