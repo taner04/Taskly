@@ -1,26 +1,22 @@
 using System.Diagnostics.CodeAnalysis;
 using Api;
-using Api.Extensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Api.Composition.OpenApiDocumentTransformers;
+using Api.Composition.ServiceExtensions;
 using ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<BearerDocumentTransformer>();
+});
+
 builder.Services.AddCustomizedProblemDetails();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}";
-    options.Audience = builder.Configuration["Auth0:Audience"];
-});
+builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
 
 builder.Services.AddAuthorization();
 
@@ -47,5 +43,8 @@ app.MapApiEndpoints();
 app.Run();
 
 
-[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-public partial class Program; // For integration tests
+namespace Api
+{
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+    public partial class Program; // For integration tests
+}

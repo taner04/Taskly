@@ -13,4 +13,11 @@ public static class ApiRoutes
         public const string Delete = Base + "/{todoId:guid}";
         public const string Complete = Base + "/{todoId:guid}/complete";
     }
+    
+    public static class User
+    {
+        private  const string Base = "api/users";
+        
+        public const string GetRoles = Base + "/me/roles";
+    }
 }

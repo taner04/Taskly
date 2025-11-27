@@ -1,4 +1,4 @@
-﻿namespace Api.Extensions;
+﻿namespace Api.Composition.ServiceExtensions;
 
 public static class ImmediateExtension
 {
