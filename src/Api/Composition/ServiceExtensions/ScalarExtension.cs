@@ -2,9 +2,9 @@ using Scalar.AspNetCore;
 
 namespace Api.Composition.ServiceExtensions;
 
-public static class ScalarExtension
+internal static class ScalarExtension
 {
-    public static WebApplication MapScalar(this WebApplication app)
+    internal static WebApplication MapScalar(this WebApplication app)
     {
         app.MapScalarApiReference(opt =>
         {

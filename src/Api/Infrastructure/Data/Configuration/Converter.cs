@@ -1,4 +1,4 @@
 namespace Api.Infrastructure.Data.Configuration;
 
 [EfCoreConverter<TodoId>]
-public sealed partial class EfcVogenIdConverter;
+internal sealed partial class EfcVogenIdConverter;

@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Composition.ServiceExtensions;
 
-public static class AuthenticationExtension
+internal static class AuthenticationExtension
 {
     public static IServiceCollection AddAuthenticationAndAuthorization(this IServiceCollection services, IConfiguration configuration)
     {

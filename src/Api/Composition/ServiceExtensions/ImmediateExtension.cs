@@ -1,8 +1,8 @@
 ﻿namespace Api.Composition.ServiceExtensions;
 
-public static class ImmediateExtension
+internal static class ImmediateExtension
 {
-    public static IServiceCollection AddImmediate(this IServiceCollection services)
+    internal static IServiceCollection AddImmediate(this IServiceCollection services)
     {
         services.AddApiBehaviors();
         services.AddApiHandlers();

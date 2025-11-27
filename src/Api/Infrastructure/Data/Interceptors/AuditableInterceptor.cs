@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Api.Infrastructure.Data.Interceptors;
 
-public class AuditableInterceptor(CurrentUserService currentUserService) : SaveChangesInterceptor
+public sealed class AuditableInterceptor(CurrentUserService currentUserService) : SaveChangesInterceptor
 {
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,

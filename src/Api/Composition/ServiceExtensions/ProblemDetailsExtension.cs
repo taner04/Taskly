@@ -2,9 +2,9 @@
 
 namespace Api.Composition.ServiceExtensions;
 
-public static class ProblemDetailsExtension
+internal static class ProblemDetailsExtension
 {
-    public static IServiceCollection AddCustomizedProblemDetails(this IServiceCollection services)
+    internal static IServiceCollection AddCustomizedProblemDetails(this IServiceCollection services)
     {
         services.AddProblemDetails(options =>
         {

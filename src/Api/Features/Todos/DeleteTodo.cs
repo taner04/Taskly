@@ -50,7 +50,7 @@ public static partial class DeleteTodo
     }
 
     [Validate]
-    public partial record Command : IValidationTarget<Command>
+    public sealed partial record Command : IValidationTarget<Command>
     {
         [FromRoute] [NotEmpty] public required TodoId TodoId { get; init; }
     }

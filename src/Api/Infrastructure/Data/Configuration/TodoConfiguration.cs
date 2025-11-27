@@ -3,17 +3,14 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Infrastructure.Data.Configuration;
 
-public sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
+internal sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
 {
     public void Configure(EntityTypeBuilder<Todo> builder)
     {
         builder.ToTable("Todos");
 
         builder.HasKey(t => t.Id);
-
-        builder.Property(t => t.Id)
-            .HasConversion(new EfcVogenIdConverter.TodoIdEfCoreValueConverter());
-
+        
         builder.Property(t => t.Title)
             .IsRequired()
             .HasMaxLength(Todo.MaxTitleLength);
