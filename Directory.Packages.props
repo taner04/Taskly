@@ -1,45 +1,44 @@
 <Project>
-    <PropertyGroup>
-        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-        <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.0.0"/>
-        <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.5.2"/>
-        <PackageVersion Include="Auth0.AspNetCore.Authentication" Version="1.5.1"/>
-        <PackageVersion Include="coverlet.collector" Version="6.0.4"/>
-        <PackageVersion Include="ErrorOr" Version="2.0.1"/>
-        <PackageVersion Include="FluentAssertions" Version="8.8.0"/>
-        <PackageVersion Include="Immediate.Apis" Version="3.2.0"/>
-        <PackageVersion Include="Immediate.Handlers" Version="3.1.0"/>
-        <PackageVersion Include="Immediate.Validations" Version="3.2.0"/>
-        <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11"/>
-        <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.11"/>
-        <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.11"/>
-        <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.11"/>
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.11"/>
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.11"/>
-        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.11"/>
-        <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0"/>
-        <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.0.0"/>
-        <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1"/>
-        <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
-        <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.13.1"/>
-        <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.13.1"/>
-        <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.13.0"/>
-        <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.13.0"/>
-        <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.13.0"/>
-        <PackageVersion Include="Radzen.Blazor" Version="8.3.2"/>
-        <PackageVersion Include="RestSharp" Version="112.1.0"/>
-        <PackageVersion Include="Scalar.AspNetCore" Version="2.10.3"/>
-        <PackageVersion Include="Testcontainers.PostgreSql" Version="4.9.0"/>
-        <PackageVersion Include="Vogen" Version="8.0.2"/>
-        <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4"/>
-        <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0"/>
-        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.11"/>
-        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.11"/>
-        <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.0"/>
-        <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.0"/>
-        <PackageVersion Include="xunit.v3" Version="3.2.0"/>
-    </ItemGroup>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.0.0" />
+    <PackageVersion Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.5.2" />
+    <PackageVersion Include="Auth0.AspNetCore.Authentication" Version="1.5.1" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="ErrorOr" Version="2.0.1" />
+    <PackageVersion Include="Immediate.Apis" Version="3.2.0" />
+    <PackageVersion Include="Immediate.Handlers" Version="3.1.0" />
+    <PackageVersion Include="Immediate.Validations" Version="3.2.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.13.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.13.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.13.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.13.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.13.0" />
+    <PackageVersion Include="Radzen.Blazor" Version="8.3.2" />
+    <PackageVersion Include="RestSharp" Version="112.1.0" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.10.3" />
+    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.9.0" />
+    <PackageVersion Include="Vogen" Version="8.0.2" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.0" />
+    <PackageVersion Include="xunit.v3" Version="3.2.0" />
+  </ItemGroup>
 </Project>

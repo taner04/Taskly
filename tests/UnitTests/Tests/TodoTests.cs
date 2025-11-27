@@ -20,10 +20,8 @@ public class TodoTests
     [Fact]
     public void TryCreate_WithValidData_ShouldReturnTodo()
     {
-        // Act
         var result = Todo.TryCreate(TestTodoTitle, TestDescription, TodoPriority.Medium, ValidUserId);
-
-        // Assert
+        
         Assert.False(result.IsError);
         var todo = result.Value;
         Assert.Equal(TestTodoTitle, todo.Title);
