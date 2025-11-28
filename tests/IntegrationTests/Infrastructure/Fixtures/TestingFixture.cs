@@ -23,8 +23,8 @@ public sealed class TestingFixture : IAsyncLifetime
 
     public async ValueTask DisposeAsync()
     {
-        await _postgresTestDatabase.DisposeAsync();
         await _webApiFactory.DisposeAsync();
+        await _postgresTestDatabase.DisposeAsync();
     }
 
     public async Task SetUpAsync()
@@ -46,7 +46,7 @@ public sealed class TestingFixture : IAsyncLifetime
 
         return client;
     }
-    
+
     public HttpClient CreateUnauthenticatedClient()
     {
         return _webApiFactory.CreateClient();

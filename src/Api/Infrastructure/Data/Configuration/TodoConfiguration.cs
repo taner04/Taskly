@@ -1,16 +1,15 @@
-using Api.Features.Shared.Domain;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Infrastructure.Data.Configuration;
 
-internal sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
+internal sealed class TodoConfiguration : AuditableConfiguration<Todo>
 {
-    public void Configure(EntityTypeBuilder<Todo> builder)
+    protected override void PostConfigure(EntityTypeBuilder<Todo> builder)
     {
         builder.ToTable("Todos");
 
         builder.HasKey(t => t.Id);
-        
+
         builder.Property(t => t.Title)
             .IsRequired()
             .HasMaxLength(Todo.MaxTitleLength);
@@ -29,16 +28,9 @@ internal sealed class TodoConfiguration : IEntityTypeConfiguration<Todo>
             .IsRequired()
             .HasMaxLength(Todo.MaxUserIdLength);
 
-        builder.Property(t => t.CreatedAt)
-            .IsRequired();
-
-        builder.Property(t => t.CreatedBy)
-            .IsRequired()
-            .HasMaxLength(Auditable.MaxCreatedByLength);
-
-        builder.Property(t => t.UpdatedAt);
-
-        builder.Property(t => t.UpdatedBy)
-            .HasMaxLength(Auditable.MaxUpdatedByLength);
+        builder
+            .HasMany(t => t.Tags)
+            .WithMany(t => t.Todos)
+            .UsingEntity(j => { j.ToTable("TodoTags"); });
     }
 }

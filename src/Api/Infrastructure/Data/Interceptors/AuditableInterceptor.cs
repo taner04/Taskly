@@ -4,7 +4,7 @@ namespace Api.Infrastructure.Data.Interceptors;
 
 public sealed class AuditableInterceptor(CurrentUserService currentUserService) : SaveChangesInterceptor
 {
-    public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
@@ -14,35 +14,29 @@ public sealed class AuditableInterceptor(CurrentUserService currentUserService) 
             SetAuditableProperties(eventData.Context);
         }
 
-        return base.SavingChangesAsync(eventData, result, cancellationToken);
+        return await base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
     private void SetAuditableProperties(DbContext context)
     {
-        var auditableEntities = context.ChangeTracker
-            .Entries()
-            .Where(e => e.Entity is IAuditable)
+        var auditableEntries = context.ChangeTracker
+            .Entries<IAuditable>()
             .ToList();
 
         var changeMadeBy = currentUserService.GetCurrentUserId();
 
-        foreach (var entry in auditableEntities)
+        foreach (var entry in auditableEntries)
         {
-            if (entry.Entity is not IAuditable auditable)
-            {
-                continue;
-            }
-
             switch (entry.State)
             {
                 case EntityState.Added:
                 {
-                    auditable.SetCreated(changeMadeBy);
+                    entry.Entity.SetCreated(changeMadeBy);
                     break;
                 }
                 case EntityState.Modified:
                 {
-                    auditable.SetUpdated(changeMadeBy);
+                    entry.Entity.SetUpdated(changeMadeBy);
                     break;
                 }
                 case EntityState.Detached:

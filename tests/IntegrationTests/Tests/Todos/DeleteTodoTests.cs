@@ -16,7 +16,7 @@ public class DeleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.Delete.WithId(todo.Id.Value);
+        var url = ApiRoutes.Todos.Delete.ParseTodoRoute(todo.Id.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -35,7 +35,7 @@ public class DeleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateAuthenticatedClient();
 
-        var url = ApiRoutes.Todos.Delete.WithId(Guid.NewGuid());
+        var url = ApiRoutes.Todos.Delete.ParseTodoRoute(Guid.NewGuid());
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -52,7 +52,7 @@ public class DeleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.Delete.WithId(todo.Id.Value);
+        var url = ApiRoutes.Todos.Delete.ParseTodoRoute(todo.Id.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -64,7 +64,7 @@ public class DeleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateUnauthenticatedClient();
 
-        var url = ApiRoutes.Todos.Delete.WithId(Guid.NewGuid());
+        var url = ApiRoutes.Todos.Delete.ParseTodoRoute(Guid.NewGuid());
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 

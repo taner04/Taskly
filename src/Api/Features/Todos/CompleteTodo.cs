@@ -27,20 +27,14 @@ public static partial class CompleteTodo
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
+        var userId = currentUserService.GetCurrentUserId();
         var todo = await context.Todos.SingleOrDefaultAsync(
-            t => t.Id == command.TodoId, ct);
+            t => t.Id == command.TodoId && t.UserId == userId, ct);
 
         if (todo is null)
         {
             return Error.NotFound("Todo.NotFound",
                 $"The todo does not exist with the specified id '{command.TodoId}'.");
-        }
-
-        var userId = currentUserService.GetCurrentUserId();
-        if (todo.UserId != userId)
-        {
-            return Error.NotFound("Todo.IncorrectUser",
-                $"The todo with id '{command.TodoId}' does not belong to the current user.");
         }
 
         todo.SetCompletionStatus(command.Body.Completed);

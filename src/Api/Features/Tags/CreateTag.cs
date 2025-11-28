@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Api.Features.Tags.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace Api.Features.Todos;
+namespace Api.Features.Tags;
 
 [Handler]
-[MapPost(ApiRoutes.Todos.Create)]
+[MapPost(ApiRoutes.Tags.Create)]
 [Authorize]
-public static partial class CreateTodo
+public static partial class CreateTag
 {
     internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
     {
-        endpoint.WithTags(nameof(Todo));
+        endpoint.WithTags(nameof(Tag));
     }
 
     internal static Results<Ok, BadRequest<Error>> TransformResult(ErrorOr<Success> result)
@@ -27,16 +28,20 @@ public static partial class CreateTodo
         CancellationToken ct)
     {
         var userId = currentUserService.GetCurrentUserId();
-        var createNewTodoResult = Todo.TryCreate(command.Title, command.Description, command.Priority, userId);
-
-        if (createNewTodoResult.IsError)
+        var tagOrError = Tag.TryCreate(command.TagName, userId);
+        if (tagOrError.IsError)
         {
-            return createNewTodoResult.Errors;
+            return tagOrError.Errors;
         }
 
-        var newTodo = createNewTodoResult.Value;
+        var newTag = tagOrError.Value;
 
-        context.Todos.Add(newTodo!);
+        if (await context.Tags.AnyAsync(t => t.Name == newTag.Name && t.UserId == userId, ct))
+        {
+            return Error.Conflict("Tag.Exists", "A tag with the same name already exists.");
+        }
+
+        context.Tags.Add(newTag);
         await context.SaveChangesAsync(ct);
 
         return Result.Success;
@@ -45,8 +50,6 @@ public static partial class CreateTodo
     [Validate]
     public sealed partial record Command : IValidationTarget<Command>
     {
-        [NotEmpty] public required string Title { get; init; }
-        public string? Description { get; init; }
-        public required TodoPriority Priority { get; init; }
+        [NotEmpty] [NotNull] public string TagName { get; init; }
     }
 }

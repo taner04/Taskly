@@ -6,18 +6,20 @@ public static class ApiRoutes
     {
         private const string Base = "api/todos";
 
-        public const string GetAll = Base;
+        public const string GetTodos = Base;
         public const string Create = Base;
-        public const string GetById = Base + "/{todoId:guid}";
         public const string Update = Base + "/{todoId:guid}";
         public const string Delete = Base + "/{todoId:guid}";
         public const string Complete = Base + "/{todoId:guid}/complete";
     }
-    
-    public static class User
+
+    public static class Tags
     {
-        private  const string Base = "api/users";
-        
-        public const string GetRoles = Base + "/me/roles";
+        private const string Base = "api/tags";
+
+        public const string GetTags = Base;
+        public const string Create = Base;
+        public const string Update = Base + "/{tagId:guid}";
+        public const string Delete = Base + "/{tagId:guid}";
     }
 }

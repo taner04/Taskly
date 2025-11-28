@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Api.Features.Tags.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace Api.Features.Todos;
+namespace Api.Features.Tags;
 
 [Handler]
-[MapGet(ApiRoutes.Todos.GetTodos)]
+[MapGet(ApiRoutes.Tags.GetTags)]
 [Authorize]
-public static partial class GetTodos
+public static partial class GetTags
 {
     internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
     {
-        endpoint.WithTags(nameof(Todo));
+        endpoint.WithTags(nameof(Tag));
     }
 
     internal static Ok<List<Dto>> TransformResult(List<Dto> result)
@@ -25,31 +26,25 @@ public static partial class GetTodos
         CancellationToken ct)
     {
         var userId = currentUserService.GetCurrentUserId();
-        var todos = await context.Todos.Where(t => t.UserId == userId).ToListAsync(ct);
+        var tags = await context.Tags.Where(t => t.UserId == userId).ToListAsync(ct);
 
-        return todos.Select(Dto.FromDomain).ToList();
+        return tags.Select(Dto.FromDomain).ToList();
     }
 
     public sealed record Query;
 
     public sealed record Dto(
         Guid Id,
-        string Title,
-        string? Description,
-        TodoPriority Priority,
-        bool IsCompleted,
+        string Name,
         string UserId
     )
     {
-        public static Dto FromDomain(Todo todo)
+        public static Dto FromDomain(Tag tag)
         {
             return new Dto(
-                todo.Id.Value,
-                todo.Title,
-                todo.Description,
-                todo.Priority,
-                todo.IsCompleted,
-                todo.UserId
+                tag.Id.Value,
+                tag.Name,
+                tag.UserId
             );
         }
     }

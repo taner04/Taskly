@@ -16,7 +16,7 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.Complete.WithId(todo.Id.Value);
+        var url = ApiRoutes.Todos.Complete.ParseTodoRoute(todo.Id.Value);
         var postBodyObject = new CompleteTodo.Command.CommandBody
         {
             Completed = true
@@ -35,7 +35,7 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateAuthenticatedClient();
 
-        var url = ApiRoutes.Todos.Complete.WithId(Guid.NewGuid());
+        var url = ApiRoutes.Todos.Complete.ParseTodoRoute(Guid.NewGuid());
         var postBodyObject = new CompleteTodo.Command.CommandBody
         {
             Completed = true
@@ -54,7 +54,7 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.Complete.WithId(todo.Id.Value);
+        var url = ApiRoutes.Todos.Complete.ParseTodoRoute(todo.Id.Value);
         var postBodyObject = new CompleteTodo.Command.CommandBody
         {
             Completed = true
@@ -63,13 +63,39 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
         var response = await client.PostAsJsonAsync(url, postBodyObject, CurrentCancellationToken);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
-    
+
+    [Fact]
+    public async Task CompleteTodo_WhenSettingCompletedToFalse_UpdatesTodoStatus()
+    {
+        var client = CreateAuthenticatedClient();
+        var userId = client.GetUserId();
+
+        var todo = Todo.TryCreate("Test", "Description", TodoPriority.Medium, userId).Value;
+        // Manually set it as completed first
+        todo.SetCompletionStatus(true);
+        DbContext.Todos.Add(todo);
+        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+
+        var url = ApiRoutes.Todos.Complete.ParseTodoRoute(todo.Id.Value);
+        var postBodyObject = new CompleteTodo.Command.CommandBody
+        {
+            Completed = false
+        };
+
+        var response = await client.PostAsJsonAsync(url, postBodyObject, CurrentCancellationToken);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var updated = await DbContext.Todos.AsNoTracking().SingleAsync(t => t.Id == todo.Id, CurrentCancellationToken);
+        Assert.False(updated.IsCompleted);
+    }
+
     [Fact]
     public async Task CompleteTodo_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
     {
         var client = CreateUnauthenticatedClient();
 
-        var url = ApiRoutes.Todos.Complete.WithId(Guid.NewGuid());
+        var url = ApiRoutes.Todos.Complete.ParseTodoRoute(Guid.NewGuid());
         var postBodyObject = new CompleteTodo.Command.CommandBody
         {
             Completed = true

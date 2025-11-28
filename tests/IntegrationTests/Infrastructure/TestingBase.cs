@@ -39,7 +39,7 @@ public abstract class TestingBase : IAsyncLifetime
     {
         return _fixture.CreateAuthenticatedClient();
     }
-    
+
     protected HttpClient CreateUnauthenticatedClient()
     {
         return _fixture.CreateUnauthenticatedClient();

@@ -1,18 +1,27 @@
-﻿using Testcontainers.PostgreSql;
+﻿using DotNet.Testcontainers.Builders;
+using Testcontainers.PostgreSql;
 
 namespace IntegrationTests.Infrastructure.Data;
 
 public sealed class PostgresContainer : IAsyncDisposable
 {
     private const int MaxRetries = 5;
-    private readonly PostgreSqlContainer _postgresSqlContainer = new PostgreSqlBuilder().Build();
 
-    public string ConnectionString => _postgresSqlContainer.GetConnectionString();
+    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder()
+        .WithImage("postgres:latest")
+        .WithDatabase("db")
+        .WithUsername("postgres")
+        .WithPassword("postgres")
+        .WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("pg_isready"))
+        .WithCleanUp(true)
+        .Build();
+
+    public string ConnectionString => _container.GetConnectionString();
 
     public async ValueTask DisposeAsync()
     {
-        await _postgresSqlContainer.StopAsync();
-        await _postgresSqlContainer.DisposeAsync();
+        await _container.StopAsync();
+        await _container.DisposeAsync();
     }
 
     public async Task InitializeAsync()
@@ -27,7 +36,7 @@ public sealed class PostgresContainer : IAsyncDisposable
         {
             try
             {
-                await _postgresSqlContainer.StartAsync();
+                await _container.StartAsync();
                 attempt = MaxRetries; // Exit loop on success
             }
             catch (Exception ex)

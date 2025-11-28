@@ -8,10 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDocumentTransformer<BearerDocumentTransformer>();
-});
+builder.Services.AddOpenApi(options => { options.AddDocumentTransformer<BearerDocumentTransformer>(); });
 
 builder.Services.AddCustomizedProblemDetails();
 builder.Services.AddHttpContextAccessor();
@@ -46,5 +43,5 @@ app.Run();
 namespace Api
 {
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-    public partial class Program; // For integration tests
+    public class Program; // For integration tests
 }

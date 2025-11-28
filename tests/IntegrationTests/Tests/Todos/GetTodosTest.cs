@@ -22,11 +22,11 @@ public class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.AddRange(todo1, todo2, otherTodo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var response = await client.GetAsync(ApiRoutes.Todos.GetAll, CurrentCancellationToken);
+        var response = await client.GetAsync(ApiRoutes.Todos.GetTodos, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        
-        var result = await response.Content.ReadFromJsonAsync<List<GetTodos.Dto>>(cancellationToken: CurrentCancellationToken);
+
+        var result = await response.Content.ReadFromJsonAsync<List<GetTodos.Dto>>(CurrentCancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(2, result.Count);
@@ -38,11 +38,11 @@ public class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateAuthenticatedClient();
 
-        var response = await client.GetAsync(ApiRoutes.Todos.GetAll, CurrentCancellationToken);
+        var response = await client.GetAsync(ApiRoutes.Todos.GetTodos, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var result = await response.Content.ReadFromJsonAsync<List<GetTodos.Dto>>(cancellationToken: CurrentCancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<List<GetTodos.Dto>>(CurrentCancellationToken);
 
         Assert.NotNull(result);
         Assert.Empty(result);
@@ -60,11 +60,11 @@ public class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.AddRange(otherTodo1, otherTodo2);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var response = await client.GetAsync(ApiRoutes.Todos.GetAll, CurrentCancellationToken);
+        var response = await client.GetAsync(ApiRoutes.Todos.GetTodos, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var result = await response.Content.ReadFromJsonAsync<List<GetTodos.Dto>>(cancellationToken: CurrentCancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<List<GetTodos.Dto>>(CurrentCancellationToken);
 
         Assert.NotNull(result);
         Assert.Empty(result);
@@ -75,7 +75,7 @@ public class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateUnauthenticatedClient();
 
-        var response = await client.GetAsync(ApiRoutes.Todos.GetAll, CurrentCancellationToken);
+        var response = await client.GetAsync(ApiRoutes.Todos.GetTodos, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }

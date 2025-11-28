@@ -2,8 +2,18 @@
 
 public static class RouteExtensions
 {
-    public static string WithId(this string route, Guid id)
+    public static string ParseTodoRoute(this string route, Guid id)
     {
-        return route.Replace("{todoId:guid}", id.ToString());
+        return route.ReplaceRouteId("{todoId:guid}", id.ToString());
+    }
+    
+    public static string ParseTagRoute(this string route, Guid id)
+    {
+        return route.ReplaceRouteId("{tagId:guid}", id.ToString());
+    }
+    
+    private static string ReplaceRouteId(this string route, string placeholder, string value)
+    {
+        return route.Replace(placeholder, value);
     }
 }

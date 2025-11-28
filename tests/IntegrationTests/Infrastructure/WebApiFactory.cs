@@ -28,8 +28,7 @@ public class WebApiFactory(DbConnection connection) : WebApplicationFactory<Prog
             var interceptorDescriptors = services
                 .Where(d => d.ServiceType == typeof(AuditableInterceptor)
                             || d.ImplementationType == typeof(AuditableInterceptor)
-                            || (d.ImplementationInstance != null &&
-                                d.ImplementationInstance.GetType() == typeof(AuditableInterceptor)))
+                            || d.ImplementationInstance is AuditableInterceptor)
                 .ToList();
 
             foreach (var d in interceptorDescriptors)
@@ -37,7 +36,7 @@ public class WebApiFactory(DbConnection connection) : WebApplicationFactory<Prog
                 services.Remove(d);
             }
 
-            services.AddDbContext<ApplicationDbContext>((sp, opt) =>
+            services.AddDbContext<ApplicationDbContext>(opt =>
             {
                 opt.AddInterceptors(new MockAuditableInterceptor());
                 opt.EnableSensitiveDataLogging();

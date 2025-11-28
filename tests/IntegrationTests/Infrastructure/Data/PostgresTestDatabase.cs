@@ -5,11 +5,9 @@ namespace IntegrationTests.Infrastructure.Data;
 
 public sealed class PostgresTestDatabase : IAsyncDisposable
 {
+    private readonly List<string> _dbTablesToClear = ["Todos", "Tags"];
     private readonly PostgresContainer _postgresContainer = new();
-    private string _connectionString = null!;
     private DbContextOptions<ApplicationDbContext> _dbContextOptions = null!;
-
-    private List<string> _tableNames = [];
 
     public DbConnection DbConnection => new NpgsqlConnection(_postgresContainer.ConnectionString);
 
@@ -22,40 +20,19 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
     {
         await _postgresContainer.InitializeAsync();
 
-        var builder = new NpgsqlConnectionStringBuilder(_postgresContainer.ConnectionString);
-
-        _connectionString = builder.ConnectionString;
-
         _dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseNpgsql(_connectionString)
+            .UseNpgsql(_postgresContainer.ConnectionString)
             .Options;
 
         await using var context = new ApplicationDbContext(_dbContextOptions);
         await context.Database.MigrateAsync();
-
-        _tableNames = GetTableNames(context);
-    }
-
-    private static List<string> GetTableNames(ApplicationDbContext context)
-    {
-        var excludedTables = new HashSet<string>
-        {
-            "outboxevents",
-            "__efmigrationshistory"
-        };
-
-        return context.Model.GetEntityTypes()
-            .Select(t => t.GetTableName())
-            .Where(name => name != null && !excludedTables.Contains(name.ToLower()))
-            .Distinct()
-            .ToList()!;
     }
 
     public async Task ResetDatabaseAsync()
     {
         await using var context = new ApplicationDbContext(_dbContextOptions);
 
-        foreach (var sql in _tableNames.Select(tableName => $"Delete from \"{tableName}\""))
+        foreach (var sql in _dbTablesToClear.Select(tableName => $"Delete from \"{tableName}\""))
         {
             await context.Database.ExecuteSqlRawAsync(sql);
         }

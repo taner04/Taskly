@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Api.Features.Tags.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Features.Todos;
+namespace Api.Features.Tags;
 
 [Handler]
-[MapPut(ApiRoutes.Todos.Update)]
+[MapPut(ApiRoutes.Tags.Update)]
 [Authorize]
-public static partial class UpdateTodo
+public static partial class UpdateTag
 {
     internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
     {
@@ -35,24 +36,21 @@ public static partial class UpdateTodo
         CancellationToken ct)
     {
         var userId = currentUserService.GetCurrentUserId();
-        var todo = await context.Todos.SingleOrDefaultAsync(
-            t => t.Id == command.TodoId && t.UserId == userId, ct);
+        var tag = await context.Tags
+            .SingleOrDefaultAsync(t => t.Id == command.TagId && t.UserId == userId, ct);
 
-        if (todo is null)
+        if (tag is null)
         {
-            return Error.NotFound("Todo.NotFound",
-                $"The todo does not exist with the specified id '{command.TodoId}'.");
+            return Error.NotFound("Tag.NotFound", "The specified tag was not found.");
         }
 
-        var updateTodoResult =
-            todo.Update(command.Body.Title, command.Body.Description, command.Body.Priority);
-
-        if (updateTodoResult.IsError)
+        var renameResult = tag.Rename(command.Body.NewName);
+        if (renameResult.IsError)
         {
-            return updateTodoResult;
+            return renameResult.Errors;
         }
 
-        context.Todos.Update(todo);
+        context.Tags.Update(tag);
         await context.SaveChangesAsync(ct);
 
         return Result.Success;
@@ -61,15 +59,13 @@ public static partial class UpdateTodo
     [Validate]
     public sealed partial record Command : IValidationTarget<Command>
     {
-        [FromRoute] [NotEmpty] public required TodoId TodoId { get; init; }
+        [FromRoute] [NotEmpty] public TagId TagId { get; init; }
         [NotNull] public CommandBody Body { get; init; } = null!;
 
         [Validate]
         public sealed partial record CommandBody : IValidationTarget<CommandBody>
         {
-            [NotEmpty] public required string Title { get; init; }
-            public string? Description { get; init; }
-            public required TodoPriority Priority { get; init; }
+            [NotEmpty] [NotNull] public required string NewName { get; init; }
         }
     }
 }

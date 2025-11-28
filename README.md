@@ -5,7 +5,9 @@
 
 # Taskly
 
-✨ A stunning, responsive full-stack task management application. Crafted with **C#** and **.NET 9** on the backend, powered by **React 18** and **Vite** on the frontend. Experience seamless authentication with **Auth0**, cloud-native architecture with **.NET Aspire**.
+✨ A stunning, responsive full-stack task management application. Crafted with **C#** and **.NET 9** on the backend,
+powered by **React 18** and **Vite** on the frontend. Experience seamless authentication with **Auth0**, cloud-native
+architecture with **.NET Aspire**.
 
 ---
 

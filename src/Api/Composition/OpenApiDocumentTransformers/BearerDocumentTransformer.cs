@@ -23,7 +23,7 @@ internal sealed class BearerDocumentTransformer(IConfiguration configuration) : 
 
         document.Components ??= new OpenApiComponents();
         document.Components.SecuritySchemes = securityRequirements;
-        
+
         return Task.CompletedTask;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Api.Features.Todos;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Todos;
@@ -87,11 +86,10 @@ public class CreateTodoTests(TestingFixture fixture) : TestingBase(fixture)
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
-    
+
     [Fact]
     public async Task CreateTodo_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
     {
-        // no client auth
         var client = CreateUnauthenticatedClient();
 
         var command = new CreateTodo.Command

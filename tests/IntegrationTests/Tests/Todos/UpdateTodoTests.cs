@@ -16,7 +16,7 @@ public class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.Update.WithId(todo.Id.Value);
+        var url = ApiRoutes.Todos.Update.ParseTodoRoute(todo.Id.Value);
         var body = new
         {
             Title = "Updated Title",
@@ -42,7 +42,7 @@ public class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateAuthenticatedClient();
 
-        var url = ApiRoutes.Todos.Update.WithId(Guid.NewGuid());
+        var url = ApiRoutes.Todos.Update.ParseTodoRoute(Guid.NewGuid());
 
         var body = new
         {
@@ -65,7 +65,7 @@ public class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.Update.WithId(todo.Id.Value);
+        var url = ApiRoutes.Todos.Update.ParseTodoRoute(todo.Id.Value);
 
         var body = new
         {
@@ -89,7 +89,7 @@ public class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.Update.WithId(todo.Id.Value);
+        var url = ApiRoutes.Todos.Update.ParseTodoRoute(todo.Id.Value);
 
         var body = new
         {
@@ -108,7 +108,7 @@ public class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateUnauthenticatedClient();
 
-        var url = ApiRoutes.Todos.Update.WithId(Guid.NewGuid());
+        var url = ApiRoutes.Todos.Update.ParseTodoRoute(Guid.NewGuid());
 
         var body = new
         {

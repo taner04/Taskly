@@ -1,3 +1,4 @@
+using Api.Features.Tags.Domain;
 using Api.Infrastructure.Data.Configuration;
 
 namespace Api.Infrastructure.Data;
@@ -5,6 +6,7 @@ namespace Api.Infrastructure.Data;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
     public DbSet<Todo> Todos => Set<Todo>();
+    public DbSet<Tag> Tags => Set<Tag>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

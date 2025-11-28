@@ -1,8 +1,9 @@
 using Api.Features.Todos.Domain;
+using Api.Features.Tags.Domain;
 
 namespace UnitTests.Tests;
 
-public class TodoTests
+public sealed class TodoTests
 {
     private const string ValidTitle = "Valid Title";
     private const string ValidDescription = "Valid Description";
@@ -13,15 +14,15 @@ public class TodoTests
     private const string UpdatedDescription = "Updated Description";
     private const string InvalidShortString = "ab"; // length = 2 < MinTitle/DescriptionLength
 
-    // ------------------------------------------------------------
-    // TryCreate - Happy Path
-    // ------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // Creation Tests
+    // ------------------------------------------------------------------------
 
     [Fact]
     public void TryCreate_WithValidData_ShouldReturnTodo()
     {
         var result = Todo.TryCreate(TestTodoTitle, TestDescription, TodoPriority.Medium, ValidUserId);
-        
+
         Assert.False(result.IsError);
         var todo = result.Value;
         Assert.Equal(TestTodoTitle, todo.Title);
@@ -30,10 +31,6 @@ public class TodoTests
         Assert.Equal(ValidUserId, todo.UserId);
         Assert.False(todo.IsCompleted);
     }
-
-    // ------------------------------------------------------------
-    // TryCreate - Title Validation (Too Short / Too Long / Boundaries)
-    // ------------------------------------------------------------
 
     [Fact]
     public void TryCreate_WithTitleTooShort_ShouldReturnError()
@@ -76,10 +73,6 @@ public class TodoTests
         Assert.False(result.IsError);
         Assert.Equal(title, result.Value.Title);
     }
-
-    // ------------------------------------------------------------
-    // TryCreate - Description Validation (Too Short / Too Long / Boundaries)
-    // ------------------------------------------------------------
 
     [Fact]
     public void TryCreate_WithDescriptionTooShort_ShouldReturnError()
@@ -143,9 +136,9 @@ public class TodoTests
         Assert.Equal(string.Empty, result.Value.Description);
     }
 
-    // ------------------------------------------------------------
-    // TryCreate - UserId Validation
-    // ------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // UserId Tests (NEW)
+    // ------------------------------------------------------------------------
 
     [Fact]
     public void TryCreate_WithEmptyUserId_ShouldReturnError()
@@ -159,7 +152,18 @@ public class TodoTests
     [Fact]
     public void TryCreate_WithNullUserId_ShouldReturnError()
     {
-        string userId = null!;
+        string? userId = null;
+
+        var result = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Medium, userId!);
+
+        Assert.True(result.IsError);
+        Assert.Contains(result.Errors, e => e.Code == "Todo.UserId");
+    }
+
+    [Fact]
+    public void TryCreate_WithUserIdTooLong_ShouldReturnError()
+    {
+        var userId = new string('x', Todo.MaxUserIdLength + 1);
 
         var result = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Medium, userId);
 
@@ -167,9 +171,20 @@ public class TodoTests
         Assert.Contains(result.Errors, e => e.Code == "Todo.UserId");
     }
 
-    // ------------------------------------------------------------
-    // Update - Happy Path
-    // ------------------------------------------------------------
+    [Fact]
+    public void TryCreate_WithUserIdAtMaxLength_ShouldReturnSuccess()
+    {
+        var userId = new string('x', Todo.MaxUserIdLength);
+
+        var result = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Medium, userId);
+
+        Assert.False(result.IsError);
+        Assert.Equal(userId, result.Value.UserId);
+    }
+
+    // ------------------------------------------------------------------------
+    // Update Tests
+    // ------------------------------------------------------------------------
 
     [Fact]
     public void Update_WithValidData_ShouldUpdateTodo()
@@ -185,15 +200,10 @@ public class TodoTests
         Assert.Equal(TodoPriority.High, todo.Priority);
     }
 
-    // ------------------------------------------------------------
-    // Update - Error Cases
-    // ------------------------------------------------------------
-
     [Fact]
     public void Update_WithInvalidTitle_ShouldReturnError()
     {
-        var createResult = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId);
-        var todo = createResult.Value;
+        var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId).Value;
 
         var updateResult = todo.Update(InvalidShortString, ValidDescription, TodoPriority.High);
 
@@ -205,7 +215,6 @@ public class TodoTests
     public void Update_WithDescriptionTooShort_ShouldReturnError()
     {
         var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId).Value;
-
         var invalidDescription = new string('a', Todo.MinDescriptionLength - 1);
 
         var updateResult = todo.Update(ValidTitle, invalidDescription, TodoPriority.High);
@@ -218,7 +227,6 @@ public class TodoTests
     public void Update_WithDescriptionTooLong_ShouldReturnError()
     {
         var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId).Value;
-
         var invalidDescription = new string('a', Todo.MaxDescriptionLength + 1);
 
         var updateResult = todo.Update(ValidTitle, invalidDescription, TodoPriority.High);
@@ -238,9 +246,9 @@ public class TodoTests
         Assert.Null(todo.Description);
     }
 
-    // ------------------------------------------------------------
-    // SetCompletionStatus Tests
-    // ------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // Completion Status Tests
+    // ------------------------------------------------------------------------
 
     [Fact]
     public void SetCompletionStatus_FromFalseToTrue_ShouldSetCompleted()
@@ -268,15 +276,15 @@ public class TodoTests
     {
         var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Medium, ValidUserId).Value;
 
-        todo.SetCompletionStatus(false); // already false
+        todo.SetCompletionStatus(false);
         todo.SetCompletionStatus(false);
 
         Assert.False(todo.IsCompleted);
     }
 
-    // ------------------------------------------------------------
-    // ChangePriority Tests
-    // ------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    // Priority Tests
+    // ------------------------------------------------------------------------
 
     [Fact]
     public void ChangePriority_WithDifferentPriority_ShouldUpdatePriority()
@@ -297,10 +305,6 @@ public class TodoTests
 
         Assert.Equal(TodoPriority.Medium, todo.Priority);
     }
-
-    // ------------------------------------------------------------
-    // TryCreate with Priority Variations
-    // ------------------------------------------------------------
 
     [Theory]
     [InlineData(TodoPriority.Low)]
