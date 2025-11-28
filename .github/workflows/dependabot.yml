@@ -1,6 +1,0 @@
-version: 2
-updates:
-  - package-ecosystem: "nuget"
-    directory: "/" # Location of .csproj, .fsproj, or packages.config files
-    schedule:
-      interval: "daily"
