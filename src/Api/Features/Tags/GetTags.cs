@@ -1,4 +1,4 @@
-﻿using Api.Features.Tags.Domain;
+﻿using Api.Features.Tags.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -9,12 +9,14 @@ namespace Api.Features.Tags;
 [Authorize]
 public static partial class GetTags
 {
-    internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
+    internal static void CustomizeEndpoint(
+        IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Tag));
     }
 
-    internal static Ok<List<Dto>> TransformResult(List<Dto> result)
+    internal static Ok<List<Dto>> TransformResult(
+        List<Dto> result)
     {
         return TypedResults.Ok(result);
     }
@@ -39,7 +41,8 @@ public static partial class GetTags
         string UserId
     )
     {
-        public static Dto FromDomain(Tag tag)
+        public static Dto FromDomain(
+            Tag tag)
         {
             return new Dto(
                 tag.Id.Value,

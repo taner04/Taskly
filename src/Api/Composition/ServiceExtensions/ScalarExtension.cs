@@ -4,7 +4,8 @@ namespace Api.Composition.ServiceExtensions;
 
 internal static class ScalarExtension
 {
-    internal static WebApplication MapScalar(this WebApplication app)
+    internal static WebApplication MapScalar(
+        this WebApplication app)
     {
         app.MapScalarApiReference(opt =>
         {

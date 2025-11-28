@@ -33,7 +33,8 @@ public sealed class LoggerRequestContext
     public string? UserAgent { get; }
     public string? QueryString { get; }
 
-    public static LoggerRequestContext FromHttpContext(HttpContext? httpContext)
+    public static LoggerRequestContext FromHttpContext(
+        HttpContext? httpContext)
     {
         if (httpContext is null)
         {

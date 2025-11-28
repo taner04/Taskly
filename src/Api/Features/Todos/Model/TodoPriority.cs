@@ -1,4 +1,4 @@
-namespace Api.Features.Todos.Domain;
+namespace Api.Features.Todos.Model;
 
 public enum TodoPriority
 {

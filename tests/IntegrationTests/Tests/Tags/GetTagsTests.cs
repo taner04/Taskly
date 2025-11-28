@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Api.Features.Tags;
-using Api.Features.Tags.Domain;
+using Api.Features.Tags.Model;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Tags;
@@ -9,7 +9,7 @@ namespace IntegrationTests.Tests.Tags;
 public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private const string Url = ApiRoutes.Tags.GetTags;
-    
+
     [Fact]
     public async Task GetTags_WhenUserHasTags_ReturnsTagsOnlyForUser()
     {
@@ -26,7 +26,7 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var tags = await response.Content.ReadFromJsonAsync<List<GetTags.Dto>>(cancellationToken: CurrentCancellationToken);
+        var tags = await response.Content.ReadFromJsonAsync<List<GetTags.Dto>>(CurrentCancellationToken);
 
         Assert.NotNull(tags);
         Assert.Equal(2, tags!.Count);
@@ -42,7 +42,7 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var tags = await response.Content.ReadFromJsonAsync<List<GetTags.Dto>>(cancellationToken: CurrentCancellationToken);
+        var tags = await response.Content.ReadFromJsonAsync<List<GetTags.Dto>>(CurrentCancellationToken);
 
         Assert.NotNull(tags);
         Assert.Empty(tags);
@@ -62,7 +62,7 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var tags = await response.Content.ReadFromJsonAsync<List<GetTags.Dto>>(cancellationToken: CurrentCancellationToken);
+        var tags = await response.Content.ReadFromJsonAsync<List<GetTags.Dto>>(CurrentCancellationToken);
 
         Assert.NotNull(tags);
         Assert.Empty(tags);

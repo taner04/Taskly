@@ -1,4 +1,5 @@
-using Api.Features.Tags.Domain;
+using TagId = Api.Features.Tags.Model.TagId;
+using TodoId = Api.Features.Todos.Model.TodoId;
 
 namespace Api.Infrastructure.Data.Configuration;
 

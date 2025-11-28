@@ -1,7 +1,7 @@
 ﻿using Api.Features.Shared.Domain;
-using Api.Features.Tags.Domain;
+using Api.Features.Tags.Model;
 
-namespace Api.Features.Todos.Domain;
+namespace Api.Features.Todos.Model;
 
 [ValueObject<Guid>]
 public readonly partial struct TodoId;
@@ -16,7 +16,11 @@ public sealed class Todo : Entity<TodoId>
 
     public const int MaxUserIdLength = 256;
 
-    private Todo(string title, string? description, TodoPriority priority, string userId)
+    private Todo(
+        string title,
+        string? description,
+        TodoPriority priority,
+        string userId)
     {
         Id = TodoId.From(Guid.CreateVersion7());
         Title = title;
@@ -32,8 +36,11 @@ public sealed class Todo : Entity<TodoId>
     public bool IsCompleted { get; private set; }
     public string UserId { get; private set; }
     public ICollection<Tag> Tags { get; init; } = [];
-    
-    public static ErrorOr<Todo> TryCreate(string title, string? description, TodoPriority priority,
+
+    public static ErrorOr<Todo> TryCreate(
+        string title,
+        string? description,
+        TodoPriority priority,
         string userId)
     {
         if (title.Length is > MaxTitleLength or < MinTitleLength)
@@ -57,7 +64,10 @@ public sealed class Todo : Entity<TodoId>
         return new Todo(title, description, priority, userId);
     }
 
-    public ErrorOr<Success> Update(string title, string? description, TodoPriority priority)
+    public ErrorOr<Success> Update(
+        string title,
+        string? description,
+        TodoPriority priority)
     {
         if (title.Length is > MaxTitleLength or < MinTitleLength)
         {
@@ -79,7 +89,8 @@ public sealed class Todo : Entity<TodoId>
         return Result.Success;
     }
 
-    public void SetCompletionStatus(bool isCompleted)
+    public void SetCompletionStatus(
+        bool isCompleted)
     {
         if (isCompleted != IsCompleted)
         {
@@ -87,7 +98,8 @@ public sealed class Todo : Entity<TodoId>
         }
     }
 
-    public void ChangePriority(TodoPriority priority)
+    public void ChangePriority(
+        TodoPriority priority)
     {
         if (priority != Priority)
         {

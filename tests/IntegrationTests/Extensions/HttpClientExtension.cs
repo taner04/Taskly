@@ -4,7 +4,8 @@ namespace IntegrationTests.Extensions;
 
 public static class HttpClientExtension
 {
-    public static string GetUserId(this HttpClient client)
+    public static string GetUserId(
+        this HttpClient client)
     {
         var token = client.DefaultRequestHeaders.Authorization?.Parameter
                     ?? throw new InvalidOperationException("No JWT token found.");

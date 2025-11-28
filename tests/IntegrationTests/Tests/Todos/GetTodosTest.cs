@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Api.Features.Todos.Model;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Todos;

@@ -12,13 +12,15 @@ public abstract class Auditable : IAuditable
     public string? UpdatedBy { get; private set; }
 
 
-    public void SetCreated(string createdBy = null!)
+    public void SetCreated(
+        string createdBy = null!)
     {
         CreatedAt = DateTimeOffset.UtcNow;
         CreatedBy = createdBy ?? "System";
     }
 
-    public void SetUpdated(string updatedBy = null!)
+    public void SetUpdated(
+        string updatedBy = null!)
     {
         UpdatedAt = DateTimeOffset.UtcNow;
         UpdatedBy = updatedBy ?? "System";

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Api.Features.Todos.Model;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Todos;

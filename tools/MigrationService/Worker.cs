@@ -11,7 +11,8 @@ public class Worker(IServiceProvider serviceProvider, IHostApplicationLifetime a
     private readonly ActivitySource _sActivitySource = new(ActivitySourceName);
 
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(
+        CancellationToken stoppingToken)
     {
         using var activity = _sActivitySource.StartActivity(ActivityKind.Client);
 
@@ -33,7 +34,9 @@ public class Worker(IServiceProvider serviceProvider, IHostApplicationLifetime a
         }
     }
 
-    private static async Task RunMigrationAsync(ApplicationDbContext dbContext, CancellationToken cancellationToken)
+    private static async Task RunMigrationAsync(
+        ApplicationDbContext dbContext,
+        CancellationToken cancellationToken)
     {
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () => { await dbContext.Database.MigrateAsync(cancellationToken); });

@@ -29,11 +29,13 @@ public interface IAuditable
     ///     Sets the creation metadata for the entity.
     /// </summary>
     /// <param name="createdBy">The identifier of the user who created the entity.</param>
-    void SetCreated(string createdBy = null!);
+    void SetCreated(
+        string createdBy = null!);
 
     /// <summary>
     ///     Sets the update metadata for the entity.
     /// </summary>
     /// <param name="updatedBy">The identifier of the user who updated the entity.</param>
-    void SetUpdated(string updatedBy = null!);
+    void SetUpdated(
+        string updatedBy = null!);
 }

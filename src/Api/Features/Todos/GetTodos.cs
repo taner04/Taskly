@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Api.Features.Todos.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Todos;
@@ -8,12 +9,14 @@ namespace Api.Features.Todos;
 [Authorize]
 public static partial class GetTodos
 {
-    internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
+    internal static void CustomizeEndpoint(
+        IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
     }
 
-    internal static Ok<List<Dto>> TransformResult(List<Dto> result)
+    internal static Ok<List<Dto>> TransformResult(
+        List<Dto> result)
     {
         return TypedResults.Ok(result);
     }
@@ -41,7 +44,8 @@ public static partial class GetTodos
         string UserId
     )
     {
-        public static Dto FromDomain(Todo todo)
+        public static Dto FromDomain(
+            Todo todo)
         {
             return new Dto(
                 todo.Id.Value,

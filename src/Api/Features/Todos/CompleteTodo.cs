@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Api.Features.Todos.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +10,14 @@ namespace Api.Features.Todos;
 [Authorize]
 public static partial class CompleteTodo
 {
-    internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
+    internal static void CustomizeEndpoint(
+        IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
     }
 
-    internal static Results<Ok, NotFound<Error>> TransformResult(ErrorOr<Success> result)
+    internal static Results<Ok, NotFound<Error>> TransformResult(
+        ErrorOr<Success> result)
     {
         return result.Match<Results<Ok, NotFound<Error>>>(
             _ => TypedResults.Ok(),
@@ -46,10 +49,10 @@ public static partial class CompleteTodo
     }
 
     [Validate]
-    public sealed partial record Command : IValidationTarget<Command>
+    public sealed partial record Command : IValidationTarget<Command>, ITransactionalRequest
     {
-        [FromRoute] [NotEmpty] public TodoId TodoId { get; init; }
-        [NotNull] public CommandBody Body { get; init; } = null!;
+        [FromRoute] [NotEmpty] public required TodoId TodoId { get; init; }
+        [NotNull] public required CommandBody Body { get; init; } = null!;
 
         [Validate]
         public sealed partial record CommandBody : IValidationTarget<CommandBody>

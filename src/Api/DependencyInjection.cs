@@ -6,18 +6,23 @@ namespace Api;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services)
+    public static IServiceCollection AddApplication(
+        this IServiceCollection services)
     {
         services.AddScoped<CurrentUserService>();
 
         return services;
     }
 
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddScoped<ISaveChangesInterceptor, AuditableInterceptor>();
 
-        services.AddDbContext<ApplicationDbContext>((sp, opt) =>
+        services.AddDbContext<ApplicationDbContext>((
+            sp,
+            opt) =>
         {
             var interceptors = sp.GetServices<ISaveChangesInterceptor>().ToList();
             interceptors.ForEach(interceptor => { opt.AddInterceptors(interceptor); });

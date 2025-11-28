@@ -4,7 +4,8 @@ namespace Api.Composition.ServiceExtensions;
 
 internal static class ProblemDetailsExtension
 {
-    internal static IServiceCollection AddCustomizedProblemDetails(this IServiceCollection services)
+    internal static IServiceCollection AddCustomizedProblemDetails(
+        this IServiceCollection services)
     {
         services.AddProblemDetails(options =>
         {
@@ -50,7 +51,9 @@ internal static class ProblemDetailsExtension
         return services;
     }
 
-    private static void AddDefaults(ProblemDetails problem, HttpContext http)
+    private static void AddDefaults(
+        ProblemDetails problem,
+        HttpContext http)
     {
         problem.Instance ??= http.Request.Path;
         problem.Extensions["traceId"] = http.TraceIdentifier;

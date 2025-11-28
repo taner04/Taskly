@@ -1,10 +1,12 @@
+using Api.Features.Todos.Model;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Infrastructure.Data.Configuration;
 
 internal sealed class TodoConfiguration : AuditableConfiguration<Todo>
 {
-    protected override void PostConfigure(EntityTypeBuilder<Todo> builder)
+    protected override void PostConfigure(
+        EntityTypeBuilder<Todo> builder)
     {
         builder.ToTable("Todos");
 

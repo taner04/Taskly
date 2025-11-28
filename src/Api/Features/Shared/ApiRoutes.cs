@@ -11,6 +11,8 @@ public static class ApiRoutes
         public const string Update = Base + "/{todoId:guid}";
         public const string Delete = Base + "/{todoId:guid}";
         public const string Complete = Base + "/{todoId:guid}/complete";
+        public const string AddTags = Base + "/{todoId:guid}/tags";
+        public const string RemoveTag = Base + "/{todoId:guid}/tags/{tagId:guid}";
     }
 
     public static class Tags

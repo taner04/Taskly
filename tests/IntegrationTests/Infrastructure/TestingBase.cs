@@ -6,7 +6,8 @@ public abstract class TestingBase : IAsyncLifetime
     private readonly TestingFixture _fixture;
     private readonly IServiceScope _scope;
 
-    protected TestingBase(TestingFixture fixture)
+    protected TestingBase(
+        TestingFixture fixture)
     {
         _fixture = fixture;
         _scope = _fixture.CreateScope();

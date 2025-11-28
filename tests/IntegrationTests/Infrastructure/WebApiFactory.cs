@@ -12,7 +12,8 @@ namespace IntegrationTests.Infrastructure;
 
 public class WebApiFactory(DbConnection connection) : WebApplicationFactory<Program>
 {
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    protected override void ConfigureWebHost(
+        IWebHostBuilder builder)
     {
         builder.ConfigureLogging(opt =>
         {

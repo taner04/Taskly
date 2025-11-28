@@ -5,7 +5,9 @@ namespace Api.Composition.OpenApiDocumentTransformers;
 
 internal sealed class BearerDocumentTransformer(IConfiguration configuration) : IOpenApiDocumentTransformer
 {
-    public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,
+    public Task TransformAsync(
+        OpenApiDocument document,
+        OpenApiDocumentTransformerContext context,
         CancellationToken cancellationToken)
     {
         var securityRequirements = new Dictionary<string, OpenApiSecurityScheme>

@@ -1,19 +1,20 @@
 ﻿using Api.Features.Tags.Model;
+using Api.Features.Todos.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Features.Tags;
+namespace Api.Features.Todos;
 
 [Handler]
-[MapDelete(ApiRoutes.Tags.Delete)]
+[MapDelete(ApiRoutes.Todos.RemoveTag)]
 [Authorize]
-public static partial class DeleteTag
+public static partial class RemoveTagFromTodo
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
     {
-        endpoint.WithTags(nameof(Tag));
+        endpoint.WithTags(nameof(Todo));
     }
 
     internal static Results<Ok, NotFound<Error>> TransformResult(
@@ -31,25 +32,25 @@ public static partial class DeleteTag
         CancellationToken ct)
     {
         var userId = currentUserService.GetCurrentUserId();
-        var tag = await context.Tags
-            .SingleOrDefaultAsync(t => t.Id == command.TagId && t.UserId == userId, ct);
+        var todo = await context.Todos
+            .Include(t => t.Tags)
+            .SingleOrDefaultAsync(t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (tag is null)
+        if (todo is null)
         {
-            return Error.NotFound("Tag.NotFound", "The specified tag was not found.");
+            return Error.NotFound("Todo.NotFound",
+                $"The todo does not exist with the specified id '{command.TodoId}'.");
         }
 
-        var todos = await context.Todos
-            .Where(todo =>
-                todo.UserId == userId &&
-                todo.Tags.Any(t => t.Id == command.TagId))
-            .Include(todo => todo.Tags)
-            .ToListAsync(ct);
+        var tagToRemove = todo.Tags.SingleOrDefault(t => t.Id == command.TagId);
 
-        todos.ForEach(t => t.Tags.Remove(tag));
+        if (tagToRemove is null)
+        {
+            return Error.NotFound("Todo.TagNotFound",
+                $"The tag '{command.TagId}' is not associated with this todo.");
+        }
 
-        context.Tags.Remove(tag);
-        await context.SaveChangesAsync(ct);
+        todo.Tags.Remove(tagToRemove);
 
         return Result.Success;
     }
@@ -57,6 +58,7 @@ public static partial class DeleteTag
     [Validate]
     public sealed partial record Command : IValidationTarget<Command>, ITransactionalRequest
     {
+        [FromRoute] [NotEmpty] public required TodoId TodoId { get; init; }
         [FromRoute] [NotEmpty] public required TagId TagId { get; init; }
     }
 }

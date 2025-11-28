@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Api.Features.Todos.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Todos;
@@ -8,12 +9,14 @@ namespace Api.Features.Todos;
 [Authorize]
 public static partial class CreateTodo
 {
-    internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
+    internal static void CustomizeEndpoint(
+        IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
     }
 
-    internal static Results<Ok, BadRequest<Error>> TransformResult(ErrorOr<Success> result)
+    internal static Results<Ok, BadRequest<Error>> TransformResult(
+        ErrorOr<Success> result)
     {
         return result.Match<Results<Ok, BadRequest<Error>>>(
             _ => TypedResults.Ok(),
@@ -43,7 +46,7 @@ public static partial class CreateTodo
     }
 
     [Validate]
-    public sealed partial record Command : IValidationTarget<Command>
+    public sealed partial record Command : IValidationTarget<Command>, ITransactionalRequest
     {
         [NotEmpty] public required string Title { get; init; }
         public string? Description { get; init; }

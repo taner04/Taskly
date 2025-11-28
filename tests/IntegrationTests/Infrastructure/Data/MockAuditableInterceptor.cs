@@ -18,7 +18,8 @@ public sealed class MockAuditableInterceptor : SaveChangesInterceptor
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    private static void SetAuditableProperties(DbContext context)
+    private static void SetAuditableProperties(
+        DbContext context)
     {
         var auditableEntities = context.ChangeTracker
             .Entries()

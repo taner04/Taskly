@@ -1,4 +1,4 @@
-﻿using Api.Features.Tags.Domain;
+﻿using Api.Features.Tags.Model;
 
 namespace UnitTests.Tests;
 

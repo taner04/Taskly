@@ -1,5 +1,4 @@
-using Api.Features.Todos.Domain;
-using Api.Features.Tags.Domain;
+using Api.Features.Todos.Model;
 
 namespace UnitTests.Tests;
 
@@ -310,7 +309,8 @@ public sealed class TodoTests
     [InlineData(TodoPriority.Low)]
     [InlineData(TodoPriority.Medium)]
     [InlineData(TodoPriority.High)]
-    public void TryCreate_WithDifferentPriorities_ShouldReturnSuccess(TodoPriority priority)
+    public void TryCreate_WithDifferentPriorities_ShouldReturnSuccess(
+        TodoPriority priority)
     {
         var result = Todo.TryCreate(TestTodoTitle, TestDescription, priority, ValidUserId);
 

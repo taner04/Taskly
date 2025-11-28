@@ -9,7 +9,9 @@ public sealed partial class LoggingBehavior<TRequest, TResponse>(
 {
     private readonly string _requestName = typeof(TRequest).Name;
 
-    public override async ValueTask<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken)
+    public override async ValueTask<TResponse> HandleAsync(
+        TRequest request,
+        CancellationToken cancellationToken)
     {
         var sw = Stopwatch.StartNew();
 
@@ -33,13 +35,19 @@ public sealed partial class LoggingBehavior<TRequest, TResponse>(
     }
 
     [LoggerMessage(0, LogLevel.Information, "Beginning {requestName} in {behaviorType} with context {@requestContext}")]
-    private partial void LogBeginHandling(string requestName, string behaviorType,
+    private partial void LogBeginHandling(
+        string requestName,
+        string behaviorType,
         [LogProperties] LoggerRequestContext requestContext);
 
 
     [LoggerMessage(1, LogLevel.Error, "Error handling {requestName}")]
-    private partial void LogOccuredError(string requestName, Exception exception);
+    private partial void LogOccuredError(
+        string requestName,
+        Exception exception);
 
     [LoggerMessage(2, LogLevel.Information, "Finished handling {requestName} in {elapsedMs} ms.")]
-    private partial void LogFinishedHandling(string requestName, long elapsedMs);
+    private partial void LogFinishedHandling(
+        string requestName,
+        long elapsedMs);
 }

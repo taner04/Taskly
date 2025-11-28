@@ -6,7 +6,8 @@ namespace Api.Infrastructure.Data.Configuration;
 internal abstract class AuditableConfiguration<T> : IEntityTypeConfiguration<T>
     where T : class, IAuditable
 {
-    public void Configure(EntityTypeBuilder<T> builder)
+    public void Configure(
+        EntityTypeBuilder<T> builder)
     {
         builder.Property(t => t.CreatedAt)
             .IsRequired();
@@ -21,5 +22,6 @@ internal abstract class AuditableConfiguration<T> : IEntityTypeConfiguration<T>
             .HasMaxLength(Auditable.MaxUpdatedByLength);
     }
 
-    protected abstract void PostConfigure(EntityTypeBuilder<T> builder);
+    protected abstract void PostConfigure(
+        EntityTypeBuilder<T> builder);
 }

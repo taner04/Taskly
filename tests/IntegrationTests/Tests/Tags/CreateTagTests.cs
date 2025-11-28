@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Api.Features.Tags;
-using Api.Features.Tags.Domain;
+using Api.Features.Tags.Model;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Tags;
@@ -9,7 +9,7 @@ namespace IntegrationTests.Tests.Tags;
 public sealed class CreateTagTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private const string Url = ApiRoutes.Tags.Create;
-    
+
     [Fact]
     public async Task CreateTag_WhenValidRequest_ReturnsOkAndCreatesTag()
     {

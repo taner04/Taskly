@@ -7,4 +7,3 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 global using Api.Features.Shared;
 global using Api.Features.Todos;
-global using Api.Features.Todos.Domain;

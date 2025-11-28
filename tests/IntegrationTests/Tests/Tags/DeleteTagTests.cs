@@ -1,6 +1,6 @@
 ﻿using System.Net;
-using System.Net.Http.Json;
-using Api.Features.Tags.Domain;
+using Api.Features.Tags.Model;
+using Api.Features.Todos.Model;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Tags;

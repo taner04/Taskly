@@ -1,4 +1,4 @@
-﻿using Api.Features.Tags.Domain;
+﻿using Api.Features.Tags.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -9,12 +9,14 @@ namespace Api.Features.Tags;
 [Authorize]
 public static partial class CreateTag
 {
-    internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
+    internal static void CustomizeEndpoint(
+        IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Tag));
     }
 
-    internal static Results<Ok, BadRequest<Error>> TransformResult(ErrorOr<Success> result)
+    internal static Results<Ok, BadRequest<Error>> TransformResult(
+        ErrorOr<Success> result)
     {
         return result.Match<Results<Ok, BadRequest<Error>>>(
             _ => TypedResults.Ok(),
@@ -48,8 +50,8 @@ public static partial class CreateTag
     }
 
     [Validate]
-    public sealed partial record Command : IValidationTarget<Command>
+    public sealed partial record Command : IValidationTarget<Command>, ITransactionalRequest
     {
-        [NotEmpty] [NotNull] public string TagName { get; init; }
+        [NotEmpty] [NotNull] public required string TagName { get; init; }
     }
 }

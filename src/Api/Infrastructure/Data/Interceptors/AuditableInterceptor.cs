@@ -17,7 +17,8 @@ public sealed class AuditableInterceptor(CurrentUserService currentUserService) 
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    private void SetAuditableProperties(DbContext context)
+    private void SetAuditableProperties(
+        DbContext context)
     {
         var auditableEntries = context.ChangeTracker
             .Entries<IAuditable>()

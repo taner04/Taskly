@@ -1,4 +1,5 @@
-﻿using Api.Features.Tags.Domain;
+﻿using Api.Features.Tags.Model;
+using Api.Features.Todos.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -10,12 +11,14 @@ namespace Api.Features.Tags;
 [Authorize]
 public static partial class UpdateTag
 {
-    internal static void CustomizeEndpoint(IEndpointConventionBuilder endpoint)
+    internal static void CustomizeEndpoint(
+        IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
     }
 
-    internal static Results<Ok, NotFound<Error>, BadRequest<Error>> TransformResult(ErrorOr<Success> result)
+    internal static Results<Ok, NotFound<Error>, BadRequest<Error>> TransformResult(
+        ErrorOr<Success> result)
     {
         if (result.FirstError.Type == ErrorType.NotFound)
         {
@@ -57,10 +60,10 @@ public static partial class UpdateTag
     }
 
     [Validate]
-    public sealed partial record Command : IValidationTarget<Command>
+    public sealed partial record Command : IValidationTarget<Command>, ITransactionalRequest
     {
-        [FromRoute] [NotEmpty] public TagId TagId { get; init; }
-        [NotNull] public CommandBody Body { get; init; } = null!;
+        [FromRoute] [NotEmpty] public required TagId TagId { get; init; }
+        [NotNull] public required CommandBody Body { get; init; } = null!;
 
         [Validate]
         public sealed partial record CommandBody : IValidationTarget<CommandBody>
