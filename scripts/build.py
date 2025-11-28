@@ -9,7 +9,7 @@ import platform
 import argparse
 from pathlib import Path
 
-from Shared import console_logger, project_root
+from shared import console_logger, project_root
 
 # =========================================================================
 # Command Resolver (npm on Windows = npm.cmd)

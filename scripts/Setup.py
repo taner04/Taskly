@@ -8,7 +8,7 @@
 import json
 from pathlib import Path
 
-from Shared import project_root, console_logger
+from shared import project_root, console_logger
 from CreateMigration import add_migration
 
 # =========================================================================
