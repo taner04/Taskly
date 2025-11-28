@@ -14,7 +14,7 @@ public static partial class UpdateTag
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
     {
-        endpoint.WithTags(nameof(Todo));
+        endpoint.WithTags(nameof(Tag));
     }
 
     internal static Results<Ok, NotFound<Error>, BadRequest<Error>> TransformResult(
