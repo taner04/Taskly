@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 from shared import project_root, console_logger
-from CreateMigration import add_migration
+from create_migration import add_migration
 
 # =========================================================================
 # Content Templates

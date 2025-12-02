@@ -11,14 +11,14 @@ All scripts import the [`shared.py`](./shared.py) module which provides:
 
 ## Available Scripts
 
-### [`Setup.py`](./Setup.py)
+### [`setup.py`](./setup.py)
 
 **Purpose:** One-time initialization script that creates required configuration files with template values for the Taskly project.
 
 **Usage:**
 
 ```bash
-python3 Setup.py
+setup.py
 ```
 
 **Output:**
@@ -32,20 +32,20 @@ python3 Setup.py
 
 ---
 
-### [`CreateMigration.py`](./CreateMigration.py)
+### [`create_migration.py`](./create_migration.py)
 
 **Purpose:** Wrapper script for creating Entity Framework Core database migrations using dotnet CLI tools.
 
 **Usage:**
 
 ```bash
-python3 CreateMigration.py <migration-name>
+create_migration.py <migration-name>
 ```
 
 **Example:**
 
 ```bash
-python3 CreateMigration.py AddTodoTable
+create_migration.py AddTodoTable
 ```
 
 **Output:** Creates migration files in `src/Api/Infrastructure/Data/Migrations/`
@@ -57,24 +57,38 @@ python3 CreateMigration.py AddTodoTable
 
 ---
 
-### [`Build.py`](./Build.py)
+### [`build.py`](./build.py)
 
 **Purpose:** Cross-platform build script for compiling .NET projects, running tests, building the web frontend, and optionally building Docker images.
 
 **Usage:**
 
 ```bash
-python3 Build.py [--docker]
+build.py [OPTIONS]
 ```
 
 **Arguments:**
 
-- `--docker` — Optional flag to build Docker image for the frontend
+- `--dotnet` — Build only .NET projects (skip web build)
+- `--web` — Build only web project (skip .NET build)
+- `--test` — Run tests after building .NET projects
+- `--docker` — Build Docker image for the frontend
+
+**Examples:**
+
+```bash
+build.py                   # Full build (both .NET and web)
+build.py --dotnet          # .NET only
+build.py --web             # Web only
+build.py --test            # Full build with tests
+build.py --dotnet --test   # .NET only with tests
+build.py --web --docker    # Web only with Docker image
+```
 
 **Output:**
 
 - Compiles .NET projects
-- Runs unit and integration tests
+- Optionally runs unit and integration tests
 - Builds the React frontend
 - Optionally builds Docker image
 

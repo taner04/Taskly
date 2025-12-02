@@ -72,22 +72,22 @@ def check_requirements(docker_required: bool) -> bool:
         (
             "Migrations",
             not does_migration_exist(),
-            "Migrations folder missing! Run the create-migration.py script or via dotnet ef tools."
+            "Migrations folder missing! Run the create_migration.py script or via dotnet ef tools."
         ),
         (
             ".env file",
             not does_env_file_exists(),
-            ".env file is missing! Run init.py"
+            ".env file is missing! Run setup.py"
         ),
         (
             "appsettings.json",
             not does_appsettings_api_exist(),
-            "appsettings.json file is missing! Run init.py"
+            "appsettings.json file is missing! Run setup.py"
         ),
         (
             "appsettings.integration.json",
             not does_appsettings_integration_exist(),
-            "appsettings.integration.json file is missing! Run init.py"
+            "appsettings.integration.json file is missing! Run setup.py"
         ),
     ]
 
@@ -239,6 +239,24 @@ def parse_args():
         help="Build Docker image (optional)"
     )
 
+    parser.add_argument(
+        "--dotnet",
+        action="store_true",
+        help="Build only .NET projects (skip web build)"
+    )
+
+    parser.add_argument(
+        "--web",
+        action="store_true",
+        help="Build only web project (skip .NET build)"
+    )
+
+    parser.add_argument(
+        "--test",
+        action="store_true",
+        help="Run tests after building"
+    )
+
     return parser.parse_args()
 
 
@@ -250,24 +268,29 @@ def main() -> None:
     args = parse_args()
 
     docker_needed = args.docker
+    build_dotnet = not args.web
+    build_web = not args.dotnet
+    run_tests = args.test
 
     if not check_requirements(docker_needed):
         print()
         console_logger.error("Build aborted due to unmet requirements.")
         return
 
-    dotnet_restore()
-    build_dotnet_projects()
+    if build_dotnet:
+        dotnet_restore()
+        build_dotnet_projects()
 
-    if not run_all_tests():
-        print()
-        console_logger.error("Tests failed — stopping build.")
-        return
+        if run_tests and not run_all_tests():
+            print()
+            console_logger.error("Tests failed — stopping build.")
+            return
 
-    build_web_project()
+    if build_web:
+        build_web_project()
 
-    if docker_needed:
-        build_web_docker_image()
+        if docker_needed:
+            build_web_docker_image()
 
     print()
     console_logger.success("Build completed successfully.")
