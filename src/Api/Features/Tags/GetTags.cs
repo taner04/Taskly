@@ -1,5 +1,6 @@
 ﻿using Api.Features.Shared.Dtos.Tags;
 using Api.Features.Tags.Model;
+using Api.Features.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 

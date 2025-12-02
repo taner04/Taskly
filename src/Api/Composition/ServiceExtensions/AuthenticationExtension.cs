@@ -26,7 +26,7 @@ internal static class AuthenticationExtension
         });
 
         services.AddAuthorization();
-        
+
         return services;
     }
 }

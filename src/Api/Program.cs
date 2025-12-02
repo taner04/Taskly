@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Api;
 using Api.Composition.OpenApiDocumentTransformers;
 using Api.Composition.ServiceExtensions;
 using ServiceDefaults;

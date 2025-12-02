@@ -9,9 +9,9 @@ namespace IntegrationTests.Infrastructure.Fixtures;
 public sealed class TestingFixture : IAsyncLifetime
 {
     private readonly PostgresTestDatabase _postgresTestDatabase = new();
+    private string _jwtToken = null!;
     private IServiceScopeFactory _serviceScopeFactory = null!;
     private WebApiFactory _webApiFactory = null!;
-    private string _jwtToken = null!;
 
     public async ValueTask InitializeAsync()
     {

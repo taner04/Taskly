@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Api.Features.Shared;
+namespace Api.Features.Users;
 
 public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
 {

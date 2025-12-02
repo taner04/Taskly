@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using IntegrationTests.Extensions;
-using Api.Features.Todos.Model;
 using Api.Features.Tags.Model;
+using Api.Features.Todos.Model;
+using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Todos;
 
@@ -13,7 +13,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
-        
+
         var todo = Todo.TryCreate("Todo1", "Desc", TodoPriority.Medium, userId).Value;
 
         var tagA = Tag.TryCreate("TagA", userId).Value;
@@ -30,9 +30,9 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
         {
             TagIds = [tagA.Id, tagB.Id]
         };
-        
+
         var response = await client.PostAsJsonAsync(url, body, CurrentCancellationToken);
-        
+
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var updated = await DbContext.Todos
@@ -56,7 +56,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
         {
             TagIds = [TagId.From(Guid.NewGuid())]
         };
-        
+
         var response = await client.PostAsJsonAsync(url, body, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);

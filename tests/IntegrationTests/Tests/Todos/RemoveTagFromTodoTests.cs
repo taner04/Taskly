@@ -2,13 +2,14 @@
 using Api.Features.Tags.Model;
 using Api.Features.Todos.Model;
 using IntegrationTests.Extensions;
-using Microsoft.EntityFrameworkCore;
 
 namespace IntegrationTests.Tests.Todos;
 
 public class RemoveTagFromTodoTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static string GetRoute(Guid todoId, Guid tagId)
+    private static string GetRoute(
+        Guid todoId,
+        Guid tagId)
     {
         return ApiRoutes.Todos.RemoveTag
             .Replace("{todoId:guid}", todoId.ToString())

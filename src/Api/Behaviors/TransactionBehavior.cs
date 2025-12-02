@@ -1,6 +1,6 @@
 ﻿namespace Api.Behaviors;
 
-public sealed partial class TransactionBehavior<TRequest, TResponse>(
+public sealed class TransactionBehavior<TRequest, TResponse>(
     ApplicationDbContext context
 ) : Behavior<TRequest, TResponse>
     where TResponse : IErrorOr
@@ -13,6 +13,7 @@ public sealed partial class TransactionBehavior<TRequest, TResponse>(
         {
             return await Next(request, cancellationToken);
         }
+
         var strategy = context.Database.CreateExecutionStrategy();
 
         return await strategy.ExecuteAsync(async () =>
@@ -33,6 +34,5 @@ public sealed partial class TransactionBehavior<TRequest, TResponse>(
 
             return response;
         });
-
     }
 }

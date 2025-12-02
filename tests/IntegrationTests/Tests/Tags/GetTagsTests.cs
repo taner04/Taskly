@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Api.Features.Shared.Dtos.Tags;
-using Api.Features.Tags;
 using Api.Features.Tags.Model;
 using IntegrationTests.Extensions;
 

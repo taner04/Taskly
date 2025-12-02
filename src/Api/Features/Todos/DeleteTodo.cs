@@ -1,4 +1,5 @@
 ﻿using Api.Features.Todos.Model;
+using Api.Features.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;

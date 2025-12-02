@@ -1,19 +1,11 @@
-using Api.Infrastructure.Data.Interceptors;
+﻿using Api.Infrastructure.Data.Interceptors;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using ServiceDefaults;
 
-namespace Api;
+namespace Api.Composition.ServiceExtensions;
 
-public static class DependencyInjection
+public static class InfrastructureExtension
 {
-    public static IServiceCollection AddApplication(
-        this IServiceCollection services)
-    {
-        services.AddScoped<CurrentUserService>();
-
-        return services;
-    }
-
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
