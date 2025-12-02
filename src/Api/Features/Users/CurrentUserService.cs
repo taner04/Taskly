@@ -8,7 +8,7 @@ public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
     {
         var user = httpContextAccessor.HttpContext?.User;
 
-        if (user is null || !user.Identity?.IsAuthenticated == true)
+        if (user is null || !user.Identity?.IsAuthenticated != true)
         {
             throw new UnauthorizedAccessException("User is not authenticated.");
         }
