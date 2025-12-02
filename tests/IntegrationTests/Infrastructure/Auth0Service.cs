@@ -1,38 +1,44 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Configuration;
-using RestSharp;
 
 namespace IntegrationTests.Infrastructure;
 
 public sealed class Auth0Service(IConfiguration configuration)
 {
-    public string GetAccessToken()
+    public async Task<string> GetAccessTokenAsync()
     {
         var uri = $"https://{configuration["Auth0:Domain"]}/oauth/token";
-        using var restClient = new RestClient(uri);
-        var request = new RestRequest("", Method.Post);
-        request.AddHeader("content-type", "application/json");
 
-        var tokenRequestAsJson = JsonSerializer.Serialize(new TokenRequest
+        using var httpClient = new HttpClient();
+
+        var tokenRequest = new TokenRequest
         {
             ClientId = configuration["Auth0:Client_Id"]!,
             ClientSecret = configuration["Auth0:Client_Secret"]!,
             Audience = configuration["Auth0:Audience"]!,
             GrantType = configuration["Auth0:Grant_Type"]!
-        });
+        };
 
-        request.AddParameter("application/json", tokenRequestAsJson, ParameterType.RequestBody);
-        var response = restClient.Execute(request);
+        var content = new StringContent(
+            JsonSerializer.Serialize(tokenRequest),
+            Encoding.UTF8,
+            "application/json"
+        );
 
-        if (!response.IsSuccessful || response.Content is null)
+        var response = await httpClient.PostAsync(uri, content);
+
+        if (!response.IsSuccessStatusCode)
         {
             throw new InvalidOperationException("Failed to obtain access token from Auth0.");
         }
 
-        var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(response.Content);
+        var json = await response.Content.ReadAsStringAsync();
 
-        if (tokenResponse?.AccessToken is null || string.IsNullOrWhiteSpace(tokenResponse.AccessToken))
+        var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(json);
+
+        if (string.IsNullOrWhiteSpace(tokenResponse?.AccessToken))
         {
             throw new InvalidOperationException("Auth0 response does not contain access_token.");
         }
