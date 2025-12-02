@@ -3,6 +3,7 @@
 public sealed partial class TransactionBehavior<TRequest, TResponse>(
     ApplicationDbContext context
 ) : Behavior<TRequest, TResponse>
+    where TResponse : IErrorOr
 {
     public override async ValueTask<TResponse> HandleAsync(
         TRequest request,
@@ -12,22 +13,26 @@ public sealed partial class TransactionBehavior<TRequest, TResponse>(
         {
             return await Next(request, cancellationToken);
         }
+        var strategy = context.Database.CreateExecutionStrategy();
 
-        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
-
-        try
+        return await strategy.ExecuteAsync(async () =>
         {
+            await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+
             var response = await Next(request, cancellationToken);
-            
-            await context.SaveChangesAsync(cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
+
+            if (!response.IsError)
+            {
+                await context.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
+            }
+            else
+            {
+                await transaction.RollbackAsync(cancellationToken);
+            }
 
             return response;
-        }
-        catch
-        {
-            await transaction.RollbackAsync(cancellationToken);
-            throw;
-        }
+        });
+
     }
 }
