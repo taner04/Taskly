@@ -1,4 +1,5 @@
-﻿using Api.Features.Tags.Model;
+﻿using Api.Features.Shared.Dtos.Tags;
+using Api.Features.Tags.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -15,13 +16,13 @@ public static partial class GetTags
         endpoint.WithTags(nameof(Tag));
     }
 
-    internal static Ok<List<Dto>> TransformResult(
-        List<Dto> result)
+    internal static Ok<List<TagDto>> TransformResult(
+        List<TagDto> result)
     {
         return TypedResults.Ok(result);
     }
 
-    private static async ValueTask<List<Dto>> HandleAsync(
+    private static async ValueTask<List<TagDto>> HandleAsync(
         Query _,
         ApplicationDbContext context,
         CurrentUserService currentUserService,
@@ -30,25 +31,8 @@ public static partial class GetTags
         var userId = currentUserService.GetCurrentUserId();
         var tags = await context.Tags.Where(t => t.UserId == userId).ToListAsync(ct);
 
-        return tags.Select(Dto.FromDomain).ToList();
+        return tags.Select(TagDto.FromDomain).ToList();
     }
 
     public sealed record Query;
-
-    public sealed record Dto(
-        Guid Id,
-        string Name,
-        string UserId
-    )
-    {
-        public static Dto FromDomain(
-            Tag tag)
-        {
-            return new Dto(
-                tag.Id.Value,
-                tag.Name,
-                tag.UserId
-            );
-        }
-    }
 }

@@ -1,4 +1,5 @@
-﻿using Api.Features.Todos.Model;
+﻿using Api.Features.Shared.Dtos.Tags;
+using Api.Features.Todos.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -15,13 +16,13 @@ public static partial class GetTodos
         endpoint.WithTags(nameof(Todo));
     }
 
-    internal static Ok<List<Dto>> TransformResult(
-        List<Dto> result)
+    internal static Ok<List<TodoDto>> TransformResult(
+        List<TodoDto> result)
     {
         return TypedResults.Ok(result);
     }
 
-    private static async ValueTask<List<Dto>> HandleAsync(
+    private static async ValueTask<List<TodoDto>> HandleAsync(
         Query _,
         ApplicationDbContext context,
         CurrentUserService currentUserService,
@@ -30,29 +31,31 @@ public static partial class GetTodos
         var userId = currentUserService.GetCurrentUserId();
         var todos = await context.Todos.Where(t => t.UserId == userId).ToListAsync(ct);
 
-        return todos.Select(Dto.FromDomain).ToList();
+        return todos.Select(TodoDto.FromDomain).ToList();
     }
 
     public sealed record Query;
 
-    public sealed record Dto(
+    public sealed record TodoDto(
         Guid Id,
         string Title,
         string? Description,
         TodoPriority Priority,
         bool IsCompleted,
+        List<TagDto> Tags,
         string UserId
     )
     {
-        public static Dto FromDomain(
+        public static TodoDto FromDomain(
             Todo todo)
         {
-            return new Dto(
+            return new TodoDto(
                 todo.Id.Value,
                 todo.Title,
                 todo.Description,
                 todo.Priority,
                 todo.IsCompleted,
+                todo.Tags.Select(TagDto.FromDomain).ToList(),
                 todo.UserId
             );
         }

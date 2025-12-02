@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Api.Features.Shared.Dtos.Tags;
 using Api.Features.Tags;
 using Api.Features.Tags.Model;
 using IntegrationTests.Extensions;
@@ -26,7 +27,7 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var tags = await response.Content.ReadFromJsonAsync<List<GetTags.Dto>>(CurrentCancellationToken);
+        var tags = await response.Content.ReadFromJsonAsync<List<TagDto>>(CurrentCancellationToken);
 
         Assert.NotNull(tags);
         Assert.Equal(2, tags!.Count);
@@ -42,7 +43,7 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var tags = await response.Content.ReadFromJsonAsync<List<GetTags.Dto>>(CurrentCancellationToken);
+        var tags = await response.Content.ReadFromJsonAsync<List<TagDto>>(CurrentCancellationToken);
 
         Assert.NotNull(tags);
         Assert.Empty(tags);
@@ -62,7 +63,7 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var tags = await response.Content.ReadFromJsonAsync<List<GetTags.Dto>>(CurrentCancellationToken);
+        var tags = await response.Content.ReadFromJsonAsync<List<TagDto>>(CurrentCancellationToken);
 
         Assert.NotNull(tags);
         Assert.Empty(tags);

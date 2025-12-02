@@ -27,7 +27,7 @@ public class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var result = await response.Content.ReadFromJsonAsync<List<GetTodos.Dto>>(CurrentCancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<List<GetTodos.TodoDto>>(CurrentCancellationToken);
         Assert.NotNull(result);
 
         Assert.Equal(2, result.Count);
@@ -43,7 +43,7 @@ public class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var result = await response.Content.ReadFromJsonAsync<List<GetTodos.Dto>>(CurrentCancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<List<GetTodos.TodoDto>>(CurrentCancellationToken);
 
         Assert.NotNull(result);
         Assert.Empty(result);
@@ -65,7 +65,7 @@ public class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var result = await response.Content.ReadFromJsonAsync<List<GetTodos.Dto>>(CurrentCancellationToken);
+        var result = await response.Content.ReadFromJsonAsync<List<GetTodos.TodoDto>>(CurrentCancellationToken);
 
         Assert.NotNull(result);
         Assert.Empty(result);
