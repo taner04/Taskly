@@ -1,4 +1,4 @@
-﻿using Api.Features.Shared.Domain;
+﻿using Api.Features.Shared.Models;
 using Api.Features.Tags.Model;
 
 namespace Api.Features.Todos.Model;
