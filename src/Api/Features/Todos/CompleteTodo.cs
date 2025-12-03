@@ -45,7 +45,6 @@ public static partial class CompleteTodo
         todo.SetCompletionStatus(command.Body.Completed);
 
         context.Todos.Update(todo);
-        await context.SaveChangesAsync(ct);
 
         return Result.Success;
     }

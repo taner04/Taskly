@@ -9,7 +9,7 @@ internal static class ScalarExtension
     {
         app.MapScalarApiReference(opt =>
         {
-            opt.Layout = ScalarLayout.Modern;
+            opt.Layout = ScalarLayout.Classic;
             opt.Theme = ScalarTheme.DeepSpace;
             opt.WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.RestSharp);
         });

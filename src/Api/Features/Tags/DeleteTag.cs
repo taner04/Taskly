@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Features.Tags;
 
 [Handler]
-[MapDelete(Routes.Tags.Delete)]
+[MapDelete(Routes.Tags.Remove)]
 [Authorize]
 public static partial class DeleteTag
 {
@@ -51,7 +51,6 @@ public static partial class DeleteTag
         todos.ForEach(t => t.Tags.Remove(tag));
 
         context.Tags.Remove(tag);
-        await context.SaveChangesAsync(ct);
 
         return Result.Success;
     }

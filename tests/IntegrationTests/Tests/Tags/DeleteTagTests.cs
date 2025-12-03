@@ -18,7 +18,7 @@ public class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Tags.Add(tag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = Routes.Tags.Delete.ParseTagRoute(tag.Id.Value);
+        var url = Routes.Tags.Remove.ParseTagRoute(tag.Id.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -32,7 +32,7 @@ public class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task DeleteTag_WhenTagDoesNotExist_ReturnsNotFound()
     {
         var client = CreateAuthenticatedClient();
-        var url = Routes.Tags.Delete.ParseTagRoute(Guid.NewGuid());
+        var url = Routes.Tags.Remove.ParseTagRoute(Guid.NewGuid());
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -47,7 +47,7 @@ public class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Tags.Add(tag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = Routes.Tags.Delete.ParseTagRoute(tag.Id.Value);
+        var url = Routes.Tags.Remove.ParseTagRoute(tag.Id.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -74,7 +74,7 @@ public class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.AddRange(todo1, todo2);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = Routes.Tags.Delete.ParseTagRoute(tag.Id.Value);
+        var url = Routes.Tags.Remove.ParseTagRoute(tag.Id.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -101,7 +101,7 @@ public class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateUnauthenticatedClient();
 
-        var url = Routes.Tags.Delete.ParseTagRoute(Guid.NewGuid());
+        var url = Routes.Tags.Remove.ParseTagRoute(Guid.NewGuid());
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 

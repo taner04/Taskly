@@ -47,5 +47,6 @@ public class WebApiFactory(DbConnection connection) : WebApplicationFactory<Prog
         });
 
         builder.UseSetting($"ConnectionStrings:{AppHostConstants.Database}", connection.ConnectionString);
+        builder.UseSetting("ConnectionStrings:AzureBlobStorage", "UseDevelopmentStorage=true");
     }
 }

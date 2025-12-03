@@ -1,4 +1,5 @@
-﻿using Api.Features.Todos.Model;
+﻿using Api.Features.Attachments.Models;
+using Api.Features.Todos.Model;
 using Api.Features.Users;
 using Api.Shared.Features.Api;
 using Api.Shared.Features.Dtos.Tags;
@@ -38,6 +39,27 @@ public static partial class GetTodos
 
     public sealed record Query;
 
+    public sealed record AttachmentDto(
+        Guid Id,
+        string FileName,
+        long Size,
+        string ContentType,
+        string DownloadUrl
+    )
+    {
+        public static AttachmentDto FromDomain(
+            Attachment attachment)
+        {
+            return new AttachmentDto(
+                attachment.Id.Value,
+                attachment.FileName,
+                attachment.FileSize,
+                attachment.ContentType,
+                attachment.GetDownloadUrl()
+            );
+        }
+    }
+
     public sealed record TodoDto(
         Guid Id,
         string Title,
@@ -45,6 +67,7 @@ public static partial class GetTodos
         TodoPriority Priority,
         bool IsCompleted,
         List<TagDto> Tags,
+        List<AttachmentDto> Attachments,
         string UserId
     )
     {
@@ -58,6 +81,7 @@ public static partial class GetTodos
                 todo.Priority,
                 todo.IsCompleted,
                 todo.Tags.Select(TagDto.FromDomain).ToList(),
+                todo.Attachments.Select(AttachmentDto.FromDomain).ToList(),
                 todo.UserId
             );
         }

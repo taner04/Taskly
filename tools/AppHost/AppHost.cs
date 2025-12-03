@@ -11,9 +11,17 @@ var migration = builder.AddProject<MigrationService>(AppHostConstants.MigrationS
     .WithReference(tasklyDb)
     .WaitFor(tasklyDb);
 
-var blobStorage = builder.AddContainer(AppHostConstants.BlobStorage, "mcr.microsoft.com/azure-storage/azurite:3.14.0")
+var blobStorage = builder.AddContainer(AppHostConstants.Azure, "mcr.microsoft.com/azure-storage/azurite:latest")
     .WithVolume("/data")
-    .WithHttpEndpoint(10000, 10000, "blob");
+    .WithEntrypoint("azurite")
+    .WithArgs("--blobHost", "0.0.0.0",
+        "--queueHost", "0.0.0.0",
+        "--tableHost", "0.0.0.0",
+        "--loose")
+    .WithHttpEndpoint(10000, 10000, "blob") // Blob service 
+    .WithHttpEndpoint(10001, 10001, "queue") // Queue service
+    .WithHttpEndpoint(10002, 10002, "table"); // Table service
+
 
 var api = builder.AddProject<Api>(AppHostConstants.Api)
     .WithReference(tasklyDb)

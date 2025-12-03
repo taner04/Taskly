@@ -7,6 +7,8 @@ namespace UnitTests.Tests;
 
 public sealed class AttachmentTests
 {
+    private readonly TodoId _todoId = TodoId.From(Guid.NewGuid());
+
     private static FormFile CreateFakeFile(
         string fileName,
         string contentType = "application/octet-stream",
@@ -19,8 +21,6 @@ public sealed class AttachmentTests
             ContentType = contentType
         };
     }
-
-    private readonly TodoId _todoId = TodoId.From(Guid.NewGuid());
 
     [Fact]
     public void TryCreate_WithValidFile_ShouldReturnAttachment()
@@ -60,7 +60,7 @@ public sealed class AttachmentTests
     public void TryCreate_WithFileSizeTooLarge_ShouldReturnError()
     {
         // Just over 10 MB
-        var file = CreateFakeFile("bigfile.txt", "text/plain", sizeInBytes: 10 * 1024 * 1024 + 1);
+        var file = CreateFakeFile("bigfile.txt", "text/plain", 10 * 1024 * 1024 + 1);
 
         var result = Attachment.TryCreate(_todoId, file);
 
@@ -73,7 +73,8 @@ public sealed class AttachmentTests
     [InlineData("script.cs")]
     [InlineData("archive.zip")]
     [InlineData("virus.bat")]
-    public void TryCreate_WithInvalidFileType_ShouldReturnError(string fileName)
+    public void TryCreate_WithInvalidFileType_ShouldReturnError(
+        string fileName)
     {
         var file = CreateFakeFile(fileName);
 
@@ -90,15 +91,16 @@ public sealed class AttachmentTests
     [InlineData("document.pdf")]
     [InlineData("info.json")]
     [InlineData("logo.png")]
-    public void TryCreate_WithValidExtensions_ShouldReturnSuccess(string fileName)
+    public void TryCreate_WithValidExtensions_ShouldReturnSuccess(
+        string fileName)
     {
         var file = CreateFakeFile(fileName);
 
         var result = Attachment.TryCreate(_todoId, file);
 
         Assert.False(result.IsError);
-        Assert.Equal(Path.GetExtension(fileName).TrimStart('.'), 
-                     Path.GetExtension(result.Value.BlobName).TrimStart('.'));
+        Assert.Equal(Path.GetExtension(fileName).TrimStart('.'),
+            Path.GetExtension(result.Value.BlobName).TrimStart('.'));
     }
 
     [Fact]

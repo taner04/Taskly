@@ -58,7 +58,6 @@ public static partial class UpdateTodo
         }
 
         context.Todos.Update(todo);
-        await context.SaveChangesAsync(ct);
 
         return Result.Success;
     }

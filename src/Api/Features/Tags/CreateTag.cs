@@ -46,7 +46,6 @@ public static partial class CreateTag
         }
 
         context.Tags.Add(newTag);
-        await context.SaveChangesAsync(ct);
 
         return Result.Success;
     }

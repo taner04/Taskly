@@ -7,7 +7,7 @@ using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Todos;
 
-public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
+public class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
 {
     [Fact]
     public async Task AddTags_WhenTodoAndTagsExistAndBelongToUser_AddsTagsToTodo()
@@ -27,7 +27,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
 
         var url = Routes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
 
-        var body = new AddTagsToTodo.Command.CommandBody
+        var body = new AddTags.Command.CommandBody
         {
             TagIds = [tagA.Id, tagB.Id]
         };
@@ -53,7 +53,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
 
         var url = Routes.Todos.AddTags.ParseTodoRoute(Guid.NewGuid());
 
-        var body = new AddTagsToTodo.Command.CommandBody
+        var body = new AddTags.Command.CommandBody
         {
             TagIds = [TagId.From(Guid.NewGuid())]
         };
@@ -77,7 +77,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
 
         var url = Routes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
 
-        var body = new AddTagsToTodo.Command.CommandBody
+        var body = new AddTags.Command.CommandBody
         {
             TagIds = [TagId.From(Guid.NewGuid())]
         };
@@ -102,7 +102,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
 
         var url = Routes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
 
-        var body = new AddTagsToTodo.Command.CommandBody
+        var body = new AddTags.Command.CommandBody
         {
             TagIds = [tag.Id]
         };
@@ -129,7 +129,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
 
         var url = Routes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
 
-        var body = new AddTagsToTodo.Command.CommandBody
+        var body = new AddTags.Command.CommandBody
         {
             TagIds = [externalTag.Id]
         };
@@ -146,7 +146,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
 
         var url = Routes.Todos.AddTags.ParseTodoRoute(Guid.NewGuid());
 
-        var body = new AddTagsToTodo.Command.CommandBody
+        var body = new AddTags.Command.CommandBody
         {
             TagIds = [TagId.From(Guid.NewGuid())]
         };

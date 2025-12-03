@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
+using IntegrationTests.Infrastructure.Azurite;
 using IntegrationTests.Infrastructure.Data;
 using Microsoft.Extensions.Configuration;
 
@@ -8,6 +9,7 @@ namespace IntegrationTests.Infrastructure.Fixtures;
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 public sealed class TestingFixture : IAsyncLifetime
 {
+    private readonly AzuriteTestContainer _azuriteTestContainer = new();
     private readonly PostgresTestDatabase _postgresTestDatabase = new();
     private string _jwtToken = null!;
     private IServiceScopeFactory _serviceScopeFactory = null!;
@@ -16,8 +18,11 @@ public sealed class TestingFixture : IAsyncLifetime
     public async ValueTask InitializeAsync()
     {
         await _postgresTestDatabase.InitializeAsync();
+        await _azuriteTestContainer.InitializeAsync();
+
         _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection);
         _serviceScopeFactory = _webApiFactory.Services.GetRequiredService<IServiceScopeFactory>();
+
         _jwtToken = await new Auth0Service(InitConfiguration()).GetAccessTokenAsync();
     }
 

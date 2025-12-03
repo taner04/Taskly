@@ -1,5 +1,4 @@
-﻿using Api.Features.Tags.Model;
-using Api.Features.Todos.Model;
+﻿using Api.Features.Todos.Model;
 using Api.Features.Users;
 using Api.Shared.Features.Api;
 using Microsoft.AspNetCore.Authorization;
@@ -9,9 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Features.Todos;
 
 [Handler]
-[MapDelete(Routes.Todos.RemoveTag)]
+[MapDelete(Routes.Todos.Remove)]
 [Authorize]
-public static partial class RemoveTagFromTodo
+public static partial class RemoveTodo
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
@@ -28,15 +27,14 @@ public static partial class RemoveTagFromTodo
     }
 
     private static async ValueTask<ErrorOr<Success>> HandleAsync(
-        [AsParameters] Command command,
+        Command command,
         ApplicationDbContext context,
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
         var userId = currentUserService.GetCurrentUserId();
-        var todo = await context.Todos
-            .Include(t => t.Tags)
-            .SingleOrDefaultAsync(t => t.Id == command.TodoId && t.UserId == userId, ct);
+        var todo = await context.Todos.SingleOrDefaultAsync(
+            t => t.Id == command.TodoId && t.UserId == userId, ct);
 
         if (todo is null)
         {
@@ -44,15 +42,7 @@ public static partial class RemoveTagFromTodo
                 $"The todo does not exist with the specified id '{command.TodoId}'.");
         }
 
-        var tagToRemove = todo.Tags.SingleOrDefault(t => t.Id == command.TagId);
-
-        if (tagToRemove is null)
-        {
-            return Error.NotFound("Todo.TagNotFound",
-                $"The tag '{command.TagId}' is not associated with this todo.");
-        }
-
-        todo.Tags.Remove(tagToRemove);
+        context.Todos.Remove(todo);
 
         return Result.Success;
     }
@@ -61,6 +51,5 @@ public static partial class RemoveTagFromTodo
     public sealed partial record Command : IValidationTarget<Command>, ITransactionalRequest
     {
         [FromRoute] [NotEmpty] public required TodoId TodoId { get; init; }
-        [FromRoute] [NotEmpty] public required TagId TagId { get; init; }
     }
 }

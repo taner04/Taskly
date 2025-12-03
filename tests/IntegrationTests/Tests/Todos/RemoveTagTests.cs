@@ -6,7 +6,7 @@ using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Todos;
 
-public class RemoveTagFromTodoTests(TestingFixture fixture) : TestingBase(fixture)
+public class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private static string GetRoute(
         Guid todoId,

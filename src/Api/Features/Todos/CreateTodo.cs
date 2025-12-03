@@ -42,7 +42,6 @@ public static partial class CreateTodo
         var newTodo = createNewTodoResult.Value;
 
         context.Todos.Add(newTodo!);
-        await context.SaveChangesAsync(ct);
 
         return Result.Success;
     }

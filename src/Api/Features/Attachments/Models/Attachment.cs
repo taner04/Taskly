@@ -35,7 +35,7 @@ public sealed class Attachment : Entity<AttachmentId>
     public TodoId TodoId { get; init; }
     public Todo Todo { get; init; } = null!;
 
-    public string FileName { get; init; } 
+    public string FileName { get; init; }
     public string BlobName { get; init; }
     public string ContentType { get; init; }
     public long FileSize { get; init; }
@@ -66,7 +66,7 @@ public sealed class Attachment : Entity<AttachmentId>
             return Error.Conflict("Attachment.FileType",
                 $"File type '{extension}' is not allowed. Allowed types: {string.Join(", ", AllowedFileTypes)}.");
         }
-        
+
         var blobName = $"todo/{todoId.Value}/{Guid.NewGuid()}.{extension}";
 
         return new Attachment(
@@ -76,5 +76,10 @@ public sealed class Attachment : Entity<AttachmentId>
             file.ContentType,
             file.Length
         );
+    }
+
+    public string GetDownloadUrl()
+    {
+        return $"/attachments/{Id.Value}/download";
     }
 }

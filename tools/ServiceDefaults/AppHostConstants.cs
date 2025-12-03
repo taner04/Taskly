@@ -4,7 +4,7 @@ public static class AppHostConstants
 {
     public const string Database = "taskly-db";
     public const string Api = "taskly-api";
-    public const string MigrationService = "taskly-migration-service";
+    public const string MigrationService = "taskly-migrationservice";
     public const string Web = "taskly-web";
-    public const string BlobStorage = "taskly-blob-storage";
+    public const string Azure = "taskly-azure";
 }

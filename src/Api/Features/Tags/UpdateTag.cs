@@ -55,7 +55,6 @@ public static partial class UpdateTag
         }
 
         context.Tags.Update(tag);
-        await context.SaveChangesAsync(ct);
 
         return Result.Success;
     }

@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Features.Todos;
 
 [Handler]
-[MapPost(Routes.Todos.AddTags)]
+[MapDelete(Routes.Todos.RemoveTag)]
 [Authorize]
-public static partial class AddTagsToTodo
+public static partial class RemoveTag
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
@@ -19,10 +19,10 @@ public static partial class AddTagsToTodo
         endpoint.WithTags(nameof(Todo));
     }
 
-    internal static Results<Ok, NotFound<Error>, BadRequest<Error>> TransformResult(
+    internal static Results<Ok, NotFound<Error>> TransformResult(
         ErrorOr<Success> result)
     {
-        return result.Match<Results<Ok, NotFound<Error>, BadRequest<Error>>>(
+        return result.Match<Results<Ok, NotFound<Error>>>(
             _ => TypedResults.Ok(),
             error => TypedResults.NotFound(error.First()));
     }
@@ -34,8 +34,9 @@ public static partial class AddTagsToTodo
         CancellationToken ct)
     {
         var userId = currentUserService.GetCurrentUserId();
-        var todo = await context.Todos.SingleOrDefaultAsync(
-            t => t.Id == command.TodoId && t.UserId == userId, ct);
+        var todo = await context.Todos
+            .Include(t => t.Tags)
+            .SingleOrDefaultAsync(t => t.Id == command.TodoId && t.UserId == userId, ct);
 
         if (todo is null)
         {
@@ -43,23 +44,15 @@ public static partial class AddTagsToTodo
                 $"The todo does not exist with the specified id '{command.TodoId}'.");
         }
 
-        var tags = await context.Tags
-            .Where(tag => command.Body.TagIds.Contains(tag.Id) && tag.UserId == userId)
-            .ToListAsync(ct);
+        var tagToRemove = todo.Tags.SingleOrDefault(t => t.Id == command.TagId);
 
-        if (tags.Count == 0)
+        if (tagToRemove is null)
         {
-            return Error.NotFound("Tag.NotFound", "No tags were found with the specified IDs.");
+            return Error.NotFound("Todo.TagNotFound",
+                $"The tag '{command.TagId}' is not associated with this todo.");
         }
 
-        var existingTagIds = todo.Tags.Select(t => t.Id).ToList();
-        foreach (var tag in tags.Where(tag => !existingTagIds.Contains(tag.Id)))
-        {
-            todo.Tags.Add(tag);
-        }
-
-        context.Todos.Update(todo);
-        await context.SaveChangesAsync(ct);
+        todo.Tags.Remove(tagToRemove);
 
         return Result.Success;
     }
@@ -68,12 +61,6 @@ public static partial class AddTagsToTodo
     public sealed partial record Command : IValidationTarget<Command>, ITransactionalRequest
     {
         [FromRoute] [NotEmpty] public required TodoId TodoId { get; init; }
-        [NotNull] public required CommandBody Body { get; init; } = null!;
-
-        [Validate]
-        public sealed partial record CommandBody : IValidationTarget<CommandBody>
-        {
-            [NotEmpty] public required List<TagId> TagIds { get; init; }
-        }
+        [FromRoute] [NotEmpty] public required TagId TagId { get; init; }
     }
 }
