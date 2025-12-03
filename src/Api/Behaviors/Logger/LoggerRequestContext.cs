@@ -1,4 +1,8 @@
-﻿namespace Api.Behaviors.Logger;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
+using System.Text.Json;
+
+namespace Api.Behaviors.Logger;
 
 public sealed class LoggerRequestContext
 {
@@ -7,21 +11,21 @@ public sealed class LoggerRequestContext
     private LoggerRequestContext(
         string path,
         string method,
-        string? userId,
-        string? userName,
-        string? traceId,
-        string? ipAddress,
-        string? userAgent,
-        string? queryString)
+        string userId,
+        string userName,
+        string traceId,
+        string ipAddress,
+        string userAgent,
+        string queryString)
     {
         Path = path;
         Method = method;
-        UserId = userId ?? Unknown;
-        UserName = userName ?? Unknown;
-        TraceId = traceId ?? Unknown;
-        IpAddress = ipAddress ?? Unknown;
-        UserAgent = userAgent ?? Unknown;
-        QueryString = queryString ?? Unknown;
+        UserId = userId;
+        UserName = userName;
+        TraceId = traceId;
+        IpAddress = ipAddress;
+        UserAgent = userAgent;
+        QueryString = queryString;
     }
 
     public string Path { get; }
@@ -30,35 +34,42 @@ public sealed class LoggerRequestContext
     public string UserName { get; }
     public string TraceId { get; }
     public string IpAddress { get; }
-    public string? UserAgent { get; }
-    public string? QueryString { get; }
+    public string UserAgent { get; }
+    public string QueryString { get; }
 
-    public static LoggerRequestContext FromHttpContext(
-        HttpContext? httpContext)
+    public static LoggerRequestContext FromHttpContext(HttpContext? httpContext)
     {
         if (httpContext is null)
         {
-            return new LoggerRequestContext(
-                Unknown,
-                Unknown,
-                Unknown,
-                Unknown,
-                Unknown,
-                Unknown,
-                Unknown,
-                Unknown
-            );
+            return CreateUnknown();
         }
 
+        var request = httpContext.Request;
+        var user = httpContext.User;
+
         return new LoggerRequestContext(
-            httpContext.Request.Path,
-            httpContext.Request.Method,
-            httpContext.User.FindFirst("sub")?.Value,
-            httpContext.User.Identity?.Name,
-            httpContext.TraceIdentifier,
-            httpContext.Connection.RemoteIpAddress?.ToString(),
-            httpContext.Request.Headers.UserAgent.ToString(),
-            httpContext.Request.QueryString.ToString()
+            request.Path.HasValue ? request.Path.Value! : Unknown,
+            request.Method ?? Unknown,
+            user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Unknown,
+            user.Identity?.Name ?? Unknown,
+            httpContext.TraceIdentifier ?? Unknown,
+            httpContext.Connection?.RemoteIpAddress?.ToString() ?? Unknown,
+            request.Headers.UserAgent.ToString().NullIfEmpty() ?? Unknown,
+            request.QueryString.HasValue ? request.QueryString.Value! : Unknown
         );
     }
+
+    private static LoggerRequestContext CreateUnknown() =>
+        new(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown);
+
+    
+    [SuppressMessage("Performance", "CA1869:JsonSerializerOptions-Instanzen zwischenspeichern und wiederverwenden")]
+    public override string ToString() =>
+        JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+}
+
+internal static class StringExtensions
+{
+    public static string? NullIfEmpty(this string? s) =>
+        string.IsNullOrWhiteSpace(s) ? null : s;
 }

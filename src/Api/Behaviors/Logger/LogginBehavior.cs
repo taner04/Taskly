@@ -8,6 +8,7 @@ public sealed partial class LoggingBehavior<TRequest, TResponse>(
 ) : Behavior<TRequest, TResponse>
 {
     private readonly string _requestName = typeof(TRequest).Name;
+    private readonly string _behaviorType = typeof(TRequest).FullName ?? typeof(TRequest).Name;
 
     public override async ValueTask<TResponse> HandleAsync(
         TRequest request,
@@ -18,7 +19,12 @@ public sealed partial class LoggingBehavior<TRequest, TResponse>(
         try
         {
             var ctx = LoggerRequestContext.FromHttpContext(httpContextAccessor.HttpContext);
-            LogBeginHandling(_requestName, GetType().Name, ctx);
+
+            LogBeginHandling(
+                _requestName,
+                _behaviorType,
+                ctx.ToString()
+            );
 
             return await Next(request, cancellationToken);
         }
@@ -34,20 +40,16 @@ public sealed partial class LoggingBehavior<TRequest, TResponse>(
         }
     }
 
-    [LoggerMessage(0, LogLevel.Information, "Beginning {requestName} in {behaviorType} with context {@requestContext}")]
+    [LoggerMessage(0, LogLevel.Information,
+        "Beginning {requestName} ({behaviorType}) with context {requestContext}")]
     private partial void LogBeginHandling(
-        string requestName,
-        string behaviorType,
-        [LogProperties] LoggerRequestContext requestContext);
-
+        string requestName, string behaviorType, string requestContext);
 
     [LoggerMessage(1, LogLevel.Error, "Error handling {requestName}")]
-    private partial void LogOccuredError(
-        string requestName,
-        Exception exception);
+    private partial void LogOccuredError(string requestName, Exception exception);
 
-    [LoggerMessage(2, LogLevel.Information, "Finished handling {requestName} in {elapsedMs} ms.")]
+    [LoggerMessage(2, LogLevel.Information,
+        "Finished handling {requestName} in {elapsedMs} ms.")]
     private partial void LogFinishedHandling(
-        string requestName,
-        long elapsedMs);
+        string requestName, long elapsedMs);
 }
