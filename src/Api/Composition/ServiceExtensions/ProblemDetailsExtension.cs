@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics;
+using Api.Features.Shared.Api;
 
 namespace Api.Composition.ServiceExtensions;
 
@@ -11,52 +12,69 @@ internal static class ProblemDetailsExtension
         {
             options.CustomizeProblemDetails = ctx =>
             {
-                var http = ctx.HttpContext;
+                var httpContext = ctx.HttpContext;
 
-                if (ctx.Exception is null)
+                var problemDetails = ctx.Exception switch
                 {
-                    AddDefaults(ctx.ProblemDetails, http);
-                    return;
-                }
-
-                ctx.ProblemDetails = ctx.Exception switch
-                {
-                    ValidationException ex => new ValidationProblemDetails(
-                        ex.Errors
+                    ValidationException validation => new ApiProblemDetails
+                    {
+                        Status = StatusCodes.Status400BadRequest,
+                        Title = "Validation failed.",
+                        ErrorCode = "validation.error",
+                        Errors = validation.Errors
                             .GroupBy(e => e.PropertyName, StringComparer.OrdinalIgnoreCase)
                             .ToDictionary(
                                 g => g.Key,
                                 g => g.Select(e => e.ErrorMessage).ToArray(),
                                 StringComparer.OrdinalIgnoreCase
                             )
-                    )
+                    },
+                    
+                    UnauthorizedAccessException => new ApiProblemDetails
                     {
-                        Status = StatusCodes.Status400BadRequest
+                        Status = StatusCodes.Status401Unauthorized,
+                        Title = "Unauthorized",
+                        Detail = "You are not authorized to access this resource.",
+                        ErrorCode = "Unauthorized.Access"
                     },
 
-                    _ => new ProblemDetails
+                    _ => new ApiProblemDetails
                     {
-                        Detail = "An error has occurred.",
-                        Status = StatusCodes.Status500InternalServerError
+                        Status = StatusCodes.Status500InternalServerError,
+                        Title = "Internal Server Error",
+                        Detail = "An unexpected error has occurred.",
+                        ErrorCode = "server.error"
                     }
                 };
+                
+                httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
+                
+                problemDetails.Instance = httpContext.Request.Path;
+                problemDetails.Type = $"https://taskly.com/{GetRoutePattern(httpContext)}";
+                
+                problemDetails.Extensions["method"] = httpContext.Request.Method;
+                problemDetails.Extensions["traceId"] = Activity.Current?.Id ?? httpContext.TraceIdentifier;
+                problemDetails.Extensions["errorCode"] = problemDetails.ErrorCode;
 
-                AddDefaults(ctx.ProblemDetails, http);
+                if (problemDetails.Errors.Count > 0)
+                {
+                    problemDetails.Extensions["errors"] = problemDetails.Errors;
+                }
 
-                http.Response.StatusCode =
-                    ctx.ProblemDetails.Status ?? StatusCodes.Status500InternalServerError;
+                ctx.ProblemDetails = problemDetails;
             };
         });
 
         return services;
     }
-
-    private static void AddDefaults(
-        ProblemDetails problem,
-        HttpContext http)
+    
+    private static string GetRoutePattern(HttpContext http)
     {
-        problem.Instance ??= http.Request.Path;
-        problem.Extensions["traceId"] = http.TraceIdentifier;
-        problem.Extensions["method"] = http.Request.Method;
+        var endpoint = http.GetEndpoint();
+        return endpoint?
+            .Metadata
+            .GetMetadata<RouteEndpoint>()?
+            .RoutePattern.RawText
+            ?? http.Request.Path;
     }
 }

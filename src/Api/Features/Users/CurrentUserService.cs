@@ -4,16 +4,13 @@ namespace Api.Features.Users;
 
 public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
 {
-    public ClaimsPrincipal GetCurrentUser()
+    private ClaimsPrincipal GetCurrentUser()
     {
         var user = httpContextAccessor.HttpContext?.User;
 
-        if (user is null || !user.Identity?.IsAuthenticated != true)
-        {
-            throw new UnauthorizedAccessException("User is not authenticated.");
-        }
-
-        return user;
+        return user?.Identity?.IsAuthenticated != true ? 
+            throw new UnauthorizedAccessException("User is not authenticated.") :
+            user;
     }
 
     public string GetCurrentUserId()
