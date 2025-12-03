@@ -1,4 +1,5 @@
-﻿using Api.Features.Tags.Model;
+﻿using Api.Features.Shared.Api;
+using Api.Features.Tags.Model;
 using Api.Features.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 namespace Api.Features.Tags;
 
 [Handler]
-[MapPost(ApiRoutes.Tags.Create)]
+[MapPost(Routes.Tags.Create)]
 [Authorize]
 public static partial class CreateTag
 {

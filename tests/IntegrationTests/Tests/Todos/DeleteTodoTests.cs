@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Api.Features.Shared.Api;
 using Api.Features.Todos.Model;
 using IntegrationTests.Extensions;
 
@@ -17,7 +18,7 @@ public class DeleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.Delete.ParseTodoRoute(todo.Id.Value);
+        var url = Routes.Todos.Delete.ParseTodoRoute(todo.Id.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -36,7 +37,7 @@ public class DeleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateAuthenticatedClient();
 
-        var url = ApiRoutes.Todos.Delete.ParseTodoRoute(Guid.NewGuid());
+        var url = Routes.Todos.Delete.ParseTodoRoute(Guid.NewGuid());
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -53,7 +54,7 @@ public class DeleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.Delete.ParseTodoRoute(todo.Id.Value);
+        var url = Routes.Todos.Delete.ParseTodoRoute(todo.Id.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -65,7 +66,7 @@ public class DeleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateUnauthenticatedClient();
 
-        var url = ApiRoutes.Todos.Delete.ParseTodoRoute(Guid.NewGuid());
+        var url = Routes.Todos.Delete.ParseTodoRoute(Guid.NewGuid());
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 

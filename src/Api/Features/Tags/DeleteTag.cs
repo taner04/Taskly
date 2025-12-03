@@ -1,4 +1,5 @@
-﻿using Api.Features.Tags.Model;
+﻿using Api.Features.Shared.Api;
+using Api.Features.Tags.Model;
 using Api.Features.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Features.Tags;
 
 [Handler]
-[MapDelete(ApiRoutes.Tags.Delete)]
+[MapDelete(Routes.Tags.Delete)]
 [Authorize]
 public static partial class DeleteTag
 {

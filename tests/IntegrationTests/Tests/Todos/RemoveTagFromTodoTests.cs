@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Api.Features.Shared.Api;
 using Api.Features.Tags.Model;
 using Api.Features.Todos.Model;
 using IntegrationTests.Extensions;
@@ -11,7 +12,7 @@ public class RemoveTagFromTodoTests(TestingFixture fixture) : TestingBase(fixtur
         Guid todoId,
         Guid tagId)
     {
-        return ApiRoutes.Todos.RemoveTag
+        return Routes.Todos.RemoveTag
             .Replace("{todoId:guid}", todoId.ToString())
             .Replace("{tagId:guid}", tagId.ToString());
     }

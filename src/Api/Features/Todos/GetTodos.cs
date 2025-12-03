@@ -1,4 +1,5 @@
-﻿using Api.Features.Shared.Dtos.Tags;
+﻿using Api.Features.Shared.Api;
+using Api.Features.Shared.Dtos.Tags;
 using Api.Features.Todos.Model;
 using Api.Features.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 namespace Api.Features.Todos;
 
 [Handler]
-[MapGet(ApiRoutes.Todos.GetTodos)]
+[MapGet(Routes.Todos.GetTodos)]
 [Authorize]
 public static partial class GetTodos
 {

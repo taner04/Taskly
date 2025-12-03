@@ -1,4 +1,5 @@
-﻿using Api.Features.Tags.Model;
+﻿using Api.Features.Shared.Api;
+using Api.Features.Tags.Model;
 using Api.Features.Todos.Model;
 using Api.Features.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Features.Todos;
 
 [Handler]
-[MapPost(ApiRoutes.Todos.AddTags)]
+[MapPost(Routes.Todos.AddTags)]
 [Authorize]
 public static partial class AddTagsToTodo
 {

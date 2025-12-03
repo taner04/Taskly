@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Api.Features.Shared.Api;
 using Api.Features.Tags.Model;
 using Api.Features.Todos.Model;
 using IntegrationTests.Extensions;
@@ -17,7 +18,7 @@ public class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Tags.Add(tag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Tags.Delete.ParseTagRoute(tag.Id.Value);
+        var url = Routes.Tags.Delete.ParseTagRoute(tag.Id.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -31,7 +32,7 @@ public class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task DeleteTag_WhenTagDoesNotExist_ReturnsNotFound()
     {
         var client = CreateAuthenticatedClient();
-        var url = ApiRoutes.Tags.Delete.ParseTagRoute(Guid.NewGuid());
+        var url = Routes.Tags.Delete.ParseTagRoute(Guid.NewGuid());
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -46,7 +47,7 @@ public class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Tags.Add(tag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Tags.Delete.ParseTagRoute(tag.Id.Value);
+        var url = Routes.Tags.Delete.ParseTagRoute(tag.Id.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -73,7 +74,7 @@ public class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.AddRange(todo1, todo2);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Tags.Delete.ParseTagRoute(tag.Id.Value);
+        var url = Routes.Tags.Delete.ParseTagRoute(tag.Id.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -100,7 +101,7 @@ public class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateUnauthenticatedClient();
 
-        var url = ApiRoutes.Tags.Delete.ParseTagRoute(Guid.NewGuid());
+        var url = Routes.Tags.Delete.ParseTagRoute(Guid.NewGuid());
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 

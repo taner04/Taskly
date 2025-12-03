@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Api.Features.Shared.Api;
 using Api.Features.Shared.Dtos.Tags;
 using Api.Features.Tags.Model;
 using IntegrationTests.Extensions;
@@ -8,7 +9,7 @@ namespace IntegrationTests.Tests.Tags;
 
 public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private const string Url = ApiRoutes.Tags.GetTags;
+    private const string Url = Routes.Tags.GetTags;
 
     [Fact]
     public async Task GetTags_WhenUserHasTags_ReturnsTagsOnlyForUser()

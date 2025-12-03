@@ -1,4 +1,5 @@
-﻿using Api.Features.Tags.Model;
+﻿using Api.Features.Shared.Api;
+using Api.Features.Tags.Model;
 using Api.Features.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Features.Tags;
 
 [Handler]
-[MapPut(ApiRoutes.Tags.Update)]
+[MapPut(Routes.Tags.Update)]
 [Authorize]
 public static partial class UpdateTag
 {

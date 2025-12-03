@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Api.Features.Shared.Api;
 using Api.Features.Tags;
 using Api.Features.Tags.Model;
 using IntegrationTests.Extensions;
@@ -18,7 +19,7 @@ public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture
         DbContext.Tags.Add(tag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Tags.Update.ParseTagRoute(tag.Id.Value);
+        var url = Routes.Tags.Update.ParseTagRoute(tag.Id.Value);
 
         var body = new UpdateTag.Command.CommandBody
         {
@@ -40,7 +41,7 @@ public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture
     {
         var client = CreateAuthenticatedClient();
 
-        var url = ApiRoutes.Tags.Update.ParseTagRoute(Guid.NewGuid());
+        var url = Routes.Tags.Update.ParseTagRoute(Guid.NewGuid());
 
         var body = new UpdateTag.Command.CommandBody
         {
@@ -62,7 +63,7 @@ public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture
         DbContext.Tags.Add(tag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Tags.Update.ParseTagRoute(tag.Id.Value);
+        var url = Routes.Tags.Update.ParseTagRoute(tag.Id.Value);
 
         var body = new UpdateTag.Command.CommandBody
         {
@@ -84,7 +85,7 @@ public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture
         DbContext.Tags.Add(tag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Tags.Update.ParseTagRoute(tag.Id.Value);
+        var url = Routes.Tags.Update.ParseTagRoute(tag.Id.Value);
 
         var body = new UpdateTag.Command.CommandBody
         {
@@ -106,7 +107,7 @@ public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture
         DbContext.Tags.Add(tag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Tags.Update.ParseTagRoute(tag.Id.Value);
+        var url = Routes.Tags.Update.ParseTagRoute(tag.Id.Value);
 
         var longName = new string('a', Tag.MaxNameLength + 1);
         var body = new UpdateTag.Command.CommandBody
@@ -124,7 +125,7 @@ public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture
     {
         var client = CreateUnauthenticatedClient();
 
-        var url = ApiRoutes.Tags.Update.ParseTagRoute(Guid.NewGuid());
+        var url = Routes.Tags.Update.ParseTagRoute(Guid.NewGuid());
 
         var body = new UpdateTag.Command.CommandBody
         {

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Api.Features.Shared.Api;
 using Api.Features.Todos.Model;
 using IntegrationTests.Extensions;
 
@@ -20,7 +21,7 @@ public class CreateTodoTests(TestingFixture fixture) : TestingBase(fixture)
             Priority = TodoPriority.Low
         };
 
-        var response = await client.PostAsJsonAsync(ApiRoutes.Todos.Create, command, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(Routes.Todos.Create, command, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -47,7 +48,7 @@ public class CreateTodoTests(TestingFixture fixture) : TestingBase(fixture)
             Priority = TodoPriority.Medium
         };
 
-        var response = await client.PostAsJsonAsync(ApiRoutes.Todos.Create, command, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(Routes.Todos.Create, command, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -64,7 +65,7 @@ public class CreateTodoTests(TestingFixture fixture) : TestingBase(fixture)
             Priority = TodoPriority.High
         };
 
-        var response = await client.PostAsJsonAsync(ApiRoutes.Todos.Create, command, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(Routes.Todos.Create, command, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -83,7 +84,7 @@ public class CreateTodoTests(TestingFixture fixture) : TestingBase(fixture)
             Priority = TodoPriority.High
         };
 
-        var response = await client.PostAsJsonAsync(ApiRoutes.Todos.Create, command, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(Routes.Todos.Create, command, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -100,7 +101,7 @@ public class CreateTodoTests(TestingFixture fixture) : TestingBase(fixture)
             Priority = TodoPriority.Low
         };
 
-        var response = await client.PostAsJsonAsync(ApiRoutes.Todos.Create, command, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(Routes.Todos.Create, command, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Api.Features.Shared.Api;
 using Api.Features.Todos.Model;
 using IntegrationTests.Extensions;
 
@@ -23,7 +24,7 @@ public class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.AddRange(todo1, todo2, otherTodo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var response = await client.GetAsync(ApiRoutes.Todos.GetTodos, CurrentCancellationToken);
+        var response = await client.GetAsync(Routes.Todos.GetTodos, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -39,7 +40,7 @@ public class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateAuthenticatedClient();
 
-        var response = await client.GetAsync(ApiRoutes.Todos.GetTodos, CurrentCancellationToken);
+        var response = await client.GetAsync(Routes.Todos.GetTodos, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -61,7 +62,7 @@ public class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.AddRange(otherTodo1, otherTodo2);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var response = await client.GetAsync(ApiRoutes.Todos.GetTodos, CurrentCancellationToken);
+        var response = await client.GetAsync(Routes.Todos.GetTodos, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -76,7 +77,7 @@ public class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateUnauthenticatedClient();
 
-        var response = await client.GetAsync(ApiRoutes.Todos.GetTodos, CurrentCancellationToken);
+        var response = await client.GetAsync(Routes.Todos.GetTodos, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }

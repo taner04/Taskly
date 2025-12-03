@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Api.Features.Shared.Api;
 using Api.Features.Todos.Model;
 using IntegrationTests.Extensions;
 
@@ -17,7 +18,7 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.Complete.ParseTodoRoute(todo.Id.Value);
+        var url = Routes.Todos.Complete.ParseTodoRoute(todo.Id.Value);
         var postBodyObject = new CompleteTodo.Command.CommandBody
         {
             Completed = true
@@ -36,7 +37,7 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateAuthenticatedClient();
 
-        var url = ApiRoutes.Todos.Complete.ParseTodoRoute(Guid.NewGuid());
+        var url = Routes.Todos.Complete.ParseTodoRoute(Guid.NewGuid());
         var postBodyObject = new CompleteTodo.Command.CommandBody
         {
             Completed = true
@@ -55,7 +56,7 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.Complete.ParseTodoRoute(todo.Id.Value);
+        var url = Routes.Todos.Complete.ParseTodoRoute(todo.Id.Value);
         var postBodyObject = new CompleteTodo.Command.CommandBody
         {
             Completed = true
@@ -77,7 +78,7 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.Complete.ParseTodoRoute(todo.Id.Value);
+        var url = Routes.Todos.Complete.ParseTodoRoute(todo.Id.Value);
         var postBodyObject = new CompleteTodo.Command.CommandBody
         {
             Completed = false
@@ -96,7 +97,7 @@ public class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateUnauthenticatedClient();
 
-        var url = ApiRoutes.Todos.Complete.ParseTodoRoute(Guid.NewGuid());
+        var url = Routes.Todos.Complete.ParseTodoRoute(Guid.NewGuid());
         var postBodyObject = new CompleteTodo.Command.CommandBody
         {
             Completed = true

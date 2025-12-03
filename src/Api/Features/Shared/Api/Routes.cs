@@ -1,6 +1,6 @@
-﻿namespace Api.Features.Shared;
+﻿namespace Api.Features.Shared.Api;
 
-public static class ApiRoutes
+public static class Routes
 {
     public static class Todos
     {

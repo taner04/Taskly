@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Api.Features.Shared.Api;
 using Api.Features.Tags.Model;
 using Api.Features.Todos.Model;
 using IntegrationTests.Extensions;
@@ -24,7 +25,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
 
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
+        var url = Routes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
 
         var body = new AddTagsToTodo.Command.CommandBody
         {
@@ -50,7 +51,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateAuthenticatedClient();
 
-        var url = ApiRoutes.Todos.AddTags.ParseTodoRoute(Guid.NewGuid());
+        var url = Routes.Todos.AddTags.ParseTodoRoute(Guid.NewGuid());
 
         var body = new AddTagsToTodo.Command.CommandBody
         {
@@ -74,7 +75,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
 
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
+        var url = Routes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
 
         var body = new AddTagsToTodo.Command.CommandBody
         {
@@ -99,7 +100,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
 
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
+        var url = Routes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
 
         var body = new AddTagsToTodo.Command.CommandBody
         {
@@ -126,7 +127,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
 
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = ApiRoutes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
+        var url = Routes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
 
         var body = new AddTagsToTodo.Command.CommandBody
         {
@@ -143,7 +144,7 @@ public class AddTagsToTodoTests(TestingFixture fixture) : TestingBase(fixture)
     {
         var client = CreateUnauthenticatedClient();
 
-        var url = ApiRoutes.Todos.AddTags.ParseTodoRoute(Guid.NewGuid());
+        var url = Routes.Todos.AddTags.ParseTodoRoute(Guid.NewGuid());
 
         var body = new AddTagsToTodo.Command.CommandBody
         {

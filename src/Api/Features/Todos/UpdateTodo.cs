@@ -1,4 +1,5 @@
-﻿using Api.Features.Todos.Model;
+﻿using Api.Features.Shared.Api;
+using Api.Features.Todos.Model;
 using Api.Features.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Features.Todos;
 
 [Handler]
-[MapPut(ApiRoutes.Todos.Update)]
+[MapPut(Routes.Todos.Update)]
 [Authorize]
 public static partial class UpdateTodo
 {
