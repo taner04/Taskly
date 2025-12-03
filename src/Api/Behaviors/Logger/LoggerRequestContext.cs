@@ -37,7 +37,8 @@ public sealed class LoggerRequestContext
     public string UserAgent { get; }
     public string QueryString { get; }
 
-    public static LoggerRequestContext FromHttpContext(HttpContext? httpContext)
+    public static LoggerRequestContext FromHttpContext(
+        HttpContext? httpContext)
     {
         if (httpContext is null)
         {
@@ -59,17 +60,24 @@ public sealed class LoggerRequestContext
         );
     }
 
-    private static LoggerRequestContext CreateUnknown() =>
-        new(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown);
+    private static LoggerRequestContext CreateUnknown()
+    {
+        return new LoggerRequestContext(Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown, Unknown);
+    }
 
-    
+
     [SuppressMessage("Performance", "CA1869:JsonSerializerOptions-Instanzen zwischenspeichern und wiederverwenden")]
-    public override string ToString() =>
-        JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+    }
 }
 
 internal static class StringExtensions
 {
-    public static string? NullIfEmpty(this string? s) =>
-        string.IsNullOrWhiteSpace(s) ? null : s;
+    public static string? NullIfEmpty(
+        this string? s)
+    {
+        return string.IsNullOrWhiteSpace(s) ? null : s;
+    }
 }

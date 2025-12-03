@@ -1,4 +1,4 @@
-﻿namespace Api.Features.Shared.Api;
+﻿namespace Api.Shared.Features.Api;
 
 public static class Routes
 {

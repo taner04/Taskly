@@ -7,8 +7,8 @@ public sealed partial class LoggingBehavior<TRequest, TResponse>(
     IHttpContextAccessor httpContextAccessor
 ) : Behavior<TRequest, TResponse>
 {
-    private readonly string _requestName = typeof(TRequest).Name;
     private readonly string _behaviorType = typeof(TRequest).FullName ?? typeof(TRequest).Name;
+    private readonly string _requestName = typeof(TRequest).Name;
 
     public override async ValueTask<TResponse> HandleAsync(
         TRequest request,
@@ -43,13 +43,18 @@ public sealed partial class LoggingBehavior<TRequest, TResponse>(
     [LoggerMessage(0, LogLevel.Information,
         "Beginning {requestName} ({behaviorType}) with context {requestContext}")]
     private partial void LogBeginHandling(
-        string requestName, string behaviorType, string requestContext);
+        string requestName,
+        string behaviorType,
+        string requestContext);
 
     [LoggerMessage(1, LogLevel.Error, "Error handling {requestName}")]
-    private partial void LogOccuredError(string requestName, Exception exception);
+    private partial void LogOccuredError(
+        string requestName,
+        Exception exception);
 
     [LoggerMessage(2, LogLevel.Information,
         "Finished handling {requestName} in {elapsedMs} ms.")]
     private partial void LogFinishedHandling(
-        string requestName, long elapsedMs);
+        string requestName,
+        long elapsedMs);
 }

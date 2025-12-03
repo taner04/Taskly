@@ -32,4 +32,8 @@
         <ProjectReference Include="..\..\tools\ServiceDefaults\ServiceDefaults.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Shared\Features\"/>
+    </ItemGroup>
+
 </Project>

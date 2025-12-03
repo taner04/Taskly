@@ -1,6 +1,6 @@
 ﻿using System.Net;
-using Api.Features.Shared.Api;
 using Api.Features.Todos.Model;
+using Api.Shared.Features.Api;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Todos;

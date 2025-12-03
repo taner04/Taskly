@@ -1,11 +1,13 @@
-﻿using Api.Features.Shared.Models;
+﻿using System.Diagnostics.CodeAnalysis;
 using Api.Features.Todos.Model;
+using Api.Shared.Features.Models;
 
 namespace Api.Features.Tags.Model;
 
 [ValueObject<Guid>]
 public readonly partial struct TagId;
 
+[SuppressMessage("ReSharper", "EntityFramework.ModelValidation.UnlimitedStringLength")]
 public class Tag : Entity<TagId>
 {
     public const int MaxNameLength = 50;

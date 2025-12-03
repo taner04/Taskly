@@ -1,11 +1,14 @@
-﻿using Api.Features.Shared.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using Api.Features.Attachments.Models;
 using Api.Features.Tags.Model;
+using Api.Shared.Features.Models;
 
 namespace Api.Features.Todos.Model;
 
 [ValueObject<Guid>]
 public readonly partial struct TodoId;
 
+[SuppressMessage("ReSharper", "EntityFramework.ModelValidation.UnlimitedStringLength")]
 public sealed class Todo : Entity<TodoId>
 {
     public const int MinTitleLength = 3;
@@ -36,6 +39,7 @@ public sealed class Todo : Entity<TodoId>
     public bool IsCompleted { get; private set; }
     public string UserId { get; private set; }
     public ICollection<Tag> Tags { get; init; } = [];
+    public ICollection<Attachment> Attachments { get; init; } = [];
 
     public static ErrorOr<Todo> TryCreate(
         string title,

@@ -11,9 +11,14 @@ var migration = builder.AddProject<MigrationService>(AppHostConstants.MigrationS
     .WithReference(tasklyDb)
     .WaitFor(tasklyDb);
 
+var blobStorage = builder.AddContainer(AppHostConstants.BlobStorage, "mcr.microsoft.com/azure-storage/azurite:3.14.0")
+    .WithVolume("/data")
+    .WithHttpEndpoint(10000, 10000, "blob");
+
 var api = builder.AddProject<Api>(AppHostConstants.Api)
     .WithReference(tasklyDb)
     .WaitFor(tasklyDb)
+    .WaitFor(blobStorage)
     .WaitForCompletion(migration);
 
 builder.AddContainer(AppHostConstants.Web, "taskly-web")

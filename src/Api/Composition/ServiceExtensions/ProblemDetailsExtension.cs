@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Api.Features.Shared.Api;
+using Api.Shared.Features.Api;
 
 namespace Api.Composition.ServiceExtensions;
 
@@ -29,7 +29,7 @@ internal static class ProblemDetailsExtension
                                 StringComparer.OrdinalIgnoreCase
                             )
                     },
-                    
+
                     UnauthorizedAccessException => new ApiProblemDetails
                     {
                         Status = StatusCodes.Status401Unauthorized,
@@ -46,12 +46,12 @@ internal static class ProblemDetailsExtension
                         ErrorCode = "server.error"
                     }
                 };
-                
+
                 httpContext.Response.StatusCode = problemDetails.Status ?? StatusCodes.Status500InternalServerError;
-                
+
                 problemDetails.Instance = httpContext.Request.Path;
                 problemDetails.Type = $"https://taskly.com/{GetRoutePattern(httpContext)}";
-                
+
                 problemDetails.Extensions["method"] = httpContext.Request.Method;
                 problemDetails.Extensions["traceId"] = Activity.Current?.Id ?? httpContext.TraceIdentifier;
                 problemDetails.Extensions["errorCode"] = problemDetails.ErrorCode;
@@ -67,14 +67,15 @@ internal static class ProblemDetailsExtension
 
         return services;
     }
-    
-    private static string GetRoutePattern(HttpContext http)
+
+    private static string GetRoutePattern(
+        HttpContext http)
     {
         var endpoint = http.GetEndpoint();
         return endpoint?
-            .Metadata
-            .GetMetadata<RouteEndpoint>()?
-            .RoutePattern.RawText
-            ?? http.Request.Path;
+                   .Metadata
+                   .GetMetadata<RouteEndpoint>()?
+                   .RoutePattern.RawText
+               ?? http.Request.Path;
     }
 }

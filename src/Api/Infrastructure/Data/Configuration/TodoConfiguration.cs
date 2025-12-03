@@ -34,5 +34,10 @@ internal sealed class TodoConfiguration : AuditableConfiguration<Todo>
             .HasMany(t => t.Tags)
             .WithMany(t => t.Todos)
             .UsingEntity(j => { j.ToTable("TodoTags"); });
+
+        builder
+            .HasMany(t => t.Attachments)
+            .WithOne(a => a.Todo)
+            .HasForeignKey(a => a.TodoId);
     }
 }

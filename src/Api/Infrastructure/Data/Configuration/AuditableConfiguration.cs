@@ -1,4 +1,4 @@
-﻿using Api.Features.Shared.Models;
+﻿using Api.Shared.Features.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Infrastructure.Data.Configuration;

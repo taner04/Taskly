@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Api.Features.Shared.Api;
-using Api.Features.Shared.Dtos.Tags;
 using Api.Features.Tags.Model;
+using Api.Shared.Features.Api;
+using Api.Shared.Features.Dtos.Tags;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Tags;
