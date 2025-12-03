@@ -65,11 +65,9 @@ public static partial class RemoveAttachment
         {
             return Error.NotFound("Attachment.NotFound", "Attachment not found.");
         }
-
-        // DB remove (transaction-safe)
+        
         todo.Attachments.Remove(attachment);
-
-        // Blob remove AFTER DB success-safe
+        
         var deleted = await attachments.DeleteAsync(attachment, ct);
 
         if (!deleted)

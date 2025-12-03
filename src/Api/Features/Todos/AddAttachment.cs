@@ -88,12 +88,12 @@ public static partial class AddAttachment
     public sealed partial record Command : ITransactionalRequest, IValidationTarget<Command>
     {
         [NotEmpty] [FromRoute] public required TodoId TodoId { get; init; }
-        public required CommandBody Body { get; init; }
+        [FromForm] public required CommandBody Body { get; init; }
 
         [Validate]
         public sealed partial record CommandBody : IValidationTarget<CommandBody>
         {
-            [NotEmpty] public required IFormFile File { get; init; }
+           [NotEmpty] public required IFormFile File { get; init; }
         }
     }
 }

@@ -24,6 +24,7 @@ public sealed class Attachment : Entity<AttachmentId>
         string contentType,
         long fileSize)
     {
+        Id = AttachmentId.From(Guid.CreateVersion7());
         TodoId = todoId;
         FileName = fileName;
         BlobName = blobName;
