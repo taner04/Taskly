@@ -1,4 +1,4 @@
-﻿namespace Api.Shared.Dtos.Tags;
+﻿namespace Api.Features.Shared.Dtos.Tags;
 
 public sealed record TagDto(
     Guid Id,

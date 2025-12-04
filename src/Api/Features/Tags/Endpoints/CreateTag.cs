@@ -14,13 +14,13 @@ public static partial class CreateTag
         endpoint.WithTags(nameof(Tag));
     }
 
-    internal static Created<Dto> TransformResult(
-        Dto dto)
+    internal static Created<Response> TransformResult(
+        Response response)
     {
-        return TypedResults.Created($"api/todos/{dto.TagId}", dto);
+        return TypedResults.Created($"api/todos/{response.TagId}", response);
     }
 
-    private static async ValueTask<Dto> HandleAsync(
+    private static async ValueTask<Response> HandleAsync(
         Command command,
         ApplicationDbContext context,
         CurrentUserService currentUserService,
@@ -37,7 +37,7 @@ public static partial class CreateTag
         context.Tags.Add(newTag);
         await context.SaveChangesAsync(ct);
 
-        return new Dto(newTag.Id.Value);
+        return new Response(newTag.Id.Value);
     }
 
     [Validate]
@@ -46,5 +46,5 @@ public static partial class CreateTag
         [NotEmpty] public required string TagName { get; init; }
     }
 
-    public sealed record Dto(Guid TagId);
+    public sealed record Response(Guid TagId);
 }

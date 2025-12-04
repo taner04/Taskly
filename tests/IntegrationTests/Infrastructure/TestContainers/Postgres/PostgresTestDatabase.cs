@@ -1,6 +1,6 @@
 ﻿using Npgsql;
 
-namespace IntegrationTests.Infrastructure.Data;
+namespace IntegrationTests.Infrastructure.TestContainers.Postgres;
 
 public sealed class PostgresTestDatabase : IAsyncDisposable
 {
@@ -15,7 +15,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
         await _postgresContainer.DisposeAsync();
     }
 
-    public async Task InitializeAsync()
+    public async Task InitializeContainerAsync()
     {
         await _postgresContainer.InitializeAsync();
 
@@ -27,7 +27,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
         await context.Database.MigrateAsync(_postgresContainer.CurrentCancellationToken);
     }
 
-    public async Task ResetDatabaseAsync()
+    public async Task ResetContainerAsync()
     {
         await using var context = new ApplicationDbContext(_dbContextOptions);
 

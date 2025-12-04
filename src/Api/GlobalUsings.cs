@@ -5,7 +5,6 @@ global using Api.Features.Tags.Model;
 global using Api.Features.Todos.Model;
 global using Api.Features.Users.Services;
 global using Api.Infrastructure.Data;
-global using Api.Shared.Exceptions;
 global using ErrorOr;
 global using Immediate.Handlers.Shared;
 global using Immediate.Validations.Shared;

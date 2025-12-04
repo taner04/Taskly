@@ -1,4 +1,4 @@
-﻿using Api.Shared.Dtos.Tags;
+﻿using Api.Features.Shared.Dtos.Tags;
 
 namespace Api.Features.Tags.Endpoints;
 

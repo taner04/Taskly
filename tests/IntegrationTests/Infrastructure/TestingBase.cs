@@ -1,4 +1,6 @@
-﻿namespace IntegrationTests.Infrastructure;
+﻿using Api;
+
+namespace IntegrationTests.Infrastructure;
 
 [Collection("TestingFixtureCollection")]
 public abstract class TestingBase : IAsyncLifetime
@@ -32,13 +34,18 @@ public abstract class TestingBase : IAsyncLifetime
         return ValueTask.CompletedTask;
     }
 
-    protected HttpClient CreateAuthenticatedClient()
+    protected IApiClient CreateAuthenticatedClient()
     {
         return _fixture.CreateAuthenticatedClient();
     }
 
-    protected HttpClient CreateUnauthenticatedClient()
+    protected IApiClient CreateUnauthenticatedClient()
     {
         return _fixture.CreateUnauthenticatedClient();
+    }
+
+    protected string GetCurrentUserId()
+    {
+        return _fixture.GetCurrentUserId();
     }
 }

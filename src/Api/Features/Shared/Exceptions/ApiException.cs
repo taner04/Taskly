@@ -1,4 +1,4 @@
-﻿namespace Api.Shared.Exceptions;
+﻿namespace Api.Features.Shared.Exceptions;
 
 public abstract class ApiException(
     string title,

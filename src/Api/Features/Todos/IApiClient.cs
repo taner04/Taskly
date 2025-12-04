@@ -8,50 +8,50 @@ namespace Api;
 public partial interface IApiClient
 {
     [Post(Routes.Todos.AddAttachment)]
-    Task<AddAttachment.Dto> AddAttachmentAsync(
+    Task<ApiResponse<AddAttachment.Response>> AddAttachmentAsync(
         TodoId todoId,
         [Body] AddAttachment.Command.CommandBody body,
         CancellationToken cancellationToken = default);
 
     [Post(Routes.Todos.AddTags)]
-    Task AddTagsToTodoAsync(
+    Task<HttpResponseMessage> AddTagsToTodoAsync(
         TodoId todoId,
         [Body] AddTags.Command.CommandBody body,
         CancellationToken cancellationToken = default);
 
     [Post(Routes.Todos.Complete)]
-    Task CompleteTodoAsync(
+    Task<HttpResponseMessage> CompleteTodoAsync(
         TodoId todoId,
         [Body] CompleteTodo.Command.CommandBody body,
         CancellationToken cancellationToken = default);
 
     [Post(Routes.Todos.Create)]
-    Task<CreateTodo.Dto> CreateTodoAsync(
+    Task<ApiResponse<CreateTodo.Response>> CreateTodoAsync(
         [Body] CreateTodo.Command command,
         CancellationToken cancellationToken = default);
 
     [Get(Routes.Todos.GetTodos)]
-    Task<List<GetTodos.TodoDto>> GetTodosAsync(CancellationToken cancellationToken = default);
+    Task<ApiResponse<List<GetTodos.Response>>> GetTodosAsync(CancellationToken cancellationToken = default);
 
     [Delete(Routes.Todos.RemoveAttachment)]
-    Task RemoveAttachmentFromTodoAsync(
+    Task<HttpResponseMessage> RemoveAttachmentFromTodoAsync(
         TodoId todoId,
         AttachmentId attachmentId,
         CancellationToken cancellationToken = default);
 
     [Delete(Routes.Todos.RemoveTag)]
-    Task RemoveTagFromTodoAsync(
+    Task<HttpResponseMessage> RemoveTagFromTodoAsync(
         TodoId todoId,
         TagId tagId,
         CancellationToken cancellationToken = default);
 
     [Delete(Routes.Todos.Remove)]
-    Task DeleteTodoAsync(
+    Task<HttpResponseMessage> DeleteTodoAsync(
         TodoId todoId,
         CancellationToken cancellationToken = default);
 
     [Put(Routes.Todos.Update)]
-    Task UpdateTodoAsync(
+    Task<HttpResponseMessage> UpdateTodoAsync(
         TodoId todoId,
         [Body] UpdateTodo.Command.CommandBody body,
         CancellationToken cancellationToken = default);

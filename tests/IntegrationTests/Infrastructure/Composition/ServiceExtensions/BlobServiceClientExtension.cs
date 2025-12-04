@@ -1,6 +1,6 @@
 ﻿namespace IntegrationTests.Infrastructure.Composition.ServiceExtensions;
 
-internal static class MockBlobServiceClientExtension
+internal static class BlobServiceClientExtension
 {
     internal static IServiceCollection AddMockBlobServiceClient(this IServiceCollection services,
         string connectionString)

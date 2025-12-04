@@ -1,6 +1,6 @@
 ﻿using Testcontainers.PostgreSql;
 
-namespace IntegrationTests.Infrastructure.Data;
+namespace IntegrationTests.Infrastructure.TestContainers.Postgres;
 
 public sealed class PostgresContainer : ContainerBase<PostgreSqlContainer>
 {

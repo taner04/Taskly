@@ -1,7 +1,7 @@
 ﻿using Api.Abstractions;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace IntegrationTests.Infrastructure.Data;
+namespace IntegrationTests.Infrastructure.Composition.Mocks;
 
 public sealed class MockAuditableInterceptor : SaveChangesInterceptor
 {

@@ -1,4 +1,4 @@
-﻿namespace Api.Shared.Models;
+﻿namespace Api.Features.Shared.Models;
 
 public abstract class Auditable : IAuditable
 {

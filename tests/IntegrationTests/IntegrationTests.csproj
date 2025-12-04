@@ -38,7 +38,6 @@
     <ItemGroup>
         <Folder Include="Tests\Attachments\"/>
         <Folder Include="Tests\Tags\"/>
-        <Folder Include="Tests\Todos\"/>
     </ItemGroup>
 
 </Project>

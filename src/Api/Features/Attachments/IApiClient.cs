@@ -8,13 +8,13 @@ namespace Api;
 public partial interface IApiClient
 {
     [Post(Routes.Attachments.CompleteUpload)]
-    Task CompleteAttachmentUploadAsync(
-        AttachmentId attachmentId,
-        CompleteAttachmentUpload.Command.CommandBody body,
+    Task<HttpResponseMessage> CompleteAttachmentUploadAsync(
+        [FromRoute] AttachmentId attachmentId,
+        [Body] CompleteAttachmentUpload.Command.CommandBody body,
         CancellationToken cancellationToken = default);
 
-    [Get(Routes.Attachments.CompleteUpload)]
-    Task DownloadAttachmentAsync(
-        AttachmentId attachmentId,
+    [Get(Routes.Attachments.Download)]
+    Task<HttpResponseMessage> DownloadAttachmentAsync(
+        [FromRoute] AttachmentId attachmentId,
         CancellationToken cancellationToken = default);
 }

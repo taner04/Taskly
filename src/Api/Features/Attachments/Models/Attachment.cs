@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Api.Features.Attachments.Exceptions;
-using Api.Shared.Models;
+using Api.Features.Shared.Models;
 
 namespace Api.Features.Attachments.Models;
 

@@ -15,14 +15,14 @@ public static partial class AddAttachment
         endpoint.WithTags(nameof(Todo));
     }
 
-    internal static Ok<Dto> TransformResult(
-        Dto dto)
+    internal static Ok<Response> TransformResult(
+        Response response)
     {
-        return TypedResults.Ok(dto);
+        return TypedResults.Ok(response);
     }
 
 
-    private static async ValueTask<Dto> HandleAsync(
+    private static async ValueTask<Response> HandleAsync(
         [AsParameters] Command command,
         ApplicationDbContext context,
         CurrentUserService current,
@@ -52,7 +52,7 @@ public static partial class AddAttachment
         context.Update(todo);
         await context.SaveChangesAsync(ct);
 
-        return new Dto(
+        return new Response(
             attachment.Id.Value,
             sas.UploadUrl,
             sas.BlobPath
@@ -74,7 +74,7 @@ public static partial class AddAttachment
         }
     }
 
-    public sealed record Dto(
+    public sealed record Response(
         Guid AttachmentId,
         string UploadUrl,
         string BlobPath);

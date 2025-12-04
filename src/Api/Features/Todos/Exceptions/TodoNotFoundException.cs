@@ -1,4 +1,6 @@
-﻿namespace Api.Features.Todos.Exceptions;
+﻿using Api.Features.Shared.Exceptions;
+
+namespace Api.Features.Todos.Exceptions;
 
 public sealed class TodoNotFoundException(TodoId todoId) :
     ApiException(

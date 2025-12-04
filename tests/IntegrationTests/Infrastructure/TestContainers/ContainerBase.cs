@@ -1,6 +1,6 @@
 ﻿using DotNet.Testcontainers.Containers;
 
-namespace IntegrationTests.Infrastructure;
+namespace IntegrationTests.Infrastructure.TestContainers;
 
 public abstract class ContainerBase<T> : IAsyncLifetime where T : DockerContainer
 {

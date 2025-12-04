@@ -13,13 +13,13 @@ public static partial class CreateTodo
         endpoint.WithTags(nameof(Todo));
     }
 
-    internal static Created<Dto> TransformResult(
-        Dto dto)
+    internal static Created<Response> TransformResult(
+        Response response)
     {
-        return TypedResults.Created($"api/todos/{dto.TodoId}", dto);
+        return TypedResults.Created($"api/todos/{response.TodoId}", response);
     }
 
-    private static async ValueTask<Dto> HandleAsync(
+    private static async ValueTask<Response> HandleAsync(
         Command command,
         ApplicationDbContext context,
         CurrentUserService currentUserService,
@@ -32,7 +32,7 @@ public static partial class CreateTodo
         await context.Todos.AddAsync(newTodo, ct);
         await context.SaveChangesAsync(ct);
 
-        return new Dto(newTodo.Id.Value);
+        return new Response(newTodo.Id.Value);
     }
 
     [Validate]
@@ -43,5 +43,5 @@ public static partial class CreateTodo
         public required TodoPriority Priority { get; init; }
     }
 
-    public sealed record Dto(Guid TodoId);
+    public sealed record Response(Guid TodoId);
 }

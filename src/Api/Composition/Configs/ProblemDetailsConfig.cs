@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Api.Features.Shared.Exceptions;
 using Api.Shared;
 
 namespace Api.Composition.Configs;

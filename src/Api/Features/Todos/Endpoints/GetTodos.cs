@@ -1,4 +1,4 @@
-﻿using Api.Shared.Dtos.Tags;
+﻿using Api.Features.Shared.Dtos.Tags;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Todos.Endpoints;
@@ -14,13 +14,13 @@ public static partial class GetTodos
         endpoint.WithTags(nameof(Todo));
     }
 
-    internal static Ok<List<TodoDto>> TransformResult(
-        List<TodoDto> result)
+    internal static Ok<List<Response>> TransformResult(
+        List<Response> result)
     {
         return TypedResults.Ok(result);
     }
 
-    private static async ValueTask<List<TodoDto>> HandleAsync(
+    private static async ValueTask<List<Response>> HandleAsync(
         Query _,
         ApplicationDbContext context,
         CurrentUserService currentUserService,
@@ -29,7 +29,7 @@ public static partial class GetTodos
         var userId = currentUserService.GetCurrentUserId();
         var todos = await context.Todos.Where(t => t.UserId == userId).ToListAsync(ct);
 
-        return todos.Select(TodoDto.FromDomain).ToList();
+        return todos.Select(Response.FromDomain).ToList();
     }
 
     public sealed record Query;
@@ -55,7 +55,7 @@ public static partial class GetTodos
         }
     }
 
-    public sealed record TodoDto(
+    public sealed record Response(
         Guid Id,
         string Title,
         string? Description,
@@ -66,10 +66,10 @@ public static partial class GetTodos
         string UserId
     )
     {
-        public static TodoDto FromDomain(
+        public static Response FromDomain(
             Todo todo)
         {
-            return new TodoDto(
+            return new Response(
                 todo.Id.Value,
                 todo.Title,
                 todo.Description,

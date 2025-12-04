@@ -14,7 +14,7 @@ public static partial class DownloadAttachment
         endpoint.WithTags(nameof(Attachment));
     }
 
-    private static async ValueTask<ErrorOr<Dto>> HandleAsync(
+    private static async ValueTask<ErrorOr<Response>> HandleAsync(
         Query query,
         ApplicationDbContext db,
         CurrentUserService current,
@@ -37,7 +37,7 @@ public static partial class DownloadAttachment
 
         var sas = attachments.GenerateDownloadSas(attachment);
 
-        return new Dto(
+        return new Response(
             sas.DownloadUrl,
             attachment.FileName,
             attachment.ContentType
@@ -51,7 +51,7 @@ public static partial class DownloadAttachment
         public required AttachmentId AttachmentId { get; init; }
     }
 
-    public sealed record Dto(
+    public sealed record Response(
         string DownloadUrl,
         string FileName,
         string ContentType);

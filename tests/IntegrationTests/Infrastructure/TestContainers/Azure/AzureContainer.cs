@@ -1,8 +1,8 @@
 ﻿using Testcontainers.Azurite;
 
-namespace IntegrationTests.Infrastructure.Azurite;
+namespace IntegrationTests.Infrastructure.TestContainers.Azure;
 
-public sealed class BlobContainer : ContainerBase<AzuriteContainer>
+public sealed class AzureContainer : ContainerBase<AzuriteContainer>
 {
     public string ConnectionString => Container.GetConnectionString();
 

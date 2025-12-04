@@ -1,4 +1,6 @@
-﻿namespace Api.Features.Attachments.Exceptions;
+﻿using Api.Features.Shared.Exceptions;
+
+namespace Api.Features.Attachments.Exceptions;
 
 public sealed class AttachmentInvalidExtensionException(string extension) :
     ApiException(
