@@ -1,258 +1,162 @@
+using Api.Features.Todos.Exceptions;
 using Api.Features.Todos.Model;
 
 namespace UnitTests.Tests;
 
 public sealed class TodoTests
 {
-    private const string ValidTitle = "Valid Title";
-    private const string ValidDescription = "Valid Description";
+    private const string ValidTitle = "Valid Todo";
+    private const string ValidDescription = "Valid description";
     private const string ValidUserId = "user123";
-    private const string TestTodoTitle = "Test Todo";
-    private const string TestDescription = "Test Description";
-    private const string UpdatedTitle = "Updated Title";
-    private const string UpdatedDescription = "Updated Description";
-    private const string InvalidShortString = "ab"; // length = 2 < MinTitle/DescriptionLength
 
-    // ------------------------------------------------------------------------
-    // Creation Tests
-    // ------------------------------------------------------------------------
+    private const string TooShortString = "ab"; // length = 2 < Min
+    private static readonly string TooLongTitle = new('x', Todo.MaxTitleLength + 1);
+    private static readonly string TooLongDescription = new('x', Todo.MaxDescriptionLength + 1);
 
     [Fact]
-    public void TryCreate_WithValidData_ShouldReturnTodo()
+    public void Constructor_WithValidData_ShouldCreateTodo()
     {
-        var result = Todo.TryCreate(TestTodoTitle, TestDescription, TodoPriority.Medium, ValidUserId);
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Medium, ValidUserId);
 
-        Assert.False(result.IsError);
-        var todo = result.Value;
-        Assert.Equal(TestTodoTitle, todo.Title);
-        Assert.Equal(TestDescription, todo.Description);
+        Assert.Equal(ValidTitle, todo.Title);
+        Assert.Equal(ValidDescription, todo.Description);
         Assert.Equal(TodoPriority.Medium, todo.Priority);
-        Assert.Equal(ValidUserId, todo.UserId);
         Assert.False(todo.IsCompleted);
+        Assert.Equal(ValidUserId, todo.UserId);
+
+        Assert.NotEqual(Guid.Empty, todo.Id.Value);
     }
 
     [Fact]
-    public void TryCreate_WithTitleTooShort_ShouldReturnError()
+    public void Constructor_WithTooShortTitle_ShouldThrow()
     {
-        var result = Todo.TryCreate(InvalidShortString, ValidDescription, TodoPriority.Medium, ValidUserId);
-
-        Assert.True(result.IsError);
-        Assert.Contains(result.Errors, e => e.Code == "Todo.MaxTitleLength");
+        Assert.Throws<TodoInvalidTitleException>(() =>
+            new Todo(TooShortString, ValidDescription, TodoPriority.Low, ValidUserId));
     }
 
     [Fact]
-    public void TryCreate_WithTitleTooLong_ShouldReturnError()
+    public void Constructor_WithTooLongTitle_ShouldThrow()
     {
-        var title = new string('a', Todo.MaxTitleLength + 1);
-
-        var result = Todo.TryCreate(title, ValidDescription, TodoPriority.Medium, ValidUserId);
-
-        Assert.True(result.IsError);
-        Assert.Contains(result.Errors, e => e.Code == "Todo.MaxTitleLength");
+        Assert.Throws<TodoInvalidTitleException>(() =>
+            new Todo(TooLongTitle, ValidDescription, TodoPriority.Low, ValidUserId));
     }
 
     [Fact]
-    public void TryCreate_WithTitleAtMinLength_ShouldReturnSuccess()
+    public void Constructor_WithTitleAtMinLength_ShouldCreate()
     {
         var title = new string('a', Todo.MinTitleLength);
 
-        var result = Todo.TryCreate(title, ValidDescription, TodoPriority.Medium, ValidUserId);
+        var todo = new Todo(title, ValidDescription, TodoPriority.Low, ValidUserId);
 
-        Assert.False(result.IsError);
-        Assert.Equal(title, result.Value.Title);
+        Assert.Equal(title, todo.Title);
     }
 
     [Fact]
-    public void TryCreate_WithTitleAtMaxLength_ShouldReturnSuccess()
+    public void Constructor_WithTitleAtMaxLength_ShouldCreate()
     {
         var title = new string('a', Todo.MaxTitleLength);
 
-        var result = Todo.TryCreate(title, ValidDescription, TodoPriority.Medium, ValidUserId);
+        var todo = new Todo(title, ValidDescription, TodoPriority.Low, ValidUserId);
 
-        Assert.False(result.IsError);
-        Assert.Equal(title, result.Value.Title);
+        Assert.Equal(title, todo.Title);
     }
 
     [Fact]
-    public void TryCreate_WithDescriptionTooShort_ShouldReturnError()
+    public void Constructor_WithTooShortDescription_ShouldThrow()
     {
-        var result = Todo.TryCreate(ValidTitle, InvalidShortString, TodoPriority.Medium, ValidUserId);
-
-        Assert.True(result.IsError);
-        Assert.Contains(result.Errors, e => e.Code == "Todo.Description");
+        Assert.Throws<TodoInvalidDescriptionException>(() =>
+            new Todo(ValidTitle, TooShortString, TodoPriority.Low, ValidUserId));
     }
 
     [Fact]
-    public void TryCreate_WithDescriptionTooLong_ShouldReturnError()
+    public void Constructor_WithTooLongDescription_ShouldThrow()
     {
-        var description = new string('a', Todo.MaxDescriptionLength + 1);
-
-        var result = Todo.TryCreate(ValidTitle, description, TodoPriority.Medium, ValidUserId);
-
-        Assert.True(result.IsError);
-        Assert.Contains(result.Errors, e => e.Code == "Todo.Description");
+        Assert.Throws<TodoInvalidDescriptionException>(() =>
+            new Todo(ValidTitle, TooLongDescription, TodoPriority.Low, ValidUserId));
     }
 
     [Fact]
-    public void TryCreate_WithDescriptionAtMinLength_ShouldReturnSuccess()
+    public void Constructor_WithNullDescription_ShouldCreate()
     {
-        var description = new string('a', Todo.MinDescriptionLength);
+        var todo = new Todo(ValidTitle, null, TodoPriority.Low, ValidUserId);
 
-        var result = Todo.TryCreate(ValidTitle, description, TodoPriority.Medium, ValidUserId);
-
-        Assert.False(result.IsError);
-        Assert.Equal(description, result.Value.Description);
+        Assert.Null(todo.Description);
     }
 
     [Fact]
-    public void TryCreate_WithDescriptionAtMaxLength_ShouldReturnSuccess()
+    public void Constructor_WithEmptyDescription_ShouldCreate()
     {
-        var description = new string('a', Todo.MaxDescriptionLength);
+        var todo = new Todo(ValidTitle, string.Empty, TodoPriority.Low, ValidUserId);
 
-        var result = Todo.TryCreate(ValidTitle, description, TodoPriority.Medium, ValidUserId);
-
-        Assert.False(result.IsError);
-        Assert.Equal(description, result.Value.Description);
+        Assert.Equal(string.Empty, todo.Description);
     }
 
-    [Fact]
-    public void TryCreate_WithNullDescription_ShouldReturnSuccess()
-    {
-        string? description = null;
-
-        var result = Todo.TryCreate(ValidTitle, description, TodoPriority.Medium, ValidUserId);
-
-        Assert.False(result.IsError);
-        Assert.Null(result.Value.Description);
-    }
+    // --- UPDATE TESTS ---
 
     [Fact]
-    public void TryCreate_WithEmptyDescription_ShouldReturnSuccess()
+    public void Update_WithValidValues_ShouldUpdateTodo()
     {
-        var result = Todo.TryCreate(ValidTitle, string.Empty, TodoPriority.Medium, ValidUserId);
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId);
 
-        Assert.False(result.IsError);
-        Assert.Equal(string.Empty, result.Value.Description);
-    }
+        todo.Update("Updated", "Updated description", TodoPriority.High);
 
-    // ------------------------------------------------------------------------
-    // UserId Tests (NEW)
-    // ------------------------------------------------------------------------
-
-    [Fact]
-    public void TryCreate_WithEmptyUserId_ShouldReturnError()
-    {
-        var result = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Medium, "");
-
-        Assert.True(result.IsError);
-        Assert.Contains(result.Errors, e => e.Code == "Todo.UserId");
-    }
-
-    [Fact]
-    public void TryCreate_WithNullUserId_ShouldReturnError()
-    {
-        string? userId = null;
-
-        var result = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Medium, userId!);
-
-        Assert.True(result.IsError);
-        Assert.Contains(result.Errors, e => e.Code == "Todo.UserId");
-    }
-
-    [Fact]
-    public void TryCreate_WithUserIdTooLong_ShouldReturnError()
-    {
-        var userId = new string('x', Todo.MaxUserIdLength + 1);
-
-        var result = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Medium, userId);
-
-        Assert.True(result.IsError);
-        Assert.Contains(result.Errors, e => e.Code == "Todo.UserId");
-    }
-
-    [Fact]
-    public void TryCreate_WithUserIdAtMaxLength_ShouldReturnSuccess()
-    {
-        var userId = new string('x', Todo.MaxUserIdLength);
-
-        var result = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Medium, userId);
-
-        Assert.False(result.IsError);
-        Assert.Equal(userId, result.Value.UserId);
-    }
-
-    // ------------------------------------------------------------------------
-    // Update Tests
-    // ------------------------------------------------------------------------
-
-    [Fact]
-    public void Update_WithValidData_ShouldUpdateTodo()
-    {
-        var createResult = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId);
-        var todo = createResult.Value;
-
-        var updateResult = todo.Update(UpdatedTitle, UpdatedDescription, TodoPriority.High);
-
-        Assert.False(updateResult.IsError);
-        Assert.Equal(UpdatedTitle, todo.Title);
-        Assert.Equal(UpdatedDescription, todo.Description);
+        Assert.Equal("Updated", todo.Title);
+        Assert.Equal("Updated description", todo.Description);
         Assert.Equal(TodoPriority.High, todo.Priority);
     }
 
     [Fact]
-    public void Update_WithInvalidTitle_ShouldReturnError()
+    public void Update_WithTooShortTitle_ShouldThrow()
     {
-        var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId).Value;
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId);
 
-        var updateResult = todo.Update(InvalidShortString, ValidDescription, TodoPriority.High);
-
-        Assert.True(updateResult.IsError);
-        Assert.Contains(updateResult.Errors, e => e.Code == "Todo.MaxTitleLength");
+        Assert.Throws<TodoInvalidTitleException>(() =>
+            todo.Update(TooShortString, ValidDescription, TodoPriority.High));
     }
 
     [Fact]
-    public void Update_WithDescriptionTooShort_ShouldReturnError()
+    public void Update_WithTooLongTitle_ShouldThrow()
     {
-        var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId).Value;
-        var invalidDescription = new string('a', Todo.MinDescriptionLength - 1);
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId);
 
-        var updateResult = todo.Update(ValidTitle, invalidDescription, TodoPriority.High);
-
-        Assert.True(updateResult.IsError);
-        Assert.Contains(updateResult.Errors, e => e.Code == "Todo.Description");
+        Assert.Throws<TodoInvalidTitleException>(() =>
+            todo.Update(TooLongTitle, ValidDescription, TodoPriority.High));
     }
 
     [Fact]
-    public void Update_WithDescriptionTooLong_ShouldReturnError()
+    public void Update_WithTooShortDescription_ShouldThrow()
     {
-        var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId).Value;
-        var invalidDescription = new string('a', Todo.MaxDescriptionLength + 1);
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId);
 
-        var updateResult = todo.Update(ValidTitle, invalidDescription, TodoPriority.High);
-
-        Assert.True(updateResult.IsError);
-        Assert.Contains(updateResult.Errors, e => e.Code == "Todo.Description");
+        Assert.Throws<TodoInvalidDescriptionException>(() =>
+            todo.Update(ValidTitle, TooShortString, TodoPriority.High));
     }
 
     [Fact]
-    public void Update_WithNullDescription_ShouldReturnSuccess()
+    public void Update_WithTooLongDescription_ShouldThrow()
     {
-        var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId).Value;
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId);
 
-        var updateResult = todo.Update(UpdatedTitle, null, TodoPriority.High);
+        Assert.Throws<TodoInvalidDescriptionException>(() =>
+            todo.Update(ValidTitle, TooLongDescription, TodoPriority.High));
+    }
 
-        Assert.False(updateResult.IsError);
+    [Fact]
+    public void Update_WithNullDescription_ShouldUpdate()
+    {
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId);
+
+        todo.Update(ValidTitle, null, TodoPriority.High);
+
         Assert.Null(todo.Description);
     }
 
-    // ------------------------------------------------------------------------
-    // Completion Status Tests
-    // ------------------------------------------------------------------------
+    // --- COMPLETION STATUS ---
 
     [Fact]
-    public void SetCompletionStatus_FromFalseToTrue_ShouldSetCompleted()
+    public void SetCompletionStatus_WhenChanging_ShouldUpdateStatus()
     {
-        var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Medium, ValidUserId).Value;
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Medium, ValidUserId);
 
         todo.SetCompletionStatus(true);
 
@@ -260,35 +164,21 @@ public sealed class TodoTests
     }
 
     [Fact]
-    public void SetCompletionStatus_FromTrueToFalse_ShouldSetNotCompleted()
+    public void SetCompletionStatus_WhenSettingSameValue_ShouldNotChange()
     {
-        var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Medium, ValidUserId).Value;
-        todo.SetCompletionStatus(true);
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Medium, ValidUserId);
 
-        todo.SetCompletionStatus(false);
+        todo.SetCompletionStatus(false); // already false
 
         Assert.False(todo.IsCompleted);
     }
 
-    [Fact]
-    public void SetCompletionStatus_WithSameValue_ShouldNotChange()
-    {
-        var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Medium, ValidUserId).Value;
-
-        todo.SetCompletionStatus(false);
-        todo.SetCompletionStatus(false);
-
-        Assert.False(todo.IsCompleted);
-    }
-
-    // ------------------------------------------------------------------------
-    // Priority Tests
-    // ------------------------------------------------------------------------
+    // --- PRIORITY ---
 
     [Fact]
-    public void ChangePriority_WithDifferentPriority_ShouldUpdatePriority()
+    public void ChangePriority_WhenDifferent_ShouldUpdatePriority()
     {
-        var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId).Value;
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId);
 
         todo.ChangePriority(TodoPriority.High);
 
@@ -296,25 +186,30 @@ public sealed class TodoTests
     }
 
     [Fact]
-    public void ChangePriority_WithSamePriority_ShouldNotChange()
+    public void ChangePriority_WhenSame_ShouldNotChange()
     {
-        var todo = Todo.TryCreate(ValidTitle, ValidDescription, TodoPriority.Medium, ValidUserId).Value;
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Medium, ValidUserId);
 
         todo.ChangePriority(TodoPriority.Medium);
 
         Assert.Equal(TodoPriority.Medium, todo.Priority);
     }
 
-    [Theory]
-    [InlineData(TodoPriority.Low)]
-    [InlineData(TodoPriority.Medium)]
-    [InlineData(TodoPriority.High)]
-    public void TryCreate_WithDifferentPriorities_ShouldReturnSuccess(
-        TodoPriority priority)
-    {
-        var result = Todo.TryCreate(TestTodoTitle, TestDescription, priority, ValidUserId);
+    // --- NAVIGATION PROPERTIES ---
 
-        Assert.False(result.IsError);
-        Assert.Equal(priority, result.Value.Priority);
+    [Fact]
+    public void Tags_ShouldBeEmptyByDefault()
+    {
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId);
+
+        Assert.Empty(todo.Tags);
+    }
+
+    [Fact]
+    public void Attachments_ShouldBeEmptyByDefault()
+    {
+        var todo = new Todo(ValidTitle, ValidDescription, TodoPriority.Low, ValidUserId);
+
+        Assert.Empty(todo.Attachments);
     }
 }

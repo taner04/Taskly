@@ -1,26 +1,27 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Api.Features.Tags.Model;
-using Api.Shared.Features.Api;
-using Api.Shared.Features.Dtos.Tags;
+using Api.Shared.Api;
+using Api.Shared.Dtos.Tags;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Tags;
 
-public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
+public class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private const string Url = Routes.Tags.GetTags;
+    private static string Url => Routes.Tags.GetTags;
 
     [Fact]
-    public async Task GetTags_WhenUserHasTags_ReturnsTagsOnlyForUser()
+    public async Task GetTags_WhenUserHasTags_ReturnsOnlyUserTags()
     {
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        DbContext.Tags.Add(Tag.TryCreate("TagA", userId).Value);
-        DbContext.Tags.Add(Tag.TryCreate("TagB", userId).Value);
-        DbContext.Tags.Add(Tag.TryCreate("OtherUsersTag", "another-user").Value);
+        var tag1 = new Tag("Work", userId);
+        var tag2 = new Tag("Personal", userId);
+        var otherTag = new Tag("Foreign", "auth0|other");
 
+        DbContext.Tags.AddRange(tag1, tag2, otherTag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
         var response = await client.GetAsync(Url, CurrentCancellationToken);
@@ -31,7 +32,9 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 
         Assert.NotNull(tags);
         Assert.Equal(2, tags!.Count);
-        Assert.All(tags, t => Assert.Equal(userId, t.UserId));
+        Assert.Contains(tags, t => t.Name == "Work");
+        Assert.Contains(tags, t => t.Name == "Personal");
+        Assert.DoesNotContain(tags, t => t.Name == "Foreign");
     }
 
     [Fact]
@@ -50,27 +53,7 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
     }
 
     [Fact]
-    public async Task GetTags_WhenTagsBelongToOtherUsers_ReturnsEmptyList()
-    {
-        var client = CreateAuthenticatedClient();
-
-        DbContext.Tags.Add(Tag.TryCreate("OtherUser1Tag", "auth0|user1").Value);
-        DbContext.Tags.Add(Tag.TryCreate("OtherUser2Tag", "auth0|user2").Value);
-
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        var response = await client.GetAsync(Url, CurrentCancellationToken);
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var tags = await response.Content.ReadFromJsonAsync<List<TagDto>>(CurrentCancellationToken);
-
-        Assert.NotNull(tags);
-        Assert.Empty(tags);
-    }
-
-    [Fact]
-    public async Task GetTags_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
+    public async Task GetTags_WhenUserNotAuthenticated_ReturnsUnauthorized()
     {
         var client = CreateUnauthenticatedClient();
 

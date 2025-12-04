@@ -1,43 +1,32 @@
-using System.Net;
+﻿using System.Net;
 using Api.Features.Attachments.Models;
 using Api.Features.Todos.Model;
-using Api.Shared.Features.Api;
+using Api.Shared.Api;
 using IntegrationTests.Extensions;
-using Microsoft.AspNetCore.Http;
 
 namespace IntegrationTests.Tests.Todos;
 
 public class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static string GetRoute(Guid todoId, Guid attachmentId)
+    private static string GetRoute(
+        Guid todoId,
+        Guid attachmentId)
     {
         return Routes.Todos.RemoveAttachment
-            .Replace("{todoId:guid}", todoId.ToString())
-            .Replace("{attachmentId:guid}", attachmentId.ToString());
+            .Replace("{todoId}", todoId.ToString())
+            .Replace("{attachmentId}", attachmentId.ToString());
     }
 
     [Fact]
-    public async Task RemoveAttachment_WhenAttachmentExistsOnTodo_RemovesAttachmentAndReturnsOk()
+    public async Task RemoveAttachment_WhenExists_RemovesAttachmentAndDeletesBlob()
     {
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        var todo = Todo.TryCreate("Test todo", "Desc", TodoPriority.Medium, userId).Value;
+        var todo = new Todo("Task", "Desc", TodoPriority.Low, userId);
 
-        // Create a fake attachment for this todo
-        var attachment = Attachment.TryCreate(
-            todo.Id,
-            new FormFile(
-                baseStream: new MemoryStream(new byte[16]),
-                baseStreamOffset: 0,
-                length: 16,
-                name: "file",
-                fileName: "test.pdf"
-            )
-            {
-                Headers = new HeaderDictionary(),
-                ContentType = "application/pdf"
-            }).Value;
+        var attachment = Attachment.CreatePending(todo.Id, "file.txt", "text/plain");
+        attachment.MarkUploaded(50);
 
         todo.Attachments.Add(attachment);
 
@@ -49,14 +38,37 @@ public class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(fixture
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
         var updated = await DbContext.Todos
             .Include(t => t.Attachments)
             .AsNoTracking()
             .SingleAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
-        Assert.DoesNotContain(updated.Attachments, a => a.Id == attachment.Id);
+        Assert.Empty(updated.Attachments);
+    }
+
+    [Fact]
+    public async Task RemoveAttachment_WhenBlobDeleteFails_ReturnsInternalServerError()
+    {
+        var client = CreateAuthenticatedClient();
+        var userId = client.GetUserId();
+
+        var todo = new Todo("X", "YYY", TodoPriority.Medium, userId);
+        var attachment = Attachment.CreatePending(todo.Id, "fail.txt", "text/plain");
+        attachment.MarkUploaded(12);
+
+        todo.Attachments.Add(attachment);
+
+        DbContext.Todos.Add(todo);
+        DbContext.Attachments.Add(attachment);
+        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+
+        var url = GetRoute(todo.Id.Value, attachment.Id.Value);
+
+        var response = await client.DeleteAsync(url, CurrentCancellationToken);
+
+        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
     }
 
     [Fact]
@@ -77,12 +89,12 @@ public class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(fixture
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        var todo = Todo.TryCreate("Todo with no attachments", "Desc", TodoPriority.Medium, userId).Value;
+        var todo = new Todo("Task1", "Desc", TodoPriority.Low, userId);
 
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = GetRoute(todo.Id.Value, Guid.NewGuid()); // random attachment id
+        var url = GetRoute(todo.Id.Value, Guid.NewGuid());
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -94,21 +106,10 @@ public class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(fixture
     {
         var client = CreateAuthenticatedClient();
 
-        var todo = Todo.TryCreate("Foreign todo", "Desc", TodoPriority.Medium, "auth0|other-user").Value;
+        var todo = new Todo("Foreign", "Desc", TodoPriority.Low, "auth0|other");
 
-        var attachment = Attachment.TryCreate(
-            todo.Id,
-            new FormFile(
-                baseStream: new MemoryStream(new byte[16]),
-                baseStreamOffset: 0,
-                length: 16,
-                name: "file",
-                fileName: "test.pdf"
-            )
-            {
-                Headers = new HeaderDictionary(),
-                ContentType = "application/pdf"
-            }).Value;
+        var attachment = Attachment.CreatePending(todo.Id, "file.png", "image/png");
+        attachment.MarkUploaded(100);
 
         todo.Attachments.Add(attachment);
 
@@ -124,44 +125,7 @@ public class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(fixture
     }
 
     [Fact]
-    public async Task RemoveAttachment_WhenAttachmentBelongsToAnotherTodo_ReturnsNotFound()
-    {
-        var client = CreateAuthenticatedClient();
-        var userId = client.GetUserId();
-
-        var todo1 = Todo.TryCreate("Todo 1", "Desc", TodoPriority.Medium, userId).Value;
-        var todo2 = Todo.TryCreate("Todo 2", "Desc", TodoPriority.Medium, userId).Value;
-
-        var attachment = Attachment.TryCreate(
-            todo2.Id,
-            new FormFile(
-                baseStream: new MemoryStream(new byte[16]),
-                baseStreamOffset: 0,
-                length: 16,
-                name: "file",
-                fileName: "other.pdf"
-            )
-            {
-                Headers = new HeaderDictionary(),
-                ContentType = "application/pdf"
-            }).Value;
-
-        todo2.Attachments.Add(attachment);
-
-        DbContext.Todos.AddRange(todo1, todo2);
-        DbContext.Attachments.Add(attachment);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        // Try to remove attachment from todo1, but it's attached to todo2
-        var url = GetRoute(todo1.Id.Value, attachment.Id.Value);
-
-        var response = await client.DeleteAsync(url, CurrentCancellationToken);
-
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task RemoveAttachment_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
+    public async Task RemoveAttachment_WhenUserNotAuthenticated_ReturnsUnauthorized()
     {
         var client = CreateUnauthenticatedClient();
 

@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Api.Features.Attachments.Models;
 using Api.Features.Tags.Model;
-using Api.Shared.Features.Models;
+using Api.Features.Todos.Exceptions;
+using Api.Shared.Models;
 
 namespace Api.Features.Todos.Model;
 
@@ -17,14 +18,15 @@ public sealed class Todo : Entity<TodoId>
     public const int MinDescriptionLength = 3;
     public const int MaxDescriptionLength = 512;
 
-    public const int MaxUserIdLength = 256;
 
-    private Todo(
+    public Todo(
         string title,
         string? description,
         TodoPriority priority,
         string userId)
     {
+        Validate(title, description);
+
         Id = TodoId.From(Guid.CreateVersion7());
         Title = title;
         Description = description;
@@ -41,56 +43,32 @@ public sealed class Todo : Entity<TodoId>
     public ICollection<Tag> Tags { get; init; } = [];
     public ICollection<Attachment> Attachments { get; init; } = [];
 
-    public static ErrorOr<Todo> TryCreate(
-        string title,
-        string? description,
-        TodoPriority priority,
-        string userId)
-    {
-        if (title.Length is > MaxTitleLength or < MinTitleLength)
-        {
-            return Error.Conflict("Todo.MaxTitleLength",
-                $"The title can not be longer than {MaxTitleLength} characters or less than {MinTitleLength} characters.");
-        }
-
-        if (!string.IsNullOrEmpty(description) &&
-            description.Length is > MaxDescriptionLength or < MinDescriptionLength)
-        {
-            return Error.Conflict("Todo.Description",
-                $"The description can not be longer than {MaxDescriptionLength} characters or less then {MinDescriptionLength} characters.");
-        }
-
-        if (string.IsNullOrEmpty(userId) || userId.Length > MaxUserIdLength)
-        {
-            return Error.Conflict("Todo.UserId", "The userId can not be null or empty.");
-        }
-
-        return new Todo(title, description, priority, userId);
-    }
-
-    public ErrorOr<Success> Update(
+    public void Update(
         string title,
         string? description,
         TodoPriority priority)
     {
+        Validate(title, description);
+
+        Title = title;
+        Description = description;
+        Priority = priority;
+    }
+
+    private static void Validate(
+        string title,
+        string? description)
+    {
         if (title.Length is > MaxTitleLength or < MinTitleLength)
         {
-            return Error.Conflict("Todo.MaxTitleLength",
-                $"The title can not be longer than {MaxTitleLength} characters or less than {MinTitleLength} characters.");
+            throw new TodoInvalidTitleException(title.Length);
         }
 
         if (!string.IsNullOrEmpty(description) &&
             description.Length is > MaxDescriptionLength or < MinDescriptionLength)
         {
-            return Error.Conflict("Todo.Description",
-                $"The description can not be longer than {MaxDescriptionLength} characters or less then {MinDescriptionLength} characters.");
+            throw new TodoInvalidDescriptionException(description.Length);
         }
-
-        Title = title;
-        Description = description;
-        Priority = priority;
-
-        return Result.Success;
     }
 
     public void SetCompletionStatus(

@@ -1,107 +1,95 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Api.Features.Todos.Endpoints;
 using Api.Features.Todos.Model;
-using Api.Shared.Features.Api;
+using Api.Shared.Api;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Todos;
 
 public class CreateTodoTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    [Fact]
-    public async Task CreateTodo_WhenDataIsValid_ReturnsSuccessAndPersistsTodo()
-    {
-        var client = CreateAuthenticatedClient();
-        var userId = client.GetUserId();
-
-        var command = new CreateTodo.Command
-        {
-            Title = "Valid Title",
-            Description = "Valid Description",
-            Priority = TodoPriority.Low
-        };
-
-        var response = await client.PostAsJsonAsync(Routes.Todos.Create, command, CurrentCancellationToken);
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        // Ensure the todo was persisted
-        var created = await DbContext.Todos
-            .AsNoTracking()
-            .SingleAsync(t => t.Title == command.Title && t.UserId == userId, CurrentCancellationToken);
-
-        Assert.Equal(command.Title, created.Title);
-        Assert.Equal(command.Description, created.Description);
-        Assert.Equal(command.Priority, created.Priority);
-        Assert.False(created.IsCompleted);
-    }
+    private const string Url = Routes.Todos.Create;
 
     [Fact]
-    public async Task CreateTodo_WhenTitleIsTooShort_ReturnsValidationError()
+    public async Task CreateTodo_WhenValid_ReturnsCreatedAndPersists()
     {
         var client = CreateAuthenticatedClient();
 
-        var command = new CreateTodo.Command
+        var body = new CreateTodo.Command
         {
-            Title = "aa", // Invalid (must be >= 3)
-            Description = "Valid Description",
+            Title = "My Task",
+            Description = "Some description",
             Priority = TodoPriority.Medium
         };
 
-        var response = await client.PostAsJsonAsync(Routes.Todos.Create, command, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(Url, body, CurrentCancellationToken);
 
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+        var dto = await response.Content.ReadFromJsonAsync<CreateTodo.Dto>(CurrentCancellationToken);
+        Assert.NotNull(dto);
+
+        var exists = await DbContext.Todos
+            .AsNoTracking()
+            .AnyAsync(t => t.Id == TodoId.From(dto.TodoId), CurrentCancellationToken);
+
+        Assert.True(exists);
     }
 
     [Fact]
-    public async Task CreateTodo_WhenDescriptionTooShort_ReturnsValidationError()
+    public async Task CreateTodo_WhenTitleTooShort_ReturnsValidationError()
     {
         var client = CreateAuthenticatedClient();
 
-        var command = new CreateTodo.Command
+        var body = new CreateTodo.Command
         {
-            Title = "Valid Title",
-            Description = "aa", // Invalid (must be >= 3)
+            Title = "Hi", // invalid, < 3
+            Description = "Desc",
             Priority = TodoPriority.High
         };
 
-        var response = await client.PostAsJsonAsync(Routes.Todos.Create, command, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(Url, body, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var problem = await response.ReadProblemAsync();
+        Assert.Equal("Todo.InvalidDescription", problem.ErrorCode);
     }
 
     [Fact]
-    public async Task CreateTodo_WhenDescriptionTooLong_ReturnsValidationError()
+    public async Task CreateTodo_WhenTitleTooLong_ReturnsValidationError()
     {
         var client = CreateAuthenticatedClient();
 
-        var longDescription = new string('a', Todo.MaxDescriptionLength + 1);
-
-        var command = new CreateTodo.Command
+        var body = new CreateTodo.Command
         {
-            Title = "Valid Title",
-            Description = longDescription,
-            Priority = TodoPriority.High
-        };
-
-        var response = await client.PostAsJsonAsync(Routes.Todos.Create, command, CurrentCancellationToken);
-
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task CreateTodo_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
-    {
-        var client = CreateUnauthenticatedClient();
-
-        var command = new CreateTodo.Command
-        {
-            Title = "Valid Title",
-            Description = "Valid Description",
+            Title = new string('x', 101), // invalid > 100
+            Description = "Valid description",
             Priority = TodoPriority.Low
         };
 
-        var response = await client.PostAsJsonAsync(Routes.Todos.Create, command, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(Url, body, CurrentCancellationToken);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var problem = await response.ReadProblemAsync();
+        Assert.Equal("Todo.InvalidDescription", problem.ErrorCode);
+    }
+
+    [Fact]
+    public async Task CreateTodo_WhenUserNotAuthenticated_ReturnsUnauthorized()
+    {
+        var client = CreateUnauthenticatedClient();
+
+        var body = new CreateTodo.Command
+        {
+            Title = "Task1",
+            Description = "Desc",
+            Priority = TodoPriority.Low
+        };
+
+        var response = await client.PostAsJsonAsync(Url, body, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }

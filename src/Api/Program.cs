@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using Api.Composition.OpenApiDocumentTransformers;
+using Api.Composition.Configs;
 using Api.Composition.ServiceExtensions;
 using Api.Features.Attachments.Services;
 using ServiceDefaults;
@@ -8,9 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.Services.AddOpenApi(options => { options.AddDocumentTransformer<BearerDocumentTransformer>(); });
+builder.Services.AddOpenApi(OpenApiConfig.Config);
 
-builder.Services.AddCustomizedProblemDetails();
+builder.Services.AddProblemDetails(ProblemDetailsConfig.Config);
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Api.Features.Tags.Exceptions;
 using Api.Features.Todos.Model;
-using Api.Shared.Features.Models;
+using Api.Shared.Models;
 
 namespace Api.Features.Tags.Model;
 
@@ -13,12 +14,12 @@ public class Tag : Entity<TagId>
     public const int MaxNameLength = 50;
     public const int MinNameLength = 3;
 
-    public const int MaxUserIdLength = 256;
-
-    private Tag(
+    public Tag(
         string name,
         string userId)
     {
+        Validate(name);
+
         Id = TagId.From(Guid.CreateVersion7());
         Name = name;
         UserId = userId;
@@ -29,35 +30,20 @@ public class Tag : Entity<TagId>
 
     public ICollection<Todo> Todos { get; init; } = [];
 
-    public static ErrorOr<Tag> TryCreate(
-        string name,
-        string userId)
+    private static void Validate(
+        string name)
     {
         if (name.Length is > MaxNameLength or < MinNameLength)
         {
-            return Error.Conflict("Tag.Name",
-                $"The name can not be longer than {MaxNameLength} characters or less than {MinNameLength} characters.");
+            throw new TagInvalidNameException(name.Length);
         }
-
-        if (string.IsNullOrEmpty(userId) || userId.Length > MaxUserIdLength)
-        {
-            return Error.Conflict("Tag.UserId",
-                $"The user ID can not be longer than {MaxUserIdLength} characters.");
-        }
-
-        return new Tag(name, userId);
     }
 
-    public ErrorOr<Success> Rename(
+    public void Rename(
         string newName)
     {
-        if (newName.Length is > MaxNameLength or < MinNameLength)
-        {
-            return Error.Conflict("Tag.Name",
-                $"The name can not be longer than {MaxNameLength} characters or less than {MinNameLength} characters.");
-        }
+        Validate(newName);
 
         Name = newName;
-        return Result.Success;
     }
 }

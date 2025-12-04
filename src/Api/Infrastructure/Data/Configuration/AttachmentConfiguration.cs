@@ -20,7 +20,7 @@ internal sealed class AttachmentConfiguration : AuditableConfiguration<Attachmen
             .IsRequired();
 
         builder.Property(t => t.FileSize)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(t => t.BlobName)
             .IsRequired();

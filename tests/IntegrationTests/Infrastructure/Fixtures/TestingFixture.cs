@@ -9,7 +9,7 @@ namespace IntegrationTests.Infrastructure.Fixtures;
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 public sealed class TestingFixture : IAsyncLifetime
 {
-    private readonly AzuriteTestContainer _azuriteTestContainer = new();
+    private readonly BlobContainer _blobContainer = new();
     private readonly PostgresTestDatabase _postgresTestDatabase = new();
     private string _jwtToken = null!;
     private IServiceScopeFactory _serviceScopeFactory = null!;
@@ -18,9 +18,9 @@ public sealed class TestingFixture : IAsyncLifetime
     public async ValueTask InitializeAsync()
     {
         await _postgresTestDatabase.InitializeAsync();
-        await _azuriteTestContainer.InitializeAsync();
+        await _blobContainer.InitializeAsync();
 
-        _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection);
+        _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection, _blobContainer.ConnectionString);
         _serviceScopeFactory = _webApiFactory.Services.GetRequiredService<IServiceScopeFactory>();
 
         _jwtToken = await new Auth0Service(InitConfiguration()).GetAccessTokenAsync();

@@ -17,7 +17,6 @@ internal sealed class TagConfiguration : AuditableConfiguration<Tag>
             .HasMaxLength(Tag.MaxNameLength);
 
         builder.Property(t => t.UserId)
-            .IsRequired()
-            .HasMaxLength(Tag.MaxUserIdLength);
+            .IsRequired();
     }
 }

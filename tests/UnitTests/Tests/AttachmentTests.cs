@@ -1,139 +1,121 @@
-﻿using System.Text;
+﻿using Api.Features.Attachments.Exceptions;
 using Api.Features.Attachments.Models;
 using Api.Features.Todos.Model;
-using Microsoft.AspNetCore.Http;
 
 namespace UnitTests.Tests;
 
 public sealed class AttachmentTests
 {
+    private const string ValidFileName = "file.pdf";
+    private const string ValidContentType = "application/pdf";
+
+    private const string InvalidFileName = "file.exe";
+    private const long ValidFileSize = 1024;
+    private const long TooLargeFileSize = AttachmentTestsMaxSize + 1;
+
+    private const long AttachmentTestsMaxSize = 10 * 1024 * 1024; // 10MB from entity
     private readonly TodoId _todoId = TodoId.From(Guid.NewGuid());
 
-    private static FormFile CreateFakeFile(
-        string fileName,
-        string contentType = "application/octet-stream",
-        int sizeInBytes = 100)
-    {
-        var bytes = Encoding.UTF8.GetBytes(new string('x', sizeInBytes));
-        return new FormFile(new MemoryStream(bytes), 0, bytes.Length, "file", fileName)
-        {
-            Headers = new HeaderDictionary(),
-            ContentType = contentType
-        };
-    }
-
     [Fact]
-    public void TryCreate_WithValidFile_ShouldReturnAttachment()
+    public void Create_WithValidValues_ShouldReturnAttachment()
     {
-        var file = CreateFakeFile("test.pdf", "application/pdf", 500);
-
-        var result = Attachment.TryCreate(_todoId, file);
-
-        Assert.False(result.IsError);
-
-        var attachment = result.Value;
+        var attachment = Attachment.CreatePending(_todoId, ValidFileName, ValidContentType);
 
         Assert.Equal(_todoId, attachment.TodoId);
-        Assert.Equal("test.pdf", attachment.FileName);
-        Assert.Equal("application/pdf", attachment.ContentType);
-        Assert.Equal(500, attachment.FileSize);
+        Assert.Equal("file.pdf", attachment.FileName);
+        Assert.Equal(ValidContentType, attachment.ContentType);
 
         Assert.StartsWith($"todo/{_todoId.Value}/", attachment.BlobName);
         Assert.EndsWith(".pdf", attachment.BlobName);
 
+        Assert.Equal(AttachmentStatus.Pending, attachment.Status);
         Assert.Equal(Attachment.DefaultContainer, attachment.Container);
+
+        Assert.NotEqual(Guid.Empty, attachment.Id.Value);
     }
 
     [Fact]
-    public void TryCreate_WithFileNameTooLong_ShouldReturnError()
+    public void Create_WithInvalidExtension_ShouldThrow()
     {
-        var longName = new string('a', Attachment.MaxFileNameLength + 1) + ".txt";
-        var file = CreateFakeFile(longName);
-
-        var result = Attachment.TryCreate(_todoId, file);
-
-        Assert.True(result.IsError);
-        Assert.Contains(result.Errors, e => e.Code == "Attachment.FileName");
-    }
-
-    [Fact]
-    public void TryCreate_WithFileSizeTooLarge_ShouldReturnError()
-    {
-        // Just over 10 MB
-        var file = CreateFakeFile("bigfile.txt", "text/plain", 10 * 1024 * 1024 + 1);
-
-        var result = Attachment.TryCreate(_todoId, file);
-
-        Assert.True(result.IsError);
-        Assert.Contains(result.Errors, e => e.Code == "Attachment.FileSize");
+        Assert.Throws<AttachmentInvalidExtensionException>(() =>
+            Attachment.CreatePending(_todoId, InvalidFileName, "application/octet-stream"));
     }
 
     [Theory]
-    [InlineData("report.exe")]
-    [InlineData("script.cs")]
-    [InlineData("archive.zip")]
-    [InlineData("virus.bat")]
-    public void TryCreate_WithInvalidFileType_ShouldReturnError(
-        string fileName)
-    {
-        var file = CreateFakeFile(fileName);
-
-        var result = Attachment.TryCreate(_todoId, file);
-
-        Assert.True(result.IsError);
-        Assert.Contains(result.Errors, e => e.Code == "Attachment.FileType");
-    }
-
-    [Theory]
-    [InlineData("file.txt")]
-    [InlineData("image.jpg")]
+    [InlineData("text.txt")]
+    [InlineData("pic.jpg")]
     [InlineData("photo.jpeg")]
-    [InlineData("document.pdf")]
-    [InlineData("info.json")]
-    [InlineData("logo.png")]
-    public void TryCreate_WithValidExtensions_ShouldReturnSuccess(
+    [InlineData("scan.png")]
+    [InlineData("doc.pdf")]
+    [InlineData("data.json")]
+    public void Create_WithAllowedExtensions_ShouldNotThrow(
         string fileName)
     {
-        var file = CreateFakeFile(fileName);
+        var attachment = Attachment.CreatePending(_todoId, fileName, "application/test");
 
-        var result = Attachment.TryCreate(_todoId, file);
-
-        Assert.False(result.IsError);
         Assert.Equal(Path.GetExtension(fileName).TrimStart('.'),
-            Path.GetExtension(result.Value.BlobName).TrimStart('.'));
+            Path.GetExtension(attachment.BlobName).TrimStart('.'));
     }
 
     [Fact]
-    public void TryCreate_ShouldNormalizeFileName()
+    public void MarkUploaded_WithValidFileSize_ShouldSetStatusAndFileSize()
     {
-        var file = CreateFakeFile("weird///name..jpg", "image/jpeg");
+        var attachment = Attachment.CreatePending(_todoId, ValidFileName, ValidContentType);
 
-        var result = Attachment.TryCreate(_todoId, file);
+        attachment.MarkUploaded(ValidFileSize);
 
-        Assert.False(result.IsError);
-        Assert.Equal("name..jpg", result.Value.FileName);
+        Assert.Equal(ValidFileSize, attachment.FileSize);
+        Assert.Equal(AttachmentStatus.Uploaded, attachment.Status);
     }
 
     [Fact]
-    public void TryCreate_ShouldGenerateUniqueBlobName()
+    public void MarkUploaded_WithZeroFileSize_ShouldThrow()
     {
-        var file1 = CreateFakeFile("a.txt");
-        var file2 = CreateFakeFile("a.txt");
+        var attachment = Attachment.CreatePending(_todoId, ValidFileName, ValidContentType);
 
-        var r1 = Attachment.TryCreate(_todoId, file1).Value.BlobName;
-        var r2 = Attachment.TryCreate(_todoId, file2).Value.BlobName;
-
-        Assert.NotEqual(r1, r2);
+        Assert.Throws<AttachmentInvalidFileSizeException>(() => attachment.MarkUploaded(0));
     }
 
     [Fact]
-    public void TryCreate_WhenExtensionMissing_ShouldReject()
+    public void MarkUploaded_WithNegativeFileSize_ShouldThrow()
     {
-        var file = CreateFakeFile("noextension", "text/plain");
+        var attachment = Attachment.CreatePending(_todoId, ValidFileName, ValidContentType);
 
-        var result = Attachment.TryCreate(_todoId, file);
+        Assert.Throws<AttachmentInvalidFileSizeException>(() => attachment.MarkUploaded(-1));
+    }
 
-        Assert.True(result.IsError);
-        Assert.Contains(result.Errors, e => e.Code == "Attachment.FileType");
+    [Fact]
+    public void MarkUploaded_WithFileSizeTooLarge_ShouldThrow()
+    {
+        var attachment = Attachment.CreatePending(_todoId, ValidFileName, ValidContentType);
+
+        Assert.Throws<AttachmentInvalidFileSizeException>(() => attachment.MarkUploaded(TooLargeFileSize));
+    }
+
+    [Fact]
+    public void GetDownloadUrl_ShouldReturnExpectedFormat()
+    {
+        var attachment = Attachment.CreatePending(_todoId, ValidFileName, ValidContentType);
+
+        var url = attachment.GetDownloadUrl();
+
+        Assert.Equal($"/attachments/{attachment.Id.Value}/download", url);
+    }
+
+    [Fact]
+    public void Create_ShouldNormalizeFileName()
+    {
+        var attachment = Attachment.CreatePending(_todoId, "weird///name..jpg", "image/jpeg");
+
+        Assert.Equal("name..jpg", attachment.FileName);
+    }
+
+    [Fact]
+    public void Create_ShouldGenerateUniqueBlobNames()
+    {
+        var a1 = Attachment.CreatePending(_todoId, "file.pdf", "application/pdf").BlobName;
+        var a2 = Attachment.CreatePending(_todoId, "file.pdf", "application/pdf").BlobName;
+
+        Assert.NotEqual(a1, a2);
     }
 }

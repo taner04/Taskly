@@ -1,107 +1,101 @@
 ﻿using System.Net;
 using Api.Features.Tags.Model;
 using Api.Features.Todos.Model;
-using Api.Shared.Features.Api;
+using Api.Shared.Api;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Tags;
 
 public class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture)
 {
+    private static string GetRoute(
+        Guid tagId)
+    {
+        return Routes.Tags.Remove.Replace("{tagId:guid}", tagId.ToString());
+    }
+
     [Fact]
-    public async Task DeleteTag_WhenTagExistsAndBelongsToUser_DeletesTag()
+    public async Task DeleteTag_WhenTagExistsAndBelongsToUser_RemovesTagAndDetachesFromTodos()
     {
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        var tag = Tag.TryCreate("DeleteMe", userId).Value;
-        DbContext.Tags.Add(tag);
+        var createdTag = new Tag("Work", userId);
+
+        var todo = new Todo("Todo1", "Desc", TodoPriority.Medium, userId);
+        todo.Tags.Add(createdTag);
+
+        DbContext.Tags.Add(createdTag);
+        DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = Routes.Tags.Remove.ParseTagRoute(tag.Id.Value);
+        var url = GetRoute(createdTag.Id.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var exists = await DbContext.Tags.AnyAsync(t => t.Id == tag.Id, CurrentCancellationToken);
-        Assert.False(exists);
+        Assert.False(await DbContext.Tags.AsNoTracking()
+            .AnyAsync(t => t.Id == createdTag.Id, CurrentCancellationToken));
+
+        var updatedTodos = await DbContext.Todos
+            .AsNoTracking()
+            .Include(t => t.Tags)
+            .Where(t => t.UserId == userId)
+            .ToListAsync(CurrentCancellationToken);
+
+        Assert.Contains(updatedTodos, t => t.Id == todo.Id && t.Tags.Count == 0);
     }
 
     [Fact]
-    public async Task DeleteTag_WhenTagDoesNotExist_ReturnsNotFound()
+    public async Task DeleteTag_WhenTagDoesNotExist_ReturnsBadRequestWithCorrectProblemDetails()
     {
         var client = CreateAuthenticatedClient();
-        var url = Routes.Tags.Remove.ParseTagRoute(Guid.NewGuid());
+        var missingTagId = TagId.From(Guid.NewGuid());
+
+        var url = GetRoute(missingTagId.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var problem = await response.ReadProblemAsync();
+
+        Assert.Equal("Tag.NotFound", problem.ErrorCode);
+        Assert.Equal("CouldNot find tag.", problem.Title);
+        Assert.Contains(missingTagId.Value.ToString(), problem.Detail);
+
+        Assert.Empty(problem.Errors);
     }
 
     [Fact]
-    public async Task DeleteTag_WhenTagBelongsToAnotherUser_ReturnsNotFound()
+    public async Task DeleteTag_WhenTagBelongsToAnotherUser_ReturnsBadRequest()
     {
         var client = CreateAuthenticatedClient();
 
-        var tag = Tag.TryCreate("OtherUsersTag", "auth0|someoneElse").Value;
+        var tag = new Tag("OtherTag", "auth0|other-user");
+
         DbContext.Tags.Add(tag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = Routes.Tags.Remove.ParseTagRoute(tag.Id.Value);
+        var url = GetRoute(tag.Id.Value);
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-    }
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
-    [Fact]
-    public async Task DeleteTag_WhenTagIsAssociatedWithTodos_RemovesTagFromAllTodos()
-    {
-        var client = CreateAuthenticatedClient();
-        var userId = client.GetUserId();
+        var problem = await response.ReadProblemAsync();
 
-        var tag = Tag.TryCreate("TagToDelete", userId).Value;
-        DbContext.Tags.Add(tag);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        // Create todos and associate them with the tag
-        var todo1 = Todo.TryCreate("Todo 1", "Description", TodoPriority.High, userId).Value;
-        var todo2 = Todo.TryCreate("Todo 2", "Description", TodoPriority.Low, userId).Value;
-
-        todo1.Tags.Add(tag);
-        todo2.Tags.Add(tag);
-
-        DbContext.Todos.AddRange(todo1, todo2);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        var url = Routes.Tags.Remove.ParseTagRoute(tag.Id.Value);
-
-        var response = await client.DeleteAsync(url, CurrentCancellationToken);
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        // Verify tag was deleted
-        var tagExists = await DbContext.Tags.AnyAsync(t => t.Id == tag.Id, CurrentCancellationToken);
-        Assert.False(tagExists);
-
-        // Verify todos still exist but no longer have the tag
-        var updatedTodo1 = await DbContext.Todos.AsNoTracking()
-            .Include(t => t.Tags)
-            .SingleAsync(t => t.Id == todo1.Id, CurrentCancellationToken);
-        var updatedTodo2 = await DbContext.Todos.AsNoTracking()
-            .Include(t => t.Tags)
-            .SingleAsync(t => t.Id == todo2.Id, CurrentCancellationToken);
-
-        Assert.Empty(updatedTodo1.Tags);
-        Assert.Empty(updatedTodo2.Tags);
+        Assert.Equal("Tag.NotFound", problem.ErrorCode);
+        Assert.Equal("CouldNot find tag.", problem.Title);
+        Assert.Empty(problem.Errors);
     }
 
     [Fact]
     public async Task DeleteTag_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
     {
         var client = CreateUnauthenticatedClient();
-
-        var url = Routes.Tags.Remove.ParseTagRoute(Guid.NewGuid());
+        var url = GetRoute(Guid.NewGuid());
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 

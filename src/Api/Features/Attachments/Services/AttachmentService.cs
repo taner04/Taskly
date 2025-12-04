@@ -1,6 +1,6 @@
 ﻿using Api.Features.Attachments.Models;
-using Azure;
 using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
 
 namespace Api.Features.Attachments.Services;
 
@@ -16,61 +16,58 @@ public sealed class AttachmentService(
         await _container.CreateIfNotExistsAsync();
     }
 
-    public async Task<Stream?> DownloadAsync(
-        Attachment attachment,
-        CancellationToken ct)
+    public SasDownloadResult GenerateDownloadSas(
+        Attachment attachment)
     {
         var blob = _container.GetBlobClient(attachment.BlobName);
 
-        try
+        if (!blob.CanGenerateSasUri)
         {
-            if (!await blob.ExistsAsync(ct))
-            {
-                return null;
-            }
+            throw new InvalidOperationException("SAS generation not allowed.");
+        }
 
-            var response = await blob.DownloadAsync(ct);
+        var sasBuilder = new BlobSasBuilder
+        {
+            BlobContainerName = attachment.Container,
+            BlobName = attachment.BlobName,
+            Resource = "b",
+            ExpiresOn = DateTime.UtcNow.AddMinutes(5)
+        };
 
-            return response.Value.Content;
-        }
-        catch (RequestFailedException ex) when (ex.Status == 404)
-        {
-            logger.LogError(ex, "Attachment {AttachmentBlobName} not found", attachment.BlobName);
-            return null;
-        }
-        catch (RequestFailedException ex)
-        {
-            logger.LogError(ex, "Azure request failure during blob download");
-            return null;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Unexpected error during blob download");
-            return null;
-        }
+        sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+        var sasUri = blob.GenerateSasUri(sasBuilder);
+
+        return new SasDownloadResult(sasUri.ToString());
     }
 
-
-    public async Task<bool> UploadAsync(
-        IFormFile file,
-        Attachment attachment,
-        CancellationToken ct)
+    public SasUploadResult GenerateUploadSas(
+        Attachment attachment)
     {
-        try
+        var blobClient = _container.GetBlobClient(attachment.BlobName);
+
+        if (!blobClient.CanGenerateSasUri)
         {
-            var blob = _container.GetBlobClient(attachment.BlobName);
-
-            await using var stream = file.OpenReadStream();
-
-            await blob.UploadAsync(stream, false, ct);
-
-            return true;
+            throw new InvalidOperationException(
+                "Cannot generate SAS URL. Ensure BlobServiceClient is created with a key credential.");
         }
-        catch (Exception ex)
+
+        var sasBuilder = new BlobSasBuilder
         {
-            logger.LogError(ex,"Failed to upload attachment {AttachmentBlobName}", attachment.BlobName);
-            return false;
-        }
+            BlobContainerName = _container.Name,
+            BlobName = attachment.BlobName,
+            Resource = "blob",
+            ExpiresOn = DateTime.UtcNow.AddMinutes(10)
+        };
+
+        sasBuilder.SetPermissions(BlobSasPermissions.Create | BlobSasPermissions.Write);
+
+        var sasUri = blobClient.GenerateSasUri(sasBuilder);
+
+        return new SasUploadResult(
+            sasUri.ToString(),
+            attachment.BlobName
+        );
     }
 
     public async Task<bool> DeleteAsync(
@@ -80,15 +77,18 @@ public sealed class AttachmentService(
         try
         {
             var blob = _container.GetBlobClient(attachment.BlobName);
-
             var response = await blob.DeleteIfExistsAsync(cancellationToken: ct);
 
             return response.Value;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Attachment {AttachmentBlobName} not found", attachment.BlobName);
+            logger.LogError(ex, "Failed to delete blob {Blob}", attachment.BlobName);
             return false;
         }
     }
+
+    public sealed record SasDownloadResult(string DownloadUrl);
+
+    public sealed record SasUploadResult(string UploadUrl, string BlobPath);
 }

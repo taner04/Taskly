@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using Api;
 using Api.Infrastructure.Data.Interceptors;
+using Azure.Storage.Blobs;
 using IntegrationTests.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -10,7 +11,7 @@ using ServiceDefaults;
 
 namespace IntegrationTests.Infrastructure;
 
-public class WebApiFactory(DbConnection connection) : WebApplicationFactory<Program>
+public class WebApiFactory(DbConnection connection, string azuriteConnectionString) : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(
         IWebHostBuilder builder)
@@ -44,9 +45,17 @@ public class WebApiFactory(DbConnection connection) : WebApplicationFactory<Prog
                 opt.EnableDetailedErrors();
                 opt.UseNpgsql(connection.ConnectionString);
             });
+
+            var existing = services.SingleOrDefault(s => s.ServiceType == typeof(BlobServiceClient));
+
+            if (existing != null)
+            {
+                services.Remove(existing);
+            }
+
+            services.AddSingleton(new BlobServiceClient(azuriteConnectionString));
         });
 
         builder.UseSetting($"ConnectionStrings:{AppHostConstants.Database}", connection.ConnectionString);
-        builder.UseSetting("ConnectionStrings:AzureBlobStorage", "UseDevelopmentStorage=true");
     }
 }

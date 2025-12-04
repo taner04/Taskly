@@ -27,8 +27,7 @@ internal sealed class TodoConfiguration : AuditableConfiguration<Todo>
             .IsRequired();
 
         builder.Property(t => t.UserId)
-            .IsRequired()
-            .HasMaxLength(Todo.MaxUserIdLength);
+            .IsRequired();
 
         builder
             .HasMany(t => t.Tags)

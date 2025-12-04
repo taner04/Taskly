@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Api.Features.Tags.Model;
 using Api.Features.Todos.Model;
-using Api.Shared.Features.Api;
+using Api.Shared.Api;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Todos;
@@ -13,8 +13,8 @@ public class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture)
         Guid tagId)
     {
         return Routes.Todos.RemoveTag
-            .Replace("{todoId:guid}", todoId.ToString())
-            .Replace("{tagId:guid}", tagId.ToString());
+            .Replace("{todoId}", todoId.ToString())
+            .Replace("{tagId}", tagId.ToString());
     }
 
     [Fact]
@@ -23,8 +23,8 @@ public class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture)
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        var todo = Todo.TryCreate("Task1", "Desc", TodoPriority.Medium, userId).Value;
-        var tag = Tag.TryCreate("TagX", userId).Value;
+        var todo = new Todo("Task1", "Desc", TodoPriority.Medium, userId);
+        var tag = new Tag("TagX", userId);
 
         todo.Tags.Add(tag);
 
@@ -36,7 +36,7 @@ public class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture)
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
         var updated = await DbContext.Todos
             .Include(t => t.Tags)
@@ -64,11 +64,12 @@ public class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture)
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        var todo = Todo.TryCreate("TodoX", "Desc", TodoPriority.Medium, userId).Value;
+        var todo = new Todo("TodoX", "Desc", TodoPriority.Medium, userId);
+
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = GetRoute(todo.Id.Value, Guid.NewGuid()); // tag does not exist on todo
+        var url = GetRoute(todo.Id.Value, Guid.NewGuid());
 
         var response = await client.DeleteAsync(url, CurrentCancellationToken);
 
@@ -76,12 +77,33 @@ public class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture)
     }
 
     [Fact]
-    public async Task RemoveTag_WhenTodoBelongsToAnotherUser_ReturnsNotFound()
+    public async Task RemoveTag_WhenTagBelongsToOtherUser_ReturnsNotFound()
     {
         var client = CreateAuthenticatedClient();
+        var userId = client.GetUserId();
 
-        var todo = Todo.TryCreate("WrongTodo", "Desc", TodoPriority.Medium, "auth0|otherUser").Value;
-        var tag = Tag.TryCreate("Tag1", client.GetUserId()).Value;
+        var todo = new Todo("TodoY", "Desc", TodoPriority.Medium, userId);
+        var foreignTag = new Tag("OtherTag", "auth0|other");
+
+        DbContext.Todos.Add(todo);
+        DbContext.Tags.Add(foreignTag);
+        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+
+        var url = GetRoute(todo.Id.Value, foreignTag.Id.Value);
+
+        var response = await client.DeleteAsync(url, CurrentCancellationToken);
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task RemoveTag_WhenTodoBelongsToOtherUser_ReturnsNotFound()
+    {
+        var client = CreateAuthenticatedClient();
+        var foreignUserId = "auth0|other";
+
+        var todo = new Todo("OtherTodo", "Desc", TodoPriority.Medium, foreignUserId);
+        var tag = new Tag("TagX", client.GetUserId());
 
         todo.Tags.Add(tag);
 
@@ -97,27 +119,7 @@ public class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture)
     }
 
     [Fact]
-    public async Task RemoveTag_WhenTagBelongsToAnotherUser_ReturnsNotFound()
-    {
-        var client = CreateAuthenticatedClient();
-        var userId = client.GetUserId();
-
-        var todo = Todo.TryCreate("TodoY", "Desc", TodoPriority.Medium, userId).Value;
-        var foreignTag = Tag.TryCreate("Foreign", "auth0|otherUser").Value;
-
-        DbContext.Todos.Add(todo);
-        DbContext.Tags.Add(foreignTag);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        var url = GetRoute(todo.Id.Value, foreignTag.Id.Value);
-
-        var response = await client.DeleteAsync(url, CurrentCancellationToken);
-
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task RemoveTag_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
+    public async Task RemoveTag_WhenUserNotAuthenticated_ReturnsUnauthorized()
     {
         var client = CreateUnauthenticatedClient();
 

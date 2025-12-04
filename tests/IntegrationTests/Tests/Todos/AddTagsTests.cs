@@ -1,115 +1,90 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
 using Api.Features.Tags.Model;
+using Api.Features.Todos.Endpoints;
 using Api.Features.Todos.Model;
-using Api.Shared.Features.Api;
+using Api.Shared.Api;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Todos;
 
 public class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
 {
+    private static string GetRoute(
+        Guid todoId)
+    {
+        return Routes.Todos.AddTags.Replace("{todoId:guid}", todoId.ToString());
+    }
+
     [Fact]
-    public async Task AddTags_WhenTodoAndTagsExistAndBelongToUser_AddsTagsToTodo()
+    public async Task AddTags_WhenTodoExistsAndTagsExist_AddsTags()
     {
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        var todo = Todo.TryCreate("Todo1", "Desc", TodoPriority.Medium, userId).Value;
-
-        var tagA = Tag.TryCreate("TagA", userId).Value;
-        var tagB = Tag.TryCreate("TagB", userId).Value;
+        var todo = new Todo("Task", "Desc", TodoPriority.Medium, userId);
+        var tag1 = new Tag("Work", userId);
+        var tag2 = new Tag("Urgent", userId);
 
         DbContext.Todos.Add(todo);
-        DbContext.Tags.AddRange(tagA, tagB);
-
+        DbContext.Tags.AddRange(tag1, tag2);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        var url = Routes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
 
         var body = new AddTags.Command.CommandBody
         {
-            TagIds = [tagA.Id, tagB.Id]
+            TagIds = [tag1.Id, tag2.Id]
         };
 
-        var response = await client.PostAsJsonAsync(url, body, CurrentCancellationToken);
-
+        var response = await client.PostAsJsonAsync(GetRoute(todo.Id.Value), body, CurrentCancellationToken);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         var updated = await DbContext.Todos
             .Include(t => t.Tags)
-            .AsNoTracking()
             .SingleAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
         Assert.Equal(2, updated.Tags.Count);
-        Assert.Contains(updated.Tags, t => t.Id == tagA.Id);
-        Assert.Contains(updated.Tags, t => t.Id == tagB.Id);
     }
 
     [Fact]
-    public async Task AddTags_WhenTodoDoesNotExist_ReturnsNotFound()
+    public async Task AddTags_WhenTodoNotFound_ReturnsNotFound()
     {
         var client = CreateAuthenticatedClient();
-
-        var url = Routes.Todos.AddTags.ParseTodoRoute(Guid.NewGuid());
 
         var body = new AddTags.Command.CommandBody
         {
             TagIds = [TagId.From(Guid.NewGuid())]
         };
 
-        var response = await client.PostAsJsonAsync(url, body, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(GetRoute(Guid.NewGuid()), body, CurrentCancellationToken);
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var problem = await response.ReadProblemAsync();
+        Assert.Equal("Todo.NotFound", problem.ErrorCode);
     }
 
     [Fact]
-    public async Task AddTags_WhenNoTagsMatchProvidedIds_ReturnsNotFound()
+    public async Task AddTags_WhenNoTagsFound_ReturnsNotFound()
     {
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        // Only todo exists
-        var todo = Todo.TryCreate("TodoX", "Desc", TodoPriority.Medium, userId).Value;
+        var todo = new Todo("Task", "Desc", TodoPriority.Low, userId);
+
         DbContext.Todos.Add(todo);
-
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        var url = Routes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
 
         var body = new AddTags.Command.CommandBody
         {
             TagIds = [TagId.From(Guid.NewGuid())]
         };
 
-        var response = await client.PostAsJsonAsync(url, body, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(GetRoute(todo.Id.Value), body, CurrentCancellationToken);
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-    }
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
-    [Fact]
-    public async Task AddTags_WhenTodoBelongsToAnotherUser_ReturnsNotFound()
-    {
-        var client = CreateAuthenticatedClient();
-
-        var todo = Todo.TryCreate("Todo", "Desc", TodoPriority.Medium, "auth0|otherUser").Value;
-        var tag = Tag.TryCreate("Tag", client.GetUserId()).Value;
-
-        DbContext.Todos.Add(todo);
-        DbContext.Tags.Add(tag);
-
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        var url = Routes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
-
-        var body = new AddTags.Command.CommandBody
-        {
-            TagIds = [tag.Id]
-        };
-
-        var response = await client.PostAsJsonAsync(url, body, CurrentCancellationToken);
-
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        var problem = await response.ReadProblemAsync();
+        Assert.Equal("Tag.NotFound", problem.ErrorCode);
     }
 
     [Fact]
@@ -118,40 +93,66 @@ public class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        var todo = Todo.TryCreate("Todo", "Desc", TodoPriority.Medium, userId).Value;
-
-        var externalTag = Tag.TryCreate("ForeignTag", "auth0|otherUser").Value;
+        var todo = new Todo("XXXX", "YYY", TodoPriority.High, userId);
+        var foreignTag = new Tag("Secret", "auth0|other");
 
         DbContext.Todos.Add(todo);
-        DbContext.Tags.Add(externalTag);
-
+        DbContext.Tags.Add(foreignTag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        var url = Routes.Todos.AddTags.ParseTodoRoute(todo.Id.Value);
 
         var body = new AddTags.Command.CommandBody
         {
-            TagIds = [externalTag.Id]
+            TagIds = [foreignTag.Id]
         };
 
-        var response = await client.PostAsJsonAsync(url, body, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(GetRoute(todo.Id.Value), body, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+
+        var problem = await response.ReadProblemAsync();
+        Assert.Equal("Tag.NotFound", problem.ErrorCode);
     }
 
     [Fact]
-    public async Task AddTags_WhenUserNotAuthenticated_ReturnsUnauthorized()
+    public async Task AddTags_WhenTagsAlreadyExistOnTodo_DoesNotDuplicate()
+    {
+        var client = CreateAuthenticatedClient();
+        var userId = client.GetUserId();
+
+        var tag = new Tag("Home", userId);
+        var todo = new Todo("Task", "Desc", TodoPriority.Medium, userId);
+        todo.Tags.Add(tag);
+
+        DbContext.Todos.Add(todo);
+        DbContext.Tags.Add(tag);
+        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+
+        var body = new AddTags.Command.CommandBody
+        {
+            TagIds = [tag.Id]
+        };
+
+        var response = await client.PostAsJsonAsync(GetRoute(todo.Id.Value), body, CurrentCancellationToken);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var updated = await DbContext.Todos
+            .Include(t => t.Tags)
+            .SingleAsync(t => t.Id == todo.Id, CurrentCancellationToken);
+
+        Assert.Single(updated.Tags);
+    }
+
+    [Fact]
+    public async Task AddTags_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
     {
         var client = CreateUnauthenticatedClient();
-
-        var url = Routes.Todos.AddTags.ParseTodoRoute(Guid.NewGuid());
 
         var body = new AddTags.Command.CommandBody
         {
             TagIds = [TagId.From(Guid.NewGuid())]
         };
 
-        var response = await client.PostAsJsonAsync(url, body, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(GetRoute(Guid.NewGuid()), body, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }

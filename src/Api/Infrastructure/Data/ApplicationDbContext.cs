@@ -10,7 +10,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Todo> Todos => Set<Todo>();
     public DbSet<Tag> Tags => Set<Tag>();
     public DbSet<Attachment> Attachments => Set<Attachment>();
-    
+
     protected override void OnModelCreating(
         ModelBuilder modelBuilder)
     {

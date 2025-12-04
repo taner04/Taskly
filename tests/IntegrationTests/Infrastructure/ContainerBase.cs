@@ -5,24 +5,10 @@ namespace IntegrationTests.Infrastructure;
 public abstract class ContainerBase<T> : IAsyncLifetime where T : DockerContainer
 {
     private const int MaxRetries = 5;
+
     protected T Container = null!;
 
-    public async ValueTask DisposeAsync()
-    {
-        await Container.StopAsync();
-        await Container.DisposeAsync();
-
-        GC.SuppressFinalize(this);
-    }
-
     public async ValueTask InitializeAsync()
-    {
-        await StartWithRetryAsync();
-    }
-
-    protected abstract T BuildContainer();
-
-    private async ValueTask StartWithRetryAsync()
     {
         Container = BuildContainer();
 
@@ -46,4 +32,14 @@ public abstract class ContainerBase<T> : IAsyncLifetime where T : DockerContaine
             }
         }
     }
+
+    public async ValueTask DisposeAsync()
+    {
+        await Container.StopAsync();
+        await Container.DisposeAsync();
+
+        GC.SuppressFinalize(this);
+    }
+
+    protected abstract T BuildContainer();
 }

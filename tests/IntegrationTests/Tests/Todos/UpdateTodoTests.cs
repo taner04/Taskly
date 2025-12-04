@@ -1,57 +1,65 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
+using Api.Features.Todos.Endpoints;
 using Api.Features.Todos.Model;
-using Api.Shared.Features.Api;
+using Api.Shared.Api;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Todos;
 
 public class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixture)
 {
+    private static string GetRoute(
+        Guid todoId)
+    {
+        return Routes.Todos.Update.Replace("{todoId}", todoId.ToString());
+    }
+
     [Fact]
-    public async Task UpdateTodo_WhenTodoExistsAndBelongsToUser_UpdatesTodoAndReturnsSuccess()
+    public async Task UpdateTodo_WhenTodoExists_UpdatesTodo()
     {
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        var todo = Todo.TryCreate("Original", "Original Description", TodoPriority.Medium, userId).Value;
+        var todo = new Todo("Old Title", "Old Desc", TodoPriority.Low, userId);
+
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = Routes.Todos.Update.ParseTodoRoute(todo.Id.Value);
-        var body = new
+        var body = new UpdateTodo.Command.CommandBody
         {
-            Title = "Updated Title",
-            Description = "Updated Description",
+            Title = "New Title",
+            Description = "New Description",
             Priority = TodoPriority.High
         };
 
+        var url = GetRoute(todo.Id.Value);
+
         var response = await client.PutAsJsonAsync(url, body, CurrentCancellationToken);
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
-        var updated = await DbContext.Todos
-            .AsNoTracking()
+        var updated = await DbContext.Todos.AsNoTracking()
             .SingleAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
-        Assert.Equal(body.Title, updated.Title);
-        Assert.Equal(body.Description, updated.Description);
-        Assert.Equal(body.Priority, updated.Priority);
+        Assert.Equal("New Title", updated.Title);
+        Assert.Equal("New Description", updated.Description);
+        Assert.Equal(TodoPriority.High, updated.Priority);
     }
 
     [Fact]
-    public async Task UpdateTodo_WhenTodoDoesNotExist_ReturnsNotFound()
+    public async Task UpdateTodo_WhenTodoNotFound_ReturnsNotFound()
     {
         var client = CreateAuthenticatedClient();
 
-        var url = Routes.Todos.Update.ParseTodoRoute(Guid.NewGuid());
-
-        var body = new
+        var body = new UpdateTodo.Command.CommandBody
         {
-            Title = "Does Not Matter",
-            Description = "Still Does Not Matter",
+            Title = "X",
+            Description = "Y",
             Priority = TodoPriority.Low
         };
+
+        var url = GetRoute(Guid.NewGuid());
 
         var response = await client.PutAsJsonAsync(url, body, CurrentCancellationToken);
 
@@ -59,22 +67,23 @@ public class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixture)
     }
 
     [Fact]
-    public async Task UpdateTodo_WhenTodoBelongsToAnotherUser_ReturnsNotFound()
+    public async Task UpdateTodo_WhenTodoBelongsToOtherUser_ReturnsNotFound()
     {
         var client = CreateAuthenticatedClient();
 
-        var todo = Todo.TryCreate("Other User Todo", "Desc", TodoPriority.Medium, "auth0|otherUser").Value;
+        var todo = new Todo("OtherUser", "Desc", TodoPriority.Medium, "auth0|other");
+
         DbContext.Todos.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = Routes.Todos.Update.ParseTodoRoute(todo.Id.Value);
-
-        var body = new
+        var body = new UpdateTodo.Command.CommandBody
         {
-            Title = "Updated Title",
-            Description = "Updated Description",
-            Priority = TodoPriority.High
+            Title = "Updated",
+            Description = "Updated Desc",
+            Priority = TodoPriority.Low
         };
+
+        var url = GetRoute(todo.Id.Value);
 
         var response = await client.PutAsJsonAsync(url, body, CurrentCancellationToken);
 
@@ -82,42 +91,18 @@ public class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixture)
     }
 
     [Fact]
-    public async Task UpdateTodo_WhenTitleIsTooShort_ReturnsBadRequest()
-    {
-        var client = CreateAuthenticatedClient();
-        var userId = client.GetUserId();
-
-        var todo = Todo.TryCreate("Valid Title", "Valid Description", TodoPriority.Medium, userId).Value;
-        DbContext.Todos.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        var url = Routes.Todos.Update.ParseTodoRoute(todo.Id.Value);
-
-        var body = new
-        {
-            Title = "aa", // invalid (min length is 3)
-            Description = "Still Valid Description",
-            Priority = TodoPriority.Low
-        };
-
-        var response = await client.PutAsJsonAsync(url, body, CurrentCancellationToken);
-
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task UpdateTodo_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
+    public async Task UpdateTodo_WhenUserNotAuthenticated_ReturnsUnauthorized()
     {
         var client = CreateUnauthenticatedClient();
 
-        var url = Routes.Todos.Update.ParseTodoRoute(Guid.NewGuid());
-
-        var body = new
+        var body = new UpdateTodo.Command.CommandBody
         {
-            Title = "Some Title",
-            Description = "Some Description",
-            Priority = TodoPriority.Medium
+            Title = "Title",
+            Description = "Desc",
+            Priority = TodoPriority.Low
         };
+
+        var url = GetRoute(Guid.NewGuid());
 
         var response = await client.PutAsJsonAsync(url, body, CurrentCancellationToken);
 

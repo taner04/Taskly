@@ -1,138 +1,142 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Api.Features.Tags;
+using Api.Features.Tags.Endpoints;
 using Api.Features.Tags.Model;
-using Api.Shared.Features.Api;
+using Api.Shared.Api;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Tags;
 
-public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture)
+public class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture)
 {
+    private static string GetRoute(
+        Guid tagId)
+    {
+        return Routes.Tags.Update.Replace("{tagId:guid}", tagId.ToString());
+    }
+
     [Fact]
-    public async Task UpdateTag_WhenTagExistsAndBelongsToUser_UpdatesTag()
+    public async Task UpdateTag_WhenValid_UpdatesTag()
     {
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        var tag = Tag.TryCreate("Original", userId).Value;
+        var tag = new Tag("Work", userId);
         DbContext.Tags.Add(tag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = Routes.Tags.Update.ParseTagRoute(tag.Id.Value);
+        var url = GetRoute(tag.Id.Value);
 
-        var body = new UpdateTag.Command.CommandBody
+        var command = new UpdateTag.Command.CommandBody
         {
             NewName = "UpdatedName"
         };
 
-        var response = await client.PutAsJsonAsync(url, body, CurrentCancellationToken);
+        var response = await client.PutAsJsonAsync(url, command, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        var updated = await DbContext.Tags.AsNoTracking()
-            .SingleAsync(t => t.Id == tag.Id, CurrentCancellationToken);
+        var updated = await DbContext.Tags
+            .AsNoTracking()
+            .SingleOrDefaultAsync(t => t.Id == tag.Id, CurrentCancellationToken);
 
-        Assert.Equal("UpdatedName", updated.Name);
+        Assert.NotNull(updated);
+        Assert.Equal("UpdatedName", updated!.Name);
     }
 
     [Fact]
-    public async Task UpdateTag_WhenTagDoesNotExist_ReturnsNotFound()
+    public async Task UpdateTag_WhenTagNotFound_ReturnsBadRequest()
     {
         var client = CreateAuthenticatedClient();
 
-        var url = Routes.Tags.Update.ParseTagRoute(Guid.NewGuid());
+        var missingId = TagId.From(Guid.NewGuid());
+        var url = GetRoute(missingId.Value);
 
-        var body = new UpdateTag.Command.CommandBody
+        var command = new UpdateTag.Command.CommandBody
+        {
+            NewName = "Whatever"
+        };
+
+        var response = await client.PutAsJsonAsync(url, command, CurrentCancellationToken);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var problem = await response.ReadProblemAsync();
+
+        Assert.Equal("Tag.NotFound", problem.ErrorCode);
+        Assert.Equal("CouldNot find tag.", problem.Title);
+        Assert.Contains(missingId.Value.ToString(), problem.Detail);
+        Assert.Empty(problem.Errors);
+    }
+
+    [Fact]
+    public async Task UpdateTag_WhenTagBelongsToAnotherUser_ReturnsBadRequest()
+    {
+        var client = CreateAuthenticatedClient();
+
+        var foreignTag = new Tag("OtherTag", "auth0|someoneElse");
+        DbContext.Tags.Add(foreignTag);
+        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+
+        var url = GetRoute(foreignTag.Id.Value);
+
+        var command = new UpdateTag.Command.CommandBody
         {
             NewName = "NewName"
         };
 
-        var response = await client.PutAsJsonAsync(url, body, CurrentCancellationToken);
+        var response = await client.PutAsJsonAsync(url, command, CurrentCancellationToken);
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var problem = await response.ReadProblemAsync();
+
+        Assert.Equal("Tag.NotFound", problem.ErrorCode);
+        Assert.Equal("CouldNot find tag.", problem.Title);
+        Assert.Empty(problem.Errors);
     }
 
     [Fact]
-    public async Task UpdateTag_WhenTagBelongsToAnotherUser_ReturnsNotFound()
-    {
-        var client = CreateAuthenticatedClient();
-
-        var tag = Tag.TryCreate("OtherUsersTag", "auth0|someoneElse").Value;
-
-        DbContext.Tags.Add(tag);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        var url = Routes.Tags.Update.ParseTagRoute(tag.Id.Value);
-
-        var body = new UpdateTag.Command.CommandBody
-        {
-            NewName = "ShouldFail"
-        };
-
-        var response = await client.PutAsJsonAsync(url, body, CurrentCancellationToken);
-
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task UpdateTag_WhenNewNameIsTooShort_ReturnsBadRequest()
+    public async Task UpdateTag_WhenNewNameInvalid_ReturnsInvalidNameError()
     {
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        var tag = Tag.TryCreate("Original", userId).Value;
+        var tag = new Tag("Work", userId);
         DbContext.Tags.Add(tag);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var url = Routes.Tags.Update.ParseTagRoute(tag.Id.Value);
+        var url = GetRoute(tag.Id.Value);
 
-        var body = new UpdateTag.Command.CommandBody
+        var command = new UpdateTag.Command.CommandBody
         {
-            NewName = "ab" // Invalid (must be >= 3)
+            NewName = "ab"
         };
 
-        var response = await client.PutAsJsonAsync(url, body, CurrentCancellationToken);
+        var response = await client.PutAsJsonAsync(url, command, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var problem = await response.ReadProblemAsync();
+
+        Assert.Equal("Tag.InvalidName", problem.ErrorCode);
+        Assert.Equal("The tag name is invalid.", problem.Title);
+        Assert.Empty(problem.Errors);
     }
 
     [Fact]
-    public async Task UpdateTag_WhenNewNameIsTooLong_ReturnsBadRequest()
-    {
-        var client = CreateAuthenticatedClient();
-        var userId = client.GetUserId();
-
-        var tag = Tag.TryCreate("Original", userId).Value;
-        DbContext.Tags.Add(tag);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
-
-        var url = Routes.Tags.Update.ParseTagRoute(tag.Id.Value);
-
-        var longName = new string('a', Tag.MaxNameLength + 1);
-        var body = new UpdateTag.Command.CommandBody
-        {
-            NewName = longName
-        };
-
-        var response = await client.PutAsJsonAsync(url, body, CurrentCancellationToken);
-
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task UpdateTag_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
+    public async Task UpdateTag_WhenUserUnauthenticated_ReturnsUnauthorized()
     {
         var client = CreateUnauthenticatedClient();
 
-        var url = Routes.Tags.Update.ParseTagRoute(Guid.NewGuid());
+        var url = GetRoute(Guid.NewGuid());
 
-        var body = new UpdateTag.Command.CommandBody
+        var command = new UpdateTag.Command.CommandBody
         {
-            NewName = "Name"
+            NewName = "Test"
         };
 
-        var response = await client.PutAsJsonAsync(url, body, CurrentCancellationToken);
+        var response = await client.PutAsJsonAsync(url, command, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }

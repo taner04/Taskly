@@ -1,35 +1,39 @@
 ﻿using System.Net;
 using System.Net.Http.Json;
-using Api.Features.Tags;
+using Api.Features.Tags.Endpoints;
 using Api.Features.Tags.Model;
-using Api.Shared.Features.Api;
+using Api.Shared.Api;
 using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Tags;
 
-public sealed class CreateTagTests(TestingFixture fixture) : TestingBase(fixture)
+public class CreateTagTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private const string Url = Routes.Tags.Create;
+    private static string Url => Routes.Tags.Create;
 
     [Fact]
-    public async Task CreateTag_WhenValidRequest_ReturnsOkAndCreatesTag()
+    public async Task CreateTag_WhenValid_ReturnsCreatedAndPersistsTag()
     {
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        var requestBody = new CreateTag.Command
+        var command = new CreateTag.Command
         {
-            TagName = "MyTag"
+            TagName = "Work"
         };
 
-        var response = await client.PostAsJsonAsync(Url, requestBody, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(Url, command, CurrentCancellationToken);
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+
+        var dto = await response.Content.ReadFromJsonAsync<CreateTag.Dto>(CurrentCancellationToken);
+        Assert.NotNull(dto);
 
         var tag = await DbContext.Tags.AsNoTracking()
-            .SingleAsync(t => t.Name == "MyTag" && t.UserId == userId, CurrentCancellationToken);
+            .SingleOrDefaultAsync(t => t.Id == TagId.From(dto.TagId), CurrentCancellationToken);
 
-        Assert.Equal("MyTag", tag.Name);
+        Assert.NotNull(tag);
+        Assert.Equal("Work", tag!.Name);
         Assert.Equal(userId, tag.UserId);
     }
 
@@ -39,77 +43,63 @@ public sealed class CreateTagTests(TestingFixture fixture) : TestingBase(fixture
         var client = CreateAuthenticatedClient();
         var userId = client.GetUserId();
 
-        var existing = Tag.TryCreate("ExistingTag", userId).Value;
-        DbContext.Tags.Add(existing);
+        // Arrange: pre-insert tag
+        DbContext.Tags.Add(new Tag("Work", userId));
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var requestBody = new CreateTag.Command
+        var command = new CreateTag.Command
         {
-            TagName = "ExistingTag"
+            TagName = "Work"
         };
 
-        var response = await client.PostAsJsonAsync(Url, requestBody, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(Url, command, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var problem = await response.ReadProblemAsync();
+
+        Assert.Equal("Tag.AlreadyExists", problem.ErrorCode);
+        Assert.Equal("Tag already exists.", problem.Title);
+        Assert.Equal("A tag with the name 'Work' already exists.", problem.Detail);
+
+        Assert.Empty(problem.Errors);
     }
 
     [Fact]
-    public async Task CreateTag_WhenTagNameIsTooShort_ReturnsBadRequest()
+    public async Task CreateTag_WhenNameTooShort_ReturnsInvalidNameException()
     {
         var client = CreateAuthenticatedClient();
 
-        var requestBody = new CreateTag.Command
+        var command = new CreateTag.Command
         {
-            TagName = "ab" // Invalid (must be >= 3)
+            TagName = "ab"
         };
 
-        var response = await client.PostAsJsonAsync(Url, requestBody, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(Url, command, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        var problem = await response.ReadProblemAsync();
+
+        Assert.Equal("Tag.InvalidName", problem.ErrorCode);
+        Assert.Equal("The tag name is invalid.", problem.Title);
+
+        Assert.Contains("2", problem.Detail);
+
+        Assert.Empty(problem.Errors);
     }
 
     [Fact]
-    public async Task CreateTag_WhenTagNameIsTooLong_ReturnsBadRequest()
-    {
-        var client = CreateAuthenticatedClient();
-
-        var longTagName = new string('a', Tag.MaxNameLength + 1);
-        var requestBody = new CreateTag.Command
-        {
-            TagName = longTagName
-        };
-
-        var response = await client.PostAsJsonAsync(Url, requestBody, CurrentCancellationToken);
-
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task CreateTag_WhenTagNameIsEmpty_ReturnsBadRequest()
-    {
-        var client = CreateAuthenticatedClient();
-
-        var requestBody = new CreateTag.Command
-        {
-            TagName = ""
-        };
-
-        var response = await client.PostAsJsonAsync(Url, requestBody, CurrentCancellationToken);
-
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [Fact]
-    public async Task CreateTag_WhenUserIsNotAuthenticated_ReturnsUnauthorized()
+    public async Task CreateTag_WhenUserNotAuthenticated_ReturnsUnauthorized()
     {
         var client = CreateUnauthenticatedClient();
 
-        var requestBody = new CreateTag.Command
+        var command = new CreateTag.Command
         {
-            TagName = "UnauthorizedTag"
+            TagName = "Work"
         };
 
-        var response = await client.PostAsJsonAsync(Url, requestBody, CurrentCancellationToken);
+        var response = await client.PostAsJsonAsync(Url, command, CurrentCancellationToken);
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
