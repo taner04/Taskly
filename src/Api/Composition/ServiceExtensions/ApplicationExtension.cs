@@ -1,5 +1,4 @@
 ﻿using Api.Features.Attachments.Services;
-using Api.Features.Users.Services;
 using Azure.Storage.Blobs;
 
 namespace Api.Composition.ServiceExtensions;

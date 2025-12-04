@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Api.Shared;
+﻿namespace Api.Shared;
 
 /// <summary>
 ///     Represents detailed information about an API problem, compatible with RFC 7807.

@@ -1,4 +1,3 @@
-using Api.Features.Todos.Model;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Infrastructure.Data.Configuration;

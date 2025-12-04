@@ -1,4 +1,4 @@
-﻿namespace Api.Shared.Api;
+﻿namespace Api.Features.Shared;
 
 public static class Routes
 {
@@ -26,7 +26,7 @@ public static class Routes
         public const string GetTags = Base;
         public const string Create = Base;
         public const string Update = Base + "/{tagId:guid}";
-        public const string Remove = Base + "/{tagId:guid}";
+        public const string Delete = Base + "/{tagId:guid}";
     }
 
     public static class Attachments

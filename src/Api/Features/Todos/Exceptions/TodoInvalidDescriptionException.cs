@@ -1,7 +1,4 @@
-﻿using Api.Features.Todos.Model;
-using Api.Shared.Exceptions;
-
-namespace Api.Features.Todos.Exceptions;
+﻿namespace Api.Features.Todos.Exceptions;
 
 public sealed class TodoInvalidDescriptionException(int currentLength)
     : ApiException(

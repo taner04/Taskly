@@ -13,10 +13,6 @@ public abstract class TestingBase : IAsyncLifetime
         _scope = _fixture.CreateScope();
 
         DbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        if (!DbContext.Database.CanConnect())
-        {
-            throw new Exception("Test database is not reachable. Ensure the test container is running.");
-        }
     }
 
     protected static CancellationToken CurrentCancellationToken => TestContext.Current.CancellationToken;

@@ -1,13 +1,9 @@
 ﻿using Api.Features.Tags.Exceptions;
-using Api.Features.Tags.Model;
-using Api.Features.Users.Services;
-using Api.Shared.Api;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Features.Tags.Endpoints;
 
 [Handler]
-[MapDelete(Routes.Tags.Remove)]
+[MapDelete(Routes.Tags.Delete)]
 [Authorize]
 public static partial class DeleteTag
 {

@@ -1,6 +1,4 @@
-﻿using Api.Features.Tags.Model;
-
-namespace Api.Shared.Dtos.Tags;
+﻿namespace Api.Shared.Dtos.Tags;
 
 public sealed record TagDto(
     Guid Id,

@@ -11,6 +11,8 @@
         <PackageReference Include="coverlet.collector"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="Refit"/>
+        <PackageReference Include="Refit.HttpClientFactory"/>
         <PackageReference Include="Testcontainers.Azurite"/>
         <PackageReference Include="Testcontainers.PostgreSql"/>
         <PackageReference Include="xunit.runner.visualstudio"/>
@@ -31,6 +33,12 @@
         <Content Include="appsettings.integration.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Tests\Attachments\"/>
+        <Folder Include="Tests\Tags\"/>
+        <Folder Include="Tests\Todos\"/>
     </ItemGroup>
 
 </Project>

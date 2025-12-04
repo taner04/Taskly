@@ -1,9 +1,5 @@
 ﻿using Api.Features.Attachments.Exceptions;
-using Api.Features.Attachments.Models;
 using Api.Features.Attachments.Services;
-using Api.Features.Users.Services;
-using Api.Shared.Api;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Features.Attachments.Endpoints;
 

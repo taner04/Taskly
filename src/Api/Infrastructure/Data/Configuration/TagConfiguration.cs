@@ -1,5 +1,4 @@
-﻿using Api.Features.Tags.Model;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Infrastructure.Data.Configuration;
 

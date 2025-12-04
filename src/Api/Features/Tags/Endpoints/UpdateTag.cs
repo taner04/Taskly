@@ -1,8 +1,4 @@
 ﻿using Api.Features.Tags.Exceptions;
-using Api.Features.Tags.Model;
-using Api.Features.Users.Services;
-using Api.Shared.Api;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Features.Tags.Endpoints;
 

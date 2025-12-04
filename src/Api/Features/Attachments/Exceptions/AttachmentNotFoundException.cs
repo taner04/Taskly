@@ -1,7 +1,4 @@
-﻿using Api.Features.Attachments.Models;
-using Api.Shared.Exceptions;
-
-namespace Api.Features.Attachments.Exceptions;
+﻿namespace Api.Features.Attachments.Exceptions;
 
 public sealed class AttachmentNotFoundException(AttachmentId attachmentId)
     : ApiException(

@@ -1,7 +1,4 @@
-﻿using Api.Features.Tags.Model;
-using Api.Shared.Exceptions;
-
-namespace Api.Features.Tags.Exceptions;
+﻿namespace Api.Features.Tags.Exceptions;
 
 public sealed class TagInvalidNameException(int currentLength) :
     ApiException(

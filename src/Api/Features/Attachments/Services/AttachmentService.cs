@@ -1,5 +1,4 @@
-﻿using Api.Features.Attachments.Models;
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
 
 namespace Api.Features.Attachments.Services;

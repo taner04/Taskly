@@ -1,5 +1,4 @@
-﻿using DotNet.Testcontainers.Builders;
-using Testcontainers.PostgreSql;
+﻿using Testcontainers.PostgreSql;
 
 namespace IntegrationTests.Infrastructure.Data;
 

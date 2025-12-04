@@ -29,6 +29,8 @@
         <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.13.0"/>
         <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.13.0"/>
         <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.13.0"/>
+        <PackageVersion Include="Refit" Version="9.0.2"/>
+        <PackageVersion Include="Refit.HttpClientFactory" Version="9.0.2"/>
         <PackageVersion Include="Scalar.AspNetCore" Version="2.10.3"/>
         <PackageVersion Include="Testcontainers.Azurite" Version="4.9.0"/>
         <PackageVersion Include="Testcontainers.PostgreSql" Version="4.9.0"/>

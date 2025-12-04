@@ -1,15 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using IntegrationTests.Infrastructure.Azurite;
-using IntegrationTests.Infrastructure.Data;
-using Microsoft.Extensions.Configuration;
 
 namespace IntegrationTests.Infrastructure.Fixtures;
 
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 public sealed class TestingFixture : IAsyncLifetime
 {
-    private readonly BlobContainer _blobContainer = new();
+    private readonly BlobTestStorage _blobTestStorage = new();
     private readonly PostgresTestDatabase _postgresTestDatabase = new();
     private string _jwtToken = null!;
     private IServiceScopeFactory _serviceScopeFactory = null!;
@@ -18,9 +16,9 @@ public sealed class TestingFixture : IAsyncLifetime
     public async ValueTask InitializeAsync()
     {
         await _postgresTestDatabase.InitializeAsync();
-        await _blobContainer.InitializeAsync();
+        await _blobTestStorage.InitializeAsync();
 
-        _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection, _blobContainer.ConnectionString);
+        _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection, _blobTestStorage.ConnectionString);
         _serviceScopeFactory = _webApiFactory.Services.GetRequiredService<IServiceScopeFactory>();
 
         _jwtToken = await new Auth0Service(InitConfiguration()).GetAccessTokenAsync();
@@ -35,6 +33,7 @@ public sealed class TestingFixture : IAsyncLifetime
     public async Task SetUpAsync()
     {
         await _postgresTestDatabase.ResetDatabaseAsync();
+        await _blobTestStorage.ResetBlobStorageAsync();
     }
 
     public IServiceScope CreateScope()

@@ -1,5 +1,4 @@
-﻿using System.Data.Common;
-using Npgsql;
+﻿using Npgsql;
 
 namespace IntegrationTests.Infrastructure.Data;
 
@@ -25,7 +24,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
             .Options;
 
         await using var context = new ApplicationDbContext(_dbContextOptions);
-        await context.Database.MigrateAsync();
+        await context.Database.MigrateAsync(_postgresContainer.CurrentCancellationToken);
     }
 
     public async Task ResetDatabaseAsync()
@@ -34,7 +33,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
 
         foreach (var sql in _dbTablesToClear.Select(tableName => $"Delete from \"{tableName}\""))
         {
-            await context.Database.ExecuteSqlRawAsync(sql);
+            await context.Database.ExecuteSqlRawAsync(sql, _postgresContainer.CurrentCancellationToken);
         }
     }
 }

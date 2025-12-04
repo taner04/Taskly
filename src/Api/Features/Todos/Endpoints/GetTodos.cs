@@ -1,9 +1,4 @@
-﻿using Api.Features.Attachments.Models;
-using Api.Features.Todos.Model;
-using Api.Features.Users.Services;
-using Api.Shared.Api;
-using Api.Shared.Dtos.Tags;
-using Microsoft.AspNetCore.Authorization;
+﻿using Api.Shared.Dtos.Tags;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Todos.Endpoints;

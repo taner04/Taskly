@@ -1,6 +1,4 @@
-﻿using Api.Shared.Exceptions;
-
-namespace Api.Features.Attachments.Exceptions;
+﻿namespace Api.Features.Attachments.Exceptions;
 
 public sealed class AttachmentInvalidFileSizeException(long fileSize) :
     ApiException(

@@ -1,4 +1,3 @@
-using Api.Features.Users.Services;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Api.Infrastructure.Data.Interceptors;

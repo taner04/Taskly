@@ -1,6 +1,4 @@
-﻿using Api.Shared.Exceptions;
-
-namespace Api.Features.Tags.Exceptions;
+﻿namespace Api.Features.Tags.Exceptions;
 
 public sealed class TagAlreadyExistsException(string tagName) :
     ApiException(

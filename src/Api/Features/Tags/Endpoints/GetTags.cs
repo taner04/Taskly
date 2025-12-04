@@ -1,8 +1,4 @@
-﻿using Api.Features.Tags.Model;
-using Api.Features.Users.Services;
-using Api.Shared.Api;
-using Api.Shared.Dtos.Tags;
-using Microsoft.AspNetCore.Authorization;
+﻿using Api.Shared.Dtos.Tags;
 
 namespace Api.Features.Tags.Endpoints;
 

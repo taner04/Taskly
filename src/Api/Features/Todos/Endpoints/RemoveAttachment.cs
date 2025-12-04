@@ -1,13 +1,7 @@
 ﻿using Api.Features.Attachments.Exceptions;
-using Api.Features.Attachments.Models;
 using Api.Features.Attachments.Services;
 using Api.Features.Todos.Exceptions;
-using Api.Features.Todos.Model;
-using Api.Features.Users.Services;
-using Api.Shared.Api;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Features.Todos.Endpoints;
 

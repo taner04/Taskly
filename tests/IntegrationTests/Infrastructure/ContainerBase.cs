@@ -8,6 +8,8 @@ public abstract class ContainerBase<T> : IAsyncLifetime where T : DockerContaine
 
     protected T Container = null!;
 
+    public CancellationToken CurrentCancellationToken => TestContext.Current.CancellationToken;
+
     public async ValueTask InitializeAsync()
     {
         Container = BuildContainer();
@@ -17,7 +19,7 @@ public abstract class ContainerBase<T> : IAsyncLifetime where T : DockerContaine
         {
             try
             {
-                await Container.StartAsync();
+                await Container.StartAsync(CurrentCancellationToken);
                 attempt = MaxRetries;
             }
             catch (Exception ex)
@@ -28,14 +30,14 @@ public abstract class ContainerBase<T> : IAsyncLifetime where T : DockerContaine
                     throw new Exception($"Failed to start PostgresSQL container after {MaxRetries} attempts.", ex);
                 }
 
-                await Task.Delay(2000);
+                await Task.Delay(2000, CurrentCancellationToken);
             }
         }
     }
 
     public async ValueTask DisposeAsync()
     {
-        await Container.StopAsync();
+        await Container.StopAsync(CurrentCancellationToken);
         await Container.DisposeAsync();
 
         GC.SuppressFinalize(this);

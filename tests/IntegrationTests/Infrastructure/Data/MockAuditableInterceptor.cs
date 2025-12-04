@@ -21,38 +21,14 @@ public sealed class MockAuditableInterceptor : SaveChangesInterceptor
     private static void SetAuditableProperties(
         DbContext context)
     {
-        var auditableEntities = context.ChangeTracker
-            .Entries()
-            .Where(e => e.Entity is IAuditable)
+        var auditableEntries = context.ChangeTracker
+            .Entries<IAuditable>()
             .ToList();
 
-        const string changeMadeBy = "system";
-
-        foreach (var entry in auditableEntities)
+        foreach (var entity in auditableEntries.Select(entry => entry.Entity))
         {
-            if (entry.Entity is not IAuditable auditable)
-            {
-                continue;
-            }
-
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                {
-                    auditable.SetCreated(changeMadeBy);
-                    break;
-                }
-                case EntityState.Modified:
-                {
-                    auditable.SetUpdated(changeMadeBy);
-                    break;
-                }
-                case EntityState.Detached:
-                case EntityState.Unchanged:
-                case EntityState.Deleted:
-                default:
-                    break;
-            }
+            entity.SetCreated("system");
+            entity.SetUpdated("system");
         }
     }
 }

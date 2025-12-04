@@ -1,7 +1,4 @@
-﻿using Api.Features.Tags.Model;
-using Api.Shared.Exceptions;
-
-namespace Api.Features.Tags.Exceptions;
+﻿namespace Api.Features.Tags.Exceptions;
 
 public sealed class TagsNotFoundExceptions(List<TagId> tagIds) :
     ApiException(

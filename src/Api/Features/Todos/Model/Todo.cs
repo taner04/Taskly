@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Api.Features.Attachments.Models;
-using Api.Features.Tags.Model;
 using Api.Features.Todos.Exceptions;
 using Api.Shared.Models;
 
