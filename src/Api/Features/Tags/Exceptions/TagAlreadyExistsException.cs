@@ -6,4 +6,5 @@ public sealed class TagAlreadyExistsException(string tagName) :
     ApiException(
         "Tag already exists.",
         $"A tag with the name '{tagName}' already exists.",
-        "Tag.AlreadyExists");
+        "Tag.AlreadyExists",
+        HttpStatusCode.Conflict);

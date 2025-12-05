@@ -6,4 +6,5 @@ public sealed class AttachmentNotFoundException(AttachmentId attachmentId)
     : ApiException(
         "Could not find attachment.",
         $"Attachment with ID '{attachmentId}' was not found.",
-        "Attachment.NotFound");
+        "Attachment.NotFound",
+        HttpStatusCode.NotFound);

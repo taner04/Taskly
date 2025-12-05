@@ -1,0 +1,100 @@
+﻿using System.Net;
+using Api.Features.Attachments.Endpoints;
+using Api.Features.Attachments.Models;
+using Api.Features.Todos.Model;
+using FluentAssertions;
+using IntegrationTests.Extensions;
+
+namespace IntegrationTests.Tests.Attachments;
+
+public sealed class DownloadTests(TestingFixture fixture) : TestingBase(fixture)
+{
+    private static Todo CreateTodo(string userId)
+    {
+        return new Todo(
+            "Test Todo",
+            "Test Description",
+            TodoPriority.Medium,
+            userId
+        );
+    }
+
+    private static Attachment CreateUploadedAttachment(Todo todo)
+    {
+        var attachment = Attachment.CreatePending(
+            todo.Id,
+            "testfile.txt",
+            "text/plain"
+        );
+
+        attachment.MarkUploaded(1014);
+
+        return attachment;
+    }
+
+    [Fact]
+    public async Task DownloadAttachment_Should_Return401_When_Unauthenticated()
+    {
+        // Arrange
+        var unauth = CreateUnauthenticatedClient();
+
+        var randomId = AttachmentId.From(Guid.NewGuid());
+
+        // Act
+        var response = await unauth.DownloadAttachmentAsync(
+            randomId,
+            CurrentCancellationToken);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
+
+    [Fact]
+    public async Task DownloadAttachment_Should_Return404_When_NotFound()
+    {
+        // Arrange
+        var client = CreateAuthenticatedClient();
+
+        var randomId = AttachmentId.From(Guid.NewGuid());
+
+        // Act
+        var response = await client.DownloadAttachmentAsync(
+            randomId,
+            CurrentCancellationToken);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        await response.ContainsErrorCode("Attachment.NotFound", CurrentCancellationToken);
+    }
+
+    [Fact]
+    public async Task DownloadAttachment_Should_ReturnSasUrl_And_FileInfo()
+    {
+        // Arrange
+        var client = CreateAuthenticatedClient();
+
+        var userId = GetCurrentUserId();
+        var todo = CreateTodo(userId);
+        var attachment = CreateUploadedAttachment(todo);
+
+        DbContext.Add((object)todo);
+        DbContext.Add((object)attachment);
+        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+
+        // Act
+        var response = await client.DownloadAttachmentAsync(
+            attachment.Id,
+            CurrentCancellationToken);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var result = await response.MapTo<Download.Response>(CurrentCancellationToken);
+
+        result.Should().NotBeNull();
+        result.DownloadUrl.Should().NotBeNullOrWhiteSpace();
+        result.DownloadUrl.Should().Contain("sig=");
+        result.FileName.Should().Be(attachment.FileName);
+        result.ContentType.Should().Be(attachment.ContentType);
+    }
+}

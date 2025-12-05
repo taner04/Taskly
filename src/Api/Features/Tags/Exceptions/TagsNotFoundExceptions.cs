@@ -6,4 +6,5 @@ public sealed class TagsNotFoundExceptions(List<TagId> tagIds) :
     ApiException(
         "Could not find one or more tags.",
         $"Tags with following IDs not found: '{string.Join(", ", tagIds)}'",
-        "Tag.NotFound");
+        "Tag.NotFound",
+        HttpStatusCode.NotFound);

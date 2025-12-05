@@ -8,7 +8,7 @@ namespace Api;
 public partial interface IApiClient
 {
     [Post(Routes.Todos.AddAttachment)]
-    Task<ApiResponse<AddAttachment.Response>> AddAttachmentAsync(
+    Task<HttpResponseMessage> AddAttachmentAsync(
         TodoId todoId,
         [Body] AddAttachment.Command.CommandBody body,
         CancellationToken cancellationToken = default);
@@ -26,12 +26,12 @@ public partial interface IApiClient
         CancellationToken cancellationToken = default);
 
     [Post(Routes.Todos.Create)]
-    Task<ApiResponse<CreateTodo.Response>> CreateTodoAsync(
+    Task<HttpResponseMessage> CreateTodoAsync(
         [Body] CreateTodo.Command command,
         CancellationToken cancellationToken = default);
 
     [Get(Routes.Todos.GetTodos)]
-    Task<ApiResponse<List<GetTodos.Response>>> GetTodosAsync(CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> GetTodosAsync(CancellationToken cancellationToken = default);
 
     [Delete(Routes.Todos.RemoveAttachment)]
     Task<HttpResponseMessage> RemoveAttachmentFromTodoAsync(

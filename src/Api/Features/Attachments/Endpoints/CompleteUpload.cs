@@ -5,7 +5,7 @@ namespace Api.Features.Attachments.Endpoints;
 [Handler]
 [MapPost(Routes.Attachments.CompleteUpload)]
 [Authorize]
-public static partial class CompleteAttachmentUpload
+public static partial class CompleteUpload
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
@@ -20,6 +20,7 @@ public static partial class CompleteAttachmentUpload
         CancellationToken ct)
     {
         var userId = currentUserService.GetCurrentUserId();
+
         var attachment = await context.Attachments
             .Include(a => a.Todo)
             .SingleOrDefaultAsync(a => a.Id == command.AttachmentId

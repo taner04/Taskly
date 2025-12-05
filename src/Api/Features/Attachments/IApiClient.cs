@@ -10,7 +10,7 @@ public partial interface IApiClient
     [Post(Routes.Attachments.CompleteUpload)]
     Task<HttpResponseMessage> CompleteAttachmentUploadAsync(
         [FromRoute] AttachmentId attachmentId,
-        [Body] CompleteAttachmentUpload.Command.CommandBody body,
+        [Body] CompleteUpload.Command.CommandBody body,
         CancellationToken cancellationToken = default);
 
     [Get(Routes.Attachments.Download)]

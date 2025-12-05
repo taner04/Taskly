@@ -31,7 +31,7 @@ public static class ProblemDetailsConfig
 
                 ApiException modelsException => new ApiProblemDetails
                 {
-                    Status = StatusCodes.Status400BadRequest,
+                    Status = (int)modelsException.StatusCode,
                     Title = modelsException.Title,
                     Detail = modelsException.Message,
                     ErrorCode = modelsException.ErrorCode

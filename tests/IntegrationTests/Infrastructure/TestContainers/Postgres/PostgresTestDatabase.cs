@@ -4,7 +4,7 @@ namespace IntegrationTests.Infrastructure.TestContainers.Postgres;
 
 public sealed class PostgresTestDatabase : IAsyncDisposable
 {
-    private readonly List<string> _dbTablesToClear = ["Todos", "Tags"];
+    private readonly List<string> _dbTablesToClear = ["Todos", "Tags", "Attachments"];
     private readonly PostgresContainer _postgresContainer = new();
     private DbContextOptions<ApplicationDbContext> _dbContextOptions = null!;
 

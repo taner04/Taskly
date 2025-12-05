@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text.Json;
 using Api;
 using IntegrationTests.Infrastructure.TestContainers.Azure;
 using IntegrationTests.Infrastructure.TestContainers.Postgres;
@@ -57,7 +58,12 @@ public sealed class TestingFixture : IAsyncLifetime
         client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", _jwtToken);
 
-        return RestService.For<IApiClient>(client);
+        return RestService.For<IApiClient>(client, new RefitSettings(
+            new SystemTextJsonContentSerializer(
+                new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                })));
     }
 
     public IApiClient CreateUnauthenticatedClient()
@@ -74,7 +80,7 @@ public sealed class TestingFixture : IAsyncLifetime
 
     public string GetCurrentUserId()
     {
-        var userId = _currentUser.FindFirst("azp")?.Value;
+        var userId = _currentUser.FindFirst("sub")?.Value;
 
         return string.IsNullOrEmpty(userId)
             ? throw new UnauthorizedAccessException("UserId claim is missing.")

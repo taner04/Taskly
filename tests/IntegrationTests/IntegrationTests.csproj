@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector"/>
+        <PackageReference Include="FluentAssertions"/>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
         <PackageReference Include="Refit"/>
@@ -36,7 +37,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Tests\Attachments\"/>
         <Folder Include="Tests\Tags\"/>
     </ItemGroup>
 

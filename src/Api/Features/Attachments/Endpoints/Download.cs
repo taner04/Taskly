@@ -6,7 +6,7 @@ namespace Api.Features.Attachments.Endpoints;
 [Handler]
 [MapGet(Routes.Attachments.Download)]
 [Authorize]
-public static partial class DownloadAttachment
+public static partial class Download
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
