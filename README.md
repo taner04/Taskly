@@ -5,9 +5,7 @@
 
 # Taskly
 
-✨ A stunning, responsive full-stack task management application. Crafted with **C#** and **.NET 9** on the backend,
-powered by **React 18** and **Vite** on the frontend. Experience seamless authentication with **Auth0**, cloud-native
-architecture with **.NET Aspire**.
+✨ A stunning, responsive task management API. Built with **C#** and **.NET 9** on the backend, featuring seamless authentication with **Auth0** and cloud-native architecture with **.NET Aspire**.
 
 ---
 
@@ -25,7 +23,7 @@ architecture with **.NET Aspire**.
 
 1. Clone: git clone https://github.com/taner04/Taskly
 2. Setup: python3 .\scripts\Setup.py
-3. Configure Auth0 in .env and appsettings.json
+3. Configure Auth0 appsettings.json and appsettings.integration.json
 4. Run: dotnet run --project .\tools\AppHost
 
 See [Installation Guide](docs/INSTALLATION.md) for details.
@@ -35,8 +33,14 @@ See [Installation Guide](docs/INSTALLATION.md) for details.
 ## 🛠️ Tech Stack
 
 **Backend:** .NET 9, ASP.NET Core, Entity Framework Core, Auth0  
-**Frontend:** React 18, TypeScript, Vite, Auth0 SDK  
 **Infrastructure:** Docker, PostgreSQL, Python 3
+
+---
+
+## 📋 TODO
+
+- [ ] Add caching
+- [ ] Implement a frontend
 
 ---
 
