@@ -1,4 +1,4 @@
-# Installation Guide
+# Setup Guide
 
 ## Requirements
 
@@ -14,7 +14,7 @@
 - SPA application credentials
 - Machine-to-Machine application credentials
 
-## Installation Steps
+## Setup Steps
 
 ### 1. Clone the repository
 
@@ -42,7 +42,7 @@ Update the generated or manually created files with your Auth0 tenant values:
 
 #### Getting Auth0 Credentials
 
-> [!INFO]
+> [!WARNING]
 > You need to create **two separate Auth0 applications**:
 >
 > - **SPA Application** for the API (`appsettings.json`)

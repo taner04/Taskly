@@ -48,7 +48,7 @@ python3 .\scripts\setup.py
 dotnet run --project .\tools\AppHost
 ```
 
-See [Installation Guide](docs/INSTALLATION.md) for detailed setup instructions.
+See [Setup Guide](docs/SETUP.md) for detailed setup instructions.
 
 ---
 
@@ -67,7 +67,7 @@ See [Installation Guide](docs/INSTALLATION.md) for detailed setup instructions.
 
 ## 📚 Documentation
 
-- **[Installation Guide](docs/INSTALLATION.md)** — Step-by-step setup instructions
+- **[Setup Guide](docs/SETUP.md)** — Step-by-step setup instructions
 - **[Architecture](docs/ARCHITECTURE.md)** — System design and component interactions
 - **[Scripts Guide](docs/SCRIPTS.md)** — Python automation scripts
 - **[Contributing Guide](docs/CONTRIBUTING.md)** — Development workflow and guidelines

@@ -15,51 +15,13 @@ Thank you for your interest in contributing to Taskly! We welcome contributions 
    git checkout -b feature/your-feature-name
    ```
 
-## Development Setup
-
 ### Prerequisites
 
 - .NET 9 SDK
 - Docker (optional, for local database)
 - Python 3 (for automation scripts)
 
-### Initial Setup
-
-Run the setup script to initialize your development environment:
-
-```bash
-python3 .\scripts\Setup.py
-```
-
-This will create the necessary configuration files with placeholder values. Update them with your development settings.
-
-## Development Workflow
-
-### Backend Development
-
-The backend is built with ASP.NET Core and uses a feature-based architecture:
-
-- **Features** are organized in `src/Api/Features/`
-- **Database migrations** are managed through `scripts/create_migration.py`
-- **Tests** are in `tests/IntegrationTests/` and `tests/UnitTests/`
-
-**Running the API:**
-
-```bash
-dotnet run --project .\src\Api
-```
-
-**Creating a migration:**
-
-```bash
-python3 .\scripts\create_migration.py YourMigrationName
-```
-
-**Running tests:**
-
-```bash
-dotnet test
-```
+For detailed setup instructions, refer to the [Setup Guide](SETUP.md).
 
 ## Code Guidelines
 
@@ -102,15 +64,6 @@ dotnet test
    - Reference to any related issues (e.g., "Closes #123")
    - List of changes made
    - Any breaking changes or important notes
-
-## Pull Request Process
-
-1. Ensure your PR addresses a single feature or bug fix
-2. Include tests for new functionality
-3. Update documentation if needed
-4. Ensure all CI checks pass
-5. Be responsive to review feedback
-6. Maintainers will merge once approved
 
 ## Reporting Issues
 
