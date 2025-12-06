@@ -94,21 +94,6 @@ Taskly/
 
 ---
 
-## 🗺️ Roadmap
-
-### In Progress
-
-- [ ] Add caching layer for improved performance
-
-### Future
-
-- [ ] Frontend application (React/Next.js)
-- [ ] Real-time notifications
-- [ ] Advanced filtering and search
-- [ ] Activity logging and audit trail
-
----
-
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](docs/CONTRIBUTING.md) for:
