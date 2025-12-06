@@ -22,11 +22,10 @@ public class WebApiFactory(DbConnection dbConnection, string azuriteConnectionSt
         builder.ConfigureServices(services =>
         {
             services.AddMockDbContext(dbConnection);
-            services.AddMockBlobServiceClient(azuriteConnectionString);
-
             services.AddRefitClient<IApiClient>();
         });
 
         builder.UseSetting($"ConnectionStrings:{AppHostConstants.Database}", dbConnection.ConnectionString);
+        builder.UseSetting($"ConnectionStrings:{AppHostConstants.AzureBlobStorage}", azuriteConnectionString);
     }
 }

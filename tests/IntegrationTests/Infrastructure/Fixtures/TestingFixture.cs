@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
 using Api;
+using Api.Composition.Options;
 using IntegrationTests.Infrastructure.TestContainers.Azure;
 using IntegrationTests.Infrastructure.TestContainers.Postgres;
 using Refit;
@@ -28,7 +29,8 @@ public sealed class TestingFixture : IAsyncLifetime
         _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection, _azureTestBlobStorage.ConnectionString);
         _serviceScopeFactory = _webApiFactory.Services.GetRequiredService<IServiceScopeFactory>();
 
-        _jwtToken = await new Auth0Service(InitConfiguration()).GetAccessTokenAsync();
+        var auth0Options = InitConfiguration().GetSection("Auth0").Get<Auth0Options>() ?? throw new InvalidOperationException("Auth0 configuration is missing.");
+        _jwtToken = await new Auth0Service(auth0Options).GetAccessTokenAsync();
 
         var token = new JwtSecurityTokenHandler().ReadJwtToken(_jwtToken);
         _currentUser = new ClaimsPrincipal(new ClaimsIdentity(token.Claims));

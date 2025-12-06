@@ -15,60 +15,50 @@ from create_migration import add_migration
 # Content Templates
 # =========================================================================
 
-ENV_CONTENT = """
-VITE_AUTH0_DOMAIN=your-auth0-domain
-VITE_AUTH0_CLIENT_ID=your-auth0-client-id
-"""
-
-APPSETTINGS_API = {
+APPSETTINGS_API_TEMPLATE = {
     "Logging": {
         "LogLevel": {
             "Default": "Information",
-            "Microsoft.AspNetCore": "Warning",
+            "Microsoft.AspNetCore": "Warning"
         }
     },
     "AllowedHosts": "*",
     "Auth0": {
         "Domain": "your-auth0-domain",
         "Audience": "your-auth0-audience",
+        "ClientId": "your-auth0-client-id",
+        "ClientSecret": "your-auth0-client-secret",
+        "UsePersistentStorage": False
     },
+    "ConnectionStrings": {
+        "AzureBlobStorage": "your-azure-blob-storage-connection-string"
+    }
 }
 
-APPSETTINGS_INTEGRATION_TEST = {
+APPSETTINGS_INTEGRATION_TEMPLATE = {
     "Logging": {
         "LogLevel": {
             "Default": "Information",
-            "Microsoft.AspNetCore": "Warning",
+            "Microsoft.AspNetCore": "Warning"
         }
     },
+    "AllowedHosts": "*",
     "Auth0": {
         "Domain": "your-auth0-domain",
-        "Client_Id": "your-auth0-client-id",
-        "Client_Secret": "your-auth0-client-secret",
         "Audience": "your-auth0-audience",
-        "Grant_Type": "client_credentials",
+        "ClientId": "your-auth0-client-id",
+        "ClientSecret": "your-auth0-client-secret",
+        "UsePersistentStorage": False,
+        "Grant_Type": "client_credentials"
     },
+    "ConnectionStrings": {
+        "AzureBlobStorage": "your-azure-blob-storage-connection-string"
+    }
 }
 
 # =========================================================================
 # Setup Tasks
 # =========================================================================
-
-
-def create_env_file() -> None:
-    """Create .env file for the Web application."""
-    env_file = project_root / "src" / "Web" / ".env"
-
-    if env_file.exists():
-        console_logger.success(".env already exists")
-        return
-
-    env_file.parent.mkdir(parents=True, exist_ok=True)
-    env_file.write_text(ENV_CONTENT)
-
-    console_logger.success("Created .env file")
-
-
 def create_appsettings(file_path: Path, content: dict) -> None:
     """Create appsettings.json file with given content."""
     if file_path.exists():
@@ -84,7 +74,7 @@ def create_appsettings(file_path: Path, content: dict) -> None:
 def create_appsettings_api() -> None:
     """Create appsettings.json for the API project."""
     create_appsettings(
-        project_root / "src" / "Api" / "appsettings.json", APPSETTINGS_API
+        project_root / "src" / "Api" / "appsettings.json", APPSETTINGS_API_TEMPLATE
     )
 
 
@@ -92,7 +82,7 @@ def create_appsettings_integration_test() -> None:
     """Create appsettings.integration.json for integration tests."""
     create_appsettings(
         project_root / "tests" / "IntegrationTests" / "appsettings.integration.json",
-        APPSETTINGS_INTEGRATION_TEST,
+        APPSETTINGS_INTEGRATION_TEMPLATE,
     )
 
 
@@ -104,7 +94,6 @@ def create_appsettings_integration_test() -> None:
 def main() -> None:
     """Initialize all required configuration files."""
     console_logger.info("Initializing Taskly configuration files...")
-    create_env_file()
     create_appsettings_api()
     create_appsettings_integration_test()
     console_logger.success("Initialization completed! You can now configure your values.")

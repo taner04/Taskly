@@ -1,3 +1,4 @@
+using Api.Composition.Options;
 using Scalar.AspNetCore;
 
 namespace Api.Composition.ServiceExtensions;
@@ -7,28 +8,31 @@ internal static class ScalarExtension
     internal static WebApplication MapScalar(
         this WebApplication app)
     {
-        var auth0Domain  = app.Configuration["Auth0:Domain"];   // z.B. "meine-domain.eu.auth0.com"
-        var auth0ClientId = app.Configuration["Auth0:ClientId"];
-        var auth0Audience = app.Configuration["Auth0:Audience"]; // deine API-Audience
+        var auth0Options = app.Configuration.GetSection("Auth0").Get<Auth0Options>() ?? throw new InvalidOperationException("Auth0 configuration is missing.");
         
         app.MapScalarApiReference(opt =>
         {
             opt.Layout = ScalarLayout.Classic;
             opt.Theme = ScalarTheme.DeepSpace;
             opt.WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.RestSharp);
-            opt.AddPreferredSecuritySchemes("OAuth2") // Name des securitySchemes aus dem OpenAPI
+            opt.AddPreferredSecuritySchemes("OAuth2")
                 .AddOAuth2Authentication("OAuth2", scheme => scheme
                     .WithFlows(flows => flows
                         .WithAuthorizationCode(flow => flow
-                            .WithAuthorizationUrl($"https://{auth0Domain}/authorize")
-                            .WithTokenUrl($"https://{auth0Domain}/oauth/token")
-                            .WithClientId(auth0ClientId)
+                            .WithAuthorizationUrl($"https://{auth0Options.Domain}/authorize")
+                            .WithTokenUrl($"https://{auth0Options.Domain}/oauth/token")
+                            .WithClientId(auth0Options.ClientId)
+                            .WithClientSecret(auth0Options.ClientSecret)
                             .WithPkce(Pkce.Sha256)
-                            .WithSelectedScopes("openid", "profile", "api.read")
-                            .AddQueryParameter("audience", auth0Audience)
+                            .AddQueryParameter("audience", auth0Options.Audience)
                         ))
-                    .WithDefaultScopes("openid", "profile", "api.read")
-                ).EnablePersistentAuthentication();
+                    .WithDefaultScopes("openid", "profile", "api")
+                );
+            
+            if (auth0Options.UsePersistentStorage)
+            {
+                opt.EnablePersistentAuthentication();
+            }
         });
 
         return app;

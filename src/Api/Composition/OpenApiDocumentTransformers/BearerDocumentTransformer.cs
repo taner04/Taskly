@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.OpenApi;
+﻿using Api.Composition.Options;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 
 namespace Api.Composition.OpenApiDocumentTransformers;
@@ -10,21 +11,34 @@ internal sealed class BearerDocumentTransformer(IConfiguration configuration) : 
         OpenApiDocumentTransformerContext context,
         CancellationToken cancellationToken)
     {
-        var securityRequirements = new Dictionary<string, OpenApiSecurityScheme>
-        {
-            ["JWT"] = new()
-            {
-                In = ParameterLocation.Header,
-                Name = "Bearer",
-                Type = SecuritySchemeType.Http,
-                Scheme = "Bearer",
-                BearerFormat = "JWT",
-                Description = "Enter 'Bearer' followed by a space and the JWT in the request header."
-            }
-        };
+        var auth0Options = configuration.GetSection("Auth0").Get<Auth0Options>() ?? throw new InvalidOperationException("Auth0 configuration is missing.");
 
         document.Components ??= new OpenApiComponents();
-        document.Components.SecuritySchemes = securityRequirements;
+
+        // bestehendes JWT Bearer Scheme
+        document.Components.SecuritySchemes["JWT"] = new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            Description = "JWT Bearer Token"
+        };
+
+        // NEU: OAuth2 Authorization Code Flow für Scalar Auth
+        document.Components.SecuritySchemes["OAuth2"] = new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.OAuth2,
+            Description = "Auth0 OAuth2 Login",
+            Flows = new OpenApiOAuthFlows
+            {
+                AuthorizationCode = new OpenApiOAuthFlow
+                {
+                    AuthorizationUrl = new Uri($"https://{auth0Options.Domain}/authorize"),
+                    TokenUrl = new Uri($"https://{auth0Options.Domain}/oauth/token"),
+                    Scopes = new Dictionary<string, string>()
+                }
+            }
+        };
 
         return Task.CompletedTask;
     }

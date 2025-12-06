@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace IntegrationTests.Infrastructure.Composition.ServiceExtensions;
 
-internal static class DbContextExtension
+internal static class MockDbContext
 {
     internal static IServiceCollection AddMockDbContext(this IServiceCollection services, DbConnection connection)
     {

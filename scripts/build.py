@@ -47,10 +47,6 @@ def does_migration_exist() -> bool:
     migrations_folder = project_root / "src" / "Api" / "Infrastructure" / "Data" / "Migrations"
     return migrations_folder.exists()
 
-def does_env_file_exists() -> bool:
-    env_file = project_root / "src" / "Web" / ".env"
-    return env_file.exists()
-
 def does_appsettings_api_exist() -> bool:
     appsettings_file = project_root / "src" / "Api" / "appsettings.json"
     return appsettings_file.exists()
@@ -65,19 +61,9 @@ def check_requirements(docker_required: bool) -> bool:
 
     checks = [
         (
-            "Docker",
-            docker_required and not is_docker_running(),
-            "Docker is not running. Start Docker first."
-        ),
-        (
             "Migrations",
             not does_migration_exist(),
             "Migrations folder missing! Run the create_migration.py script or via dotnet ef tools."
-        ),
-        (
-            ".env file",
-            not does_env_file_exists(),
-            ".env file is missing! Run setup.py"
         ),
         (
             "appsettings.json",
@@ -184,46 +170,6 @@ def run_all_tests() -> bool:
     return all_success
 
 
-# =========================================================================
-# Web (npm)
-# =========================================================================
-
-def build_web_project() -> None:
-    console_logger.info("Building Web project...")
-
-    web_dir = project_root / "src" / "Web"
-    npm = resolve_cmd("npm")
-
-    console_logger.info("Installing npm dependencies...")
-    subprocess.run([npm, "install"], cwd=web_dir, check=True)
-
-    console_logger.info("Building frontend...")
-    subprocess.run([npm, "run", "build"], cwd=web_dir, check=True)
-
-    console_logger.success("Web build completed.")
-
-
-# =========================================================================
-# Docker Build
-# =========================================================================
-
-def build_web_docker_image() -> None:
-    docker = resolve_cmd("docker")
-
-    console_logger.info("Building Docker image (no cache)...")
-
-    command = [
-        docker, "build",
-        "--no-cache",
-        "-t", "taskly-web:latest",
-        "src/Web"
-    ]
-
-    subprocess.run(command, cwd=project_root, check=True)
-
-    console_logger.success("Docker image built successfully.")
-
-
 
 
 # =========================================================================
@@ -234,21 +180,9 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Taskly Build Script")
 
     parser.add_argument(
-        "--docker",
-        action="store_true",
-        help="Build Docker image (optional)"
-    )
-
-    parser.add_argument(
         "--dotnet",
         action="store_true",
-        help="Build only .NET projects (skip web build)"
-    )
-
-    parser.add_argument(
-        "--web",
-        action="store_true",
-        help="Build only web project (skip .NET build)"
+        help="Build .NET projects (default)"
     )
 
     parser.add_argument(
@@ -267,30 +201,20 @@ def parse_args():
 def main() -> None:
     args = parse_args()
 
-    docker_needed = args.docker
-    build_dotnet = not args.web
-    build_web = not args.dotnet
     run_tests = args.test
 
-    if not check_requirements(docker_needed):
+    if not check_requirements(docker_required=False):
         print()
         console_logger.error("Build aborted due to unmet requirements.")
         return
 
-    if build_dotnet:
-        dotnet_restore()
-        build_dotnet_projects()
+    dotnet_restore()
+    build_dotnet_projects()
 
-        if run_tests and not run_all_tests():
-            print()
-            console_logger.error("Tests failed — stopping build.")
-            return
-
-    if build_web:
-        build_web_project()
-
-        if docker_needed:
-            build_web_docker_image()
+    if run_tests and not run_all_tests():
+        print()
+        console_logger.error("Tests failed — stopping build.")
+        return
 
     print()
     console_logger.success("Build completed successfully.")
