@@ -20,7 +20,6 @@ Thank you for your interest in contributing to Taskly! We welcome contributions 
 ### Prerequisites
 
 - .NET 9 SDK
-- Node.js 20+
 - Docker (optional, for local database)
 - Python 3 (for automation scripts)
 
@@ -41,7 +40,7 @@ This will create the necessary configuration files with placeholder values. Upda
 The backend is built with ASP.NET Core and uses a feature-based architecture:
 
 - **Features** are organized in `src/Api/Features/`
-- **Database migrations** are managed through `scripts/CreateMigration.py`
+- **Database migrations** are managed through `scripts/create_migration.py`
 - **Tests** are in `tests/IntegrationTests/` and `tests/UnitTests/`
 
 **Running the API:**
@@ -53,35 +52,13 @@ dotnet run --project .\src\Api
 **Creating a migration:**
 
 ```bash
-python3 .\scripts\CreateMigration.py YourMigrationName
+python3 .\scripts\create_migration.py YourMigrationName
 ```
 
 **Running tests:**
 
 ```bash
 dotnet test
-```
-
-### Frontend Development
-
-The frontend is a React app built with Vite and TypeScript:
-
-- **Components** are in `src/Web/src/components/`
-- **Services** handle API communication in `src/Web/src/services/`
-- **Styling** uses the configured CSS framework in `src/Web/src/styles/`
-
-**Running the development server:**
-
-```bash
-cd .\src\Web
-npm install
-npm run dev
-```
-
-**Building for production:**
-
-```bash
-npm run build
 ```
 
 ## Code Guidelines
@@ -98,20 +75,19 @@ npm run build
 - Follow Microsoft's [C# Coding Conventions](https://docs.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions)
 - Use meaningful variable and method names
 - Ensure all tests pass before submitting a PR
-
-### TypeScript / Frontend
-
-- Follow the existing code style
-- Use TypeScript strictly (no `any` types unless absolutely necessary)
-- Keep components focused and reusable
-- Test components with meaningful test cases
+- **For new features**: Implement comprehensive tests for the endpoint covering:
+  - ✅ Happy path (successful request)
+  - ❌ Validation errors (invalid input)
+  - 🔒 Authorization failures (unauthorized/forbidden)
+  - 🔍 Not found errors (missing resources)
+  - ⚠️ Edge cases and boundary conditions
+  - Place tests in `tests/IntegrationTests/Tests/` following feature organization
 
 ## Making a Contribution
 
 1. **Make your changes** on your feature branch
 2. **Test thoroughly**:
    - Run backend tests: `dotnet test`
-   - Test frontend manually or with unit tests
    - Test the full application flow
 3. **Commit your changes** with descriptive messages:
    ```bash
@@ -145,11 +121,3 @@ Found a bug? Have a feature request? Please open an issue on GitHub with:
 - **Steps to reproduce** (for bugs)
 - **Expected vs. actual behavior**
 - **Environment** details (OS, .NET version, Node version, etc.)
-
-## Code of Conduct
-
-Be respectful and professional in all interactions. We're all here to make Taskly better together!
-
-## Questions?
-
-If you have questions or need clarification, feel free to open an issue or reach out to the maintainers.

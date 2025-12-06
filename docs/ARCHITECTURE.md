@@ -26,15 +26,15 @@ The request flow follows this architecture:
 - **ASP.NET Core** — Web framework with minimal APIs
 - **Auth0** — JWT-based authentication and authorization
 - **Azure Blob Storage** — Cloud file storage with SAS URLs
-- **Immediate.Apis** — CQRS framework with source-generated handlers
-- **Immediate.Validations** — Declarative validation framework
+- **Immediate.Apis** — For easily mapping handlers to endpoints
+- **Immediate.Validations** — For model validation
+- **Immediate.Handlers** — For implementing the Command and Query Responsibility Segregation (CQRS) pattern with minimal boilerplate
 - **Vogen** — Strongly-typed value object code generation
 - **Refit** — Type-safe HTTP client generation
-- **ErrorOr** — Functional error handling
 
 ### Infrastructure
 
-- **PostgreSQL** — Relational database with ACID transactions
+- **PostgreSQL** — Relational database
 - **Azure Blob Storage** — Scalable file storage for attachments
 - **Docker** — Containerization
 - **.NET Aspire** — Cloud-native orchestration
@@ -60,8 +60,8 @@ The request flow follows this architecture:
 ## 📚 Key Features
 
 - **Authentication** — Seamless Auth0 integration with JWT validation
-- **Feature-organized structure** — Code organized by business features, not technical layers
-- **Testing** — Comprehensive integration and unit tests with mock infrastructure
+- **Feature-organized structure** — Code organized by business features
+- **Testing** — Comprehensive integration and unit tests
 - **Cloud-native ready** — Built with .NET Aspire for cloud deployment
 - **Error Handling** — RFC 7807 Problem Details for standardized error responses
 - **File Storage** — Secure Azure Blob Storage with pre-signed SAS URLs

@@ -1,12 +1,18 @@
 # Installation Guide
 
-## Prerequisites
+## Requirements
 
-- **[Docker](https://www.docker.com/)** — Required for containerization
-- **[.NET 9](https://dotnet.microsoft.com/download)** — Required for backend development
-- **[Node.js 20+](https://nodejs.org/)** — Required for frontend development
-- **[Python 3](https://www.python.org/)** _(optional)_ — Simplifies project setup and build automation. Without Python,
-  you'll need to manually execute build steps.
+### Runtime & Tools
+
+- **.NET 9 SDK** — [Download](https://dotnet.microsoft.com/download/dotnet/9.0)
+- **Docker Desktop** — [Download](https://www.docker.com/products/docker-desktop)
+- **Python 3.8+** _(optional)_ — [Download](https://www.python.org/downloads/) (for automation scripts)
+
+### Auth0 Setup
+
+- Auth0 account — [Sign up free](https://auth0.com/signup)
+- SPA application credentials
+- Machine-to-Machine application credentials
 
 ## Installation Steps
 
@@ -21,15 +27,14 @@ git clone https://github.com/taner04/Taskly
 **With Python (Recommended):**
 
 ```bash
-python3 .\scripts\Setup.py
+python3 .\scripts\setup.py
 ```
 
-This creates the `.env` and `appsettings.json` files needed for the project.
+This creates the required `appsettings.json` and `appsettings.integration.json` files.
 
 **Without Python (Manual Setup):**
 
-Create a `.env` file in `.\src\Web`, `appsettings.json` files in `.\src\Api`, and
-`appsettings.integration.json` in `.\tests\IntegrationTests` with the configuration values shown in the next step.
+Create `appsettings.json` in `.\src\Api` and `appsettings.integration.json` in `.\tests\IntegrationTests` with the configuration values shown in the next step.
 
 ### 3. Configure Auth0 credentials
 
@@ -37,69 +42,53 @@ Update the generated or manually created files with your Auth0 tenant values:
 
 #### Getting Auth0 Credentials
 
-**For Web Application (SPA):**
+> [!INFO]
+> You need to create **two separate Auth0 applications**:
+>
+> - **SPA Application** for the API (`appsettings.json`)
+> - **Machine-to-Machine Application** for Integration Tests (`appsettings.integration.json`)
 
 1. Go to [Auth0 Dashboard](https://manage.auth0.com/)
 2. Navigate to **Applications** → **Applications**
 3. Click **+ Create Application**
-4. Choose **Single Page Web Applications**
-5. Configure the application:
-   - **Allowed Callback URLs:** `http://localhost:3000`
-   - **Allowed Logout URLs:** `http://localhost:3000`
-   - **Allowed Web Origins:** `http://localhost:3000`
-6. Copy your `Domain` and `Client ID` from the application settings
-
-**For Integration Tests (Machine-to-Machine):**
-
-1. Go to [Auth0 Dashboard](https://manage.auth0.com/)
-2. Navigate to **Applications** → **Applications**
-3. Click **+ Create Application**
-4. Choose **Machine to Machine Applications**
-5. Select an API (or create one if needed)
+4. Choose your application type:
+   - **Single Page Web Applications** (for API/SPA)
+   - **Machine to Machine Applications** (for Integration Tests)
+5. For M2M app, select an API (or create one if needed)
 6. Copy your `Domain`, `Client ID`, and `Client Secret` from the application settings
 
 #### Update Configuration Files
 
-**Important:** The `Domain` and `Audience` values are the **same across all configuration files**. However, `Client ID` and `Client Secret` differ depending on the application type:
-
-- **Web/Frontend** uses credentials from the **SPA application**
-- **Integration Tests** uses credentials from the **M2M application**
-
-**`.env` (for Web/Frontend - use SPA credentials):**
-
-```env
-VITE_AUTH0_DOMAIN=your-auth0-domain
-VITE_AUTH0_CLIENT_ID=your-client-id-from-spa
-```
-
-**`appsettings.json` (for API):**
+Both configuration files have the same structure. Use **SPA credentials** for `appsettings.json` and **M2M credentials** for `appsettings.integration.json`:
 
 ```json
 {
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
   "Auth0": {
     "Domain": "your-auth0-domain",
-    "Audience": "your-api-audience"
-  }
-}
-```
-
-**`appsettings.integration.json` (for Integration Tests - use M2M credentials):**
-
-```json
-{
-  "Auth0": {
-    "Domain": "your-auth0-domain",
-    "Client_Id": "your-client-id-from-m2m",
-    "Client_Secret": "your-client-secret-from-m2m",
     "Audience": "your-api-audience",
-    "Grant_Type": "client_credentials"
+    "ClientId": "your-client-id",
+    "ClientSecret": "your-client-secret",
+    "UsePersistentStorage": false,
+    "Grant_Type": "client_credentials" // Only in appsettings.integration.json
+  },
+  "ConnectionStrings": {
+    "AzureBlobStorage": "your-azure-blob-storage-connection-string"
   }
 }
 ```
+
+**Note:** Add `"Grant_Type": "client_credentials"` only in `appsettings.integration.json` for M2M authentication.
 
 ### 4. Run with Aspire
 
-Execute the AppHost project to access the applications via the dashboard.
+Execute the AppHost project to run the API and managed services:
 
 ```bash
 dotnet run --project .\tools\AppHost
