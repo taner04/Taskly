@@ -9,10 +9,7 @@ public sealed class AuditableInterceptor(CurrentUserService currentUserService) 
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        if (eventData.Context is not null)
-        {
-            SetAuditableProperties(eventData.Context);
-        }
+        if (eventData.Context is not null) SetAuditableProperties(eventData.Context);
 
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
     }
@@ -27,7 +24,6 @@ public sealed class AuditableInterceptor(CurrentUserService currentUserService) 
         var changeMadeBy = currentUserService.GetCurrentUserId();
 
         foreach (var entry in auditableEntries)
-        {
             switch (entry.State)
             {
                 case EntityState.Added:
@@ -46,6 +42,5 @@ public sealed class AuditableInterceptor(CurrentUserService currentUserService) 
                 default:
                     break;
             }
-        }
     }
 }

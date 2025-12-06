@@ -20,10 +20,7 @@ public sealed class AttachmentService(
     {
         var blob = _container.GetBlobClient(attachment.BlobName);
 
-        if (!blob.CanGenerateSasUri)
-        {
-            throw new InvalidOperationException("SAS generation not allowed.");
-        }
+        if (!blob.CanGenerateSasUri) throw new InvalidOperationException("SAS generation not allowed.");
 
         var sasBuilder = new BlobSasBuilder
         {

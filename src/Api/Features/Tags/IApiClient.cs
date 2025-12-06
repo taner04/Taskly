@@ -18,7 +18,9 @@ public partial interface IApiClient
         CancellationToken cancellationToken = default);
 
     [Get(Routes.Tags.GetTags)]
-    Task<HttpResponseMessage> GetTagsAsync(CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> GetTagsAsync(
+        GetTags.Query query,
+        CancellationToken cancellationToken = default);
 
     [Put(Routes.Tags.Update)]
     Task<HttpResponseMessage> UpdateTagAsync(

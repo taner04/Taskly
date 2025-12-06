@@ -30,10 +30,7 @@ public static partial class Download
                     a.Todo.UserId == userId,
                 ct);
 
-        if (attachment is null)
-        {
-            throw new AttachmentNotFoundException(query.AttachmentId);
-        }
+        if (attachment is null) throw new AttachmentNotFoundException(query.AttachmentId);
 
         var sas = attachments.GenerateDownloadSas(attachment);
 

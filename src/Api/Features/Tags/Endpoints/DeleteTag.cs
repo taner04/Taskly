@@ -23,10 +23,7 @@ public static partial class DeleteTag
         var tag = await context.Tags
             .SingleOrDefaultAsync(t => t.Id == command.TagId && t.UserId == userId, ct);
 
-        if (tag is null)
-        {
-            throw new TagNotFoundExceptions(command.TagId);
-        }
+        if (tag is null) throw new TagNotFoundExceptions(command.TagId);
 
         var todos = await context.Todos
             .Where(todo =>

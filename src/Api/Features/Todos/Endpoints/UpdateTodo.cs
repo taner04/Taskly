@@ -23,10 +23,7 @@ public static partial class UpdateTodo
         var todo = await context.Todos.SingleOrDefaultAsync(
             t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (todo is null)
-        {
-            throw new TodoNotFoundException(command.TodoId);
-        }
+        if (todo is null) throw new TodoNotFoundException(command.TodoId);
 
         todo.Update(command.Body.Title, command.Body.Description, command.Body.Priority);
 

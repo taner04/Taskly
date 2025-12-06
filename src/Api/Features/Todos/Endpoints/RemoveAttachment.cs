@@ -1,7 +1,6 @@
 ﻿using Api.Features.Attachments.Exceptions;
 using Api.Features.Attachments.Services;
 using Api.Features.Todos.Exceptions;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Todos.Endpoints;
 
@@ -14,12 +13,6 @@ public static partial class RemoveAttachment
         IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
-    }
-
-    internal static NoContent TransformResult(
-        ValueTask result)
-    {
-        return TypedResults.NoContent();
     }
 
     private static async ValueTask HandleAsync(
@@ -35,24 +28,16 @@ public static partial class RemoveAttachment
             .Include(t => t.Attachments)
             .SingleOrDefaultAsync(t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (todo is null)
-        {
-            throw new TodoNotFoundException(command.TodoId);
-        }
+        if (todo is null) throw new TodoNotFoundException(command.TodoId);
 
         var attachment = todo.Attachments.SingleOrDefault(a => a.Id == command.AttachmentId);
 
-        if (attachment is null)
-        {
-            throw new AttachmentNotFoundException(command.AttachmentId);
-        }
+        if (attachment is null) throw new AttachmentNotFoundException(command.AttachmentId);
 
         todo.Attachments.Remove(attachment);
 
         if (!await attachments.DeleteAsync(attachment, ct))
-        {
             throw new TodoDeleteAttachmentException(command.AttachmentId);
-        }
 
         await context.SaveChangesAsync(ct);
     }

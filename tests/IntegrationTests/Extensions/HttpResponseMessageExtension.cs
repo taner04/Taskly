@@ -5,12 +5,16 @@ namespace IntegrationTests.Extensions;
 
 public static class HttpResponseMessageExtension
 {
-    private static async Task<JObject> ReadAsJObject(
+    private static async Task<JToken> ReadAsJToken(
         this HttpResponseMessage response,
         CancellationToken cancellationToken)
     {
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
-        return JObject.Parse(content);
+
+        if (string.IsNullOrWhiteSpace(content))
+            return JValue.CreateNull();
+
+        return JToken.Parse(content);
     }
 
     public static async Task<T> MapTo<T>(
@@ -18,12 +22,13 @@ public static class HttpResponseMessageExtension
         CancellationToken cancellationToken = default)
         where T : class
     {
-        var json = await response.ReadAsJObject(cancellationToken);
-        var obj = json["value"]?.ToObject<T>();
+        var token = await response.ReadAsJToken(cancellationToken);
 
-        obj.Should().NotBeNull("the response should contain a 'value' object that maps to {0}", typeof(T).Name);
+        // Case 1: { "value": ... }
+        if (token is JObject obj && obj["value"] is not null) return obj["value"]!.ToObject<T>()!;
 
-        return obj!;
+        // Case 2: raw object or array
+        return token.ToObject<T>()!;
     }
 
     public static async Task ContainsErrorCode(
@@ -31,8 +36,8 @@ public static class HttpResponseMessageExtension
         string errorCode,
         CancellationToken cancellationToken = default)
     {
-        var json = await response.ReadAsJObject(cancellationToken);
-        var actual = json["errorCode"]?.Value<string>();
+        var token = await response.ReadAsJToken(cancellationToken);
+        var actual = token["errorCode"]?.Value<string>();
 
         actual.Should().NotBeNull("the response should contain an 'errorCode' field");
         actual.Should().BeEquivalentTo(errorCode, "error codes should match ignoring case");

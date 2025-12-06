@@ -46,7 +46,7 @@ public partial interface IApiClient
         CancellationToken cancellationToken = default);
 
     [Delete(Routes.Todos.Remove)]
-    Task<HttpResponseMessage> DeleteTodoAsync(
+    Task<HttpResponseMessage> RemoveTodoAsync(
         TodoId todoId,
         CancellationToken cancellationToken = default);
 

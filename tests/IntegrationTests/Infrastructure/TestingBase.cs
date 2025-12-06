@@ -48,4 +48,10 @@ public abstract class TestingBase : IAsyncLifetime
     {
         return _fixture.GetCurrentUserId();
     }
+
+    protected T GetService<T>()
+        where T : notnull
+    {
+        return _scope.ServiceProvider.GetRequiredService<T>();
+    }
 }

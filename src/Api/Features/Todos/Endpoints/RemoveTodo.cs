@@ -1,5 +1,4 @@
 ﻿using Api.Features.Todos.Exceptions;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Todos.Endpoints;
 
@@ -14,12 +13,6 @@ public static partial class RemoveTodo
         endpoint.WithTags(nameof(Todo));
     }
 
-    internal static NoContent TransformResult(
-        ValidationResult result)
-    {
-        return TypedResults.NoContent();
-    }
-
     private static async ValueTask HandleAsync(
         Command command,
         ApplicationDbContext context,
@@ -30,10 +23,7 @@ public static partial class RemoveTodo
         var todo = await context.Todos.SingleOrDefaultAsync(
             t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (todo is null)
-        {
-            throw new TodoNotFoundException(command.TodoId);
-        }
+        if (todo is null) throw new TodoNotFoundException(command.TodoId);
 
         context.Todos.Remove(todo);
         await context.SaveChangesAsync(ct);

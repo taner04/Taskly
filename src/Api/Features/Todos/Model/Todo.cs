@@ -57,33 +57,22 @@ public sealed class Todo : Entity<TodoId>
         string title,
         string? description)
     {
-        if (title.Length is > MaxTitleLength or < MinTitleLength)
-        {
-            throw new TodoInvalidTitleException(title.Length);
-        }
+        if (title.Length is > MaxTitleLength or < MinTitleLength) throw new TodoInvalidTitleException(title.Length);
 
         if (!string.IsNullOrEmpty(description) &&
             description.Length is > MaxDescriptionLength or < MinDescriptionLength)
-        {
             throw new TodoInvalidDescriptionException(description.Length);
-        }
     }
 
     public void SetCompletionStatus(
         bool isCompleted)
     {
-        if (isCompleted != IsCompleted)
-        {
-            IsCompleted = isCompleted;
-        }
+        if (isCompleted != IsCompleted) IsCompleted = isCompleted;
     }
 
     public void ChangePriority(
         TodoPriority priority)
     {
-        if (priority != Priority)
-        {
-            Priority = priority;
-        }
+        if (priority != Priority) Priority = priority;
     }
 }

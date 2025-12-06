@@ -1,6 +1,5 @@
 ﻿using Api.Features.Tags.Exceptions;
 using Api.Features.Todos.Exceptions;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Todos.Endpoints;
 
@@ -15,12 +14,6 @@ public static partial class RemoveTag
         endpoint.WithTags(nameof(Todo));
     }
 
-    internal static NoContent TransformResult(
-        ValidationResult result)
-    {
-        return TypedResults.NoContent();
-    }
-
     private static async ValueTask HandleAsync(
         [AsParameters] Command command,
         ApplicationDbContext context,
@@ -32,19 +25,14 @@ public static partial class RemoveTag
             .Include(t => t.Tags)
             .SingleOrDefaultAsync(t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (todo is null)
-        {
-            throw new TodoNotFoundException(command.TodoId);
-        }
+        if (todo is null) throw new TodoNotFoundException(command.TodoId);
 
         var tagToRemove = todo.Tags.SingleOrDefault(t => t.Id == command.TagId);
 
-        if (tagToRemove is null)
-        {
-            throw new TagNotFoundExceptions(command.TagId);
-        }
+        if (tagToRemove is null) throw new TagNotFoundExceptions(command.TagId);
 
         todo.Tags.Remove(tagToRemove);
+        await context.SaveChangesAsync(ct);
     }
 
     [Validate]

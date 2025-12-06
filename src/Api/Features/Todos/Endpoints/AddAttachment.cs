@@ -34,10 +34,7 @@ public static partial class AddAttachment
             .Include(t => t.Attachments)
             .SingleOrDefaultAsync(t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (todo is null)
-        {
-            throw new TodoNotFoundException(command.TodoId);
-        }
+        if (todo is null) throw new TodoNotFoundException(command.TodoId);
 
         var attachment = Attachment.CreatePending(
             todo.Id,

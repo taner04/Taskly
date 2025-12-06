@@ -63,10 +63,7 @@ public static class ProblemDetailsConfig
             problemDetails.Extensions["traceId"] = Activity.Current?.Id ?? httpContext.TraceIdentifier;
             problemDetails.Extensions["errorCode"] = problemDetails.ErrorCode;
 
-            if (problemDetails.Errors.Count > 0)
-            {
-                problemDetails.Extensions["errors"] = problemDetails.Errors;
-            }
+            if (problemDetails.Errors.Count > 0) problemDetails.Extensions["errors"] = problemDetails.Errors;
 
             ctx.ProblemDetails = problemDetails;
         };

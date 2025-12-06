@@ -27,7 +27,10 @@ public static partial class GetTodos
         CancellationToken ct)
     {
         var userId = currentUserService.GetCurrentUserId();
-        var todos = await context.Todos.Where(t => t.UserId == userId).ToListAsync(ct);
+        var todos = await context.Todos
+            .Include(t => t.Tags)
+            .Include(t => t.Attachments)
+            .Where(t => t.UserId == userId).ToListAsync(ct);
 
         return todos.Select(Response.FromDomain).ToList();
     }

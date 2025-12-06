@@ -32,10 +32,7 @@ public class Tag : Entity<TagId>
     private static void Validate(
         string name)
     {
-        if (name.Length is > MaxNameLength or < MinNameLength)
-        {
-            throw new TagInvalidNameException(name.Length);
-        }
+        if (name.Length is > MaxNameLength or < MinNameLength) throw new TagInvalidNameException(name.Length);
     }
 
     public void Rename(

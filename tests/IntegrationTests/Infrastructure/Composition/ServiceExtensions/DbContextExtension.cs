@@ -17,10 +17,7 @@ internal static class DbContextExtension
                         || d.ImplementationInstance is AuditableInterceptor)
             .ToList();
 
-        foreach (var d in interceptorDescriptors)
-        {
-            services.Remove(d);
-        }
+        foreach (var d in interceptorDescriptors) services.Remove(d);
 
         services.AddDbContext<ApplicationDbContext>(opt =>
         {

@@ -27,10 +27,7 @@ public static partial class CompleteUpload
                                        && a.Todo.UserId == userId, ct);
 
 
-        if (attachment is null)
-        {
-            throw new AttachmentNotFoundException(command.AttachmentId);
-        }
+        if (attachment is null) throw new AttachmentNotFoundException(command.AttachmentId);
 
         if (!command.Body.IsUploaded)
         {

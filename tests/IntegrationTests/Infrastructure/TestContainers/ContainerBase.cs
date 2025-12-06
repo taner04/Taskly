@@ -16,7 +16,6 @@ public abstract class ContainerBase<T> : IAsyncLifetime where T : DockerContaine
 
         var attempt = 0;
         while (attempt < MaxRetries)
-        {
             try
             {
                 await Container.StartAsync(CurrentCancellationToken);
@@ -26,13 +25,10 @@ public abstract class ContainerBase<T> : IAsyncLifetime where T : DockerContaine
             {
                 attempt++;
                 if (attempt >= MaxRetries)
-                {
                     throw new Exception($"Failed to start PostgresSQL container after {MaxRetries} attempts.", ex);
-                }
 
                 await Task.Delay(2000, CurrentCancellationToken);
             }
-        }
     }
 
     public async ValueTask DisposeAsync()

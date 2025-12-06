@@ -40,10 +40,7 @@ public sealed class LoggerRequestContext
     public static LoggerRequestContext FromHttpContext(
         HttpContext? httpContext)
     {
-        if (httpContext is null)
-        {
-            return CreateUnknown();
-        }
+        if (httpContext is null) return CreateUnknown();
 
         var request = httpContext.Request;
         var user = httpContext.User;
