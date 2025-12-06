@@ -78,9 +78,13 @@ public sealed partial class AttachmentService(
             var response = await blob.DeleteIfExistsAsync(cancellationToken: ct);
 
             if (response.Value)
+            {
                 LogDeleteSucceeded(attachment.BlobName);
+            }
             else
+            {
                 LogDeleteNotFound(attachment.BlobName);
+            }
 
             return response.Value;
         }

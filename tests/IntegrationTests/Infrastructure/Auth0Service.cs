@@ -12,7 +12,7 @@ public sealed class Auth0Service(Auth0Options auth0Options)
         var uri = $"https://{auth0Options.Domain}/oauth/token";
 
         using var httpClient = new HttpClient();
-        
+
         var tokenRequest = new TokenRequest
         {
             ClientId = auth0Options.ClientId,
@@ -38,9 +38,9 @@ public sealed class Auth0Service(Auth0Options auth0Options)
 
         var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(json);
 
-        return string.IsNullOrWhiteSpace(tokenResponse?.AccessToken) ? 
-            throw new InvalidOperationException("Auth0 response does not contain access_token.") : 
-            tokenResponse.AccessToken;
+        return string.IsNullOrWhiteSpace(tokenResponse?.AccessToken)
+            ? throw new InvalidOperationException("Auth0 response does not contain access_token.")
+            : tokenResponse.AccessToken;
     }
 
     private record TokenRequest

@@ -29,7 +29,8 @@ public sealed class TestingFixture : IAsyncLifetime
         _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection, _azureTestBlobStorage.ConnectionString);
         _serviceScopeFactory = _webApiFactory.Services.GetRequiredService<IServiceScopeFactory>();
 
-        var auth0Options = InitConfiguration().GetSection("Auth0").Get<Auth0Options>() ?? throw new InvalidOperationException("Auth0 configuration is missing.");
+        var auth0Options = InitConfiguration().GetSection("Auth0").Get<Auth0Options>() ??
+                           throw new InvalidOperationException("Auth0 configuration is missing.");
         _jwtToken = await new Auth0Service(auth0Options).GetAccessTokenAsync();
 
         var token = new JwtSecurityTokenHandler().ReadJwtToken(_jwtToken);

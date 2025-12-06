@@ -8,8 +8,9 @@ internal static class ScalarExtension
     internal static WebApplication MapScalar(
         this WebApplication app)
     {
-        var auth0Options = app.Configuration.GetSection("Auth0").Get<Auth0Options>() ?? throw new InvalidOperationException("Auth0 configuration is missing.");
-        
+        var auth0Options = app.Configuration.GetSection("Auth0").Get<Auth0Options>() ??
+                           throw new InvalidOperationException("Auth0 configuration is missing.");
+
         app.MapScalarApiReference(opt =>
         {
             opt.Layout = ScalarLayout.Classic;
@@ -28,7 +29,7 @@ internal static class ScalarExtension
                         ))
                     .WithDefaultScopes("openid", "profile", "api")
                 );
-            
+
             if (auth0Options.UsePersistentStorage)
             {
                 opt.EnablePersistentAuthentication();

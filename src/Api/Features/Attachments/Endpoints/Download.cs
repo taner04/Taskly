@@ -13,7 +13,7 @@ public static partial class Download
         endpoint.WithTags(nameof(Attachment));
     }
 
-    private static async ValueTask<ErrorOr<Response>> HandleAsync(
+    private static async ValueTask<Response> HandleAsync(
         Query query,
         ApplicationDbContext db,
         CurrentUserService current,

@@ -5,7 +5,8 @@
 
 # Taskly
 
-✨ A stunning, responsive task management API. Built with **C#** and **.NET 9** on the backend, featuring seamless authentication with **Auth0** and cloud-native architecture with **.NET Aspire**.
+✨ A stunning, responsive task management API. Built with **C#** and **.NET 9** on the backend, featuring seamless
+authentication with **Auth0** and cloud-native architecture with **.NET Aspire**.
 
 ---
 

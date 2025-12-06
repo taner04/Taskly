@@ -11,7 +11,7 @@ public static partial class CompleteTodo
         endpoint.WithTags(nameof(Todo));
     }
 
-    private static async ValueTask<ErrorOr<Success>> HandleAsync(
+    private static async ValueTask HandleAsync(
         [AsParameters] Command command,
         ApplicationDbContext context,
         CurrentUserService currentUserService,
@@ -30,8 +30,6 @@ public static partial class CompleteTodo
 
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);
-
-        return Result.Success;
     }
 
     [Validate]

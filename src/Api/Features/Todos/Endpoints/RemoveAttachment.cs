@@ -34,7 +34,7 @@ public static partial class RemoveAttachment
 
         var attachment = todo.Attachments.SingleOrDefault(a => a.Id == command.AttachmentId);
 
-        if (attachment is null) 
+        if (attachment is null)
         {
             throw new ModelNotFoundException<Attachment>(command.AttachmentId.Value);
         }

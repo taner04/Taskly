@@ -8,7 +8,6 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Storage.Blobs"/>
-        <PackageReference Include="ErrorOr"/>
         <PackageReference Include="Immediate.Apis"/>
         <PackageReference Include="Immediate.Handlers"/>
         <PackageReference Include="Immediate.Validations"/>
