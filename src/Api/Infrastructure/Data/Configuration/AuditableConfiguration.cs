@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Api.Infrastructure.Data.Configuration;
 
 internal abstract class AuditableConfiguration<T> : IEntityTypeConfiguration<T>
-    where T : class, IAuditable
+    where T : Auditable
 {
     public void Configure(
         EntityTypeBuilder<T> builder)

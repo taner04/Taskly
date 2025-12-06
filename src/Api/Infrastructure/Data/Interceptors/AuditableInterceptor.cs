@@ -1,3 +1,4 @@
+using Api.Features.Shared.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Api.Infrastructure.Data.Interceptors;
@@ -21,7 +22,7 @@ public sealed class AuditableInterceptor(CurrentUserService currentUserService) 
         DbContext context)
     {
         var auditableEntries = context.ChangeTracker
-            .Entries<IAuditable>()
+            .Entries<Auditable>()
             .ToList();
 
         var changeMadeBy = currentUserService.GetCurrentUserId();

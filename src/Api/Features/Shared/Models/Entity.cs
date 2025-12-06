@@ -1,6 +1,6 @@
 ﻿namespace Api.Features.Shared.Models;
 
-public abstract class Entity<TId> : Auditable, IEntity<TId> where TId : struct
+public abstract class Entity<TId> : Auditable
 {
     public TId Id { get; init; }
 }

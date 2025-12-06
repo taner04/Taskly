@@ -1,4 +1,4 @@
-﻿using Api.Abstractions;
+﻿using Api.Features.Shared.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace IntegrationTests.Infrastructure.Composition.Mocks;
@@ -22,7 +22,7 @@ public sealed class MockAuditableInterceptor : SaveChangesInterceptor
         DbContext context)
     {
         var auditableEntries = context.ChangeTracker
-            .Entries<IAuditable>()
+            .Entries<Auditable>()
             .ToList();
 
         foreach (var entity in auditableEntries.Select(entry => entry.Entity))
