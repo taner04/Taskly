@@ -66,7 +66,7 @@ public sealed class LoggerRequestContext
     }
 
 
-    [SuppressMessage("Performance", "CA1869:JsonSerializerOptions-Instanzen zwischenspeichern und wiederverwenden")]
+    [SuppressMessage("Performance", "CA1869:Cache and reuse JsonSerializerOptions instances")]
     public override string ToString()
     {
         return JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });

@@ -3,7 +3,7 @@ using Azure.Storage.Sas;
 
 namespace Api.Features.Attachments.Services;
 
-public sealed class AttachmentService(
+public sealed partial class AttachmentService(
     ILogger<AttachmentService> logger,
     BlobServiceClient blobServiceClient)
 {
@@ -15,13 +15,13 @@ public sealed class AttachmentService(
         await _container.CreateIfNotExistsAsync();
     }
 
-    public SasDownloadResult GenerateDownloadSas(
-        Attachment attachment)
+    public SasDownloadResult GenerateDownloadSas(Attachment attachment)
     {
         var blob = _container.GetBlobClient(attachment.BlobName);
 
         if (!blob.CanGenerateSasUri)
         {
+            LogDownloadSasNotAllowed(attachment.BlobName);
             throw new InvalidOperationException("SAS generation not allowed.");
         }
 
@@ -37,16 +37,18 @@ public sealed class AttachmentService(
 
         var sasUri = blob.GenerateSasUri(sasBuilder);
 
+        LogDownloadSasGenerated(attachment.BlobName);
+
         return new SasDownloadResult(sasUri.ToString());
     }
 
-    public SasUploadResult GenerateUploadSas(
-        Attachment attachment)
+    public SasUploadResult GenerateUploadSas(Attachment attachment)
     {
         var blobClient = _container.GetBlobClient(attachment.BlobName);
 
         if (!blobClient.CanGenerateSasUri)
         {
+            LogUploadSasNotAllowed(attachment.BlobName);
             throw new InvalidOperationException(
                 "Cannot generate SAS URL. Ensure BlobServiceClient is created with a key credential.");
         }
@@ -63,30 +65,78 @@ public sealed class AttachmentService(
 
         var sasUri = blobClient.GenerateSasUri(sasBuilder);
 
-        return new SasUploadResult(
-            sasUri.ToString(),
-            attachment.BlobName
-        );
+        LogUploadSasGenerated(attachment.BlobName);
+
+        return new SasUploadResult(sasUri.ToString(), attachment.BlobName);
     }
 
-    public async Task<bool> DeleteAsync(
-        Attachment attachment,
-        CancellationToken ct)
+    public async Task<bool> DeleteAsync(Attachment attachment, CancellationToken ct)
     {
         try
         {
             var blob = _container.GetBlobClient(attachment.BlobName);
             var response = await blob.DeleteIfExistsAsync(cancellationToken: ct);
 
+            if (response.Value)
+                LogDeleteSucceeded(attachment.BlobName);
+            else
+                LogDeleteNotFound(attachment.BlobName);
+
             return response.Value;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to delete blob {Blob}", attachment.BlobName);
+            LogFailedDelete(attachment.BlobName, ex);
             return false;
         }
     }
 
+    [LoggerMessage(
+        EventId = 0,
+        Level = LogLevel.Warning,
+        Message = "Cannot generate download SAS for blob {blob}: SAS not allowed.")]
+    private partial void LogDownloadSasNotAllowed(string blob);
+
+    [LoggerMessage(
+        EventId = 1,
+        Level = LogLevel.Information,
+        Message = "Generated download SAS for blob {blob}.")]
+    private partial void LogDownloadSasGenerated(string blob);
+
+
+    [LoggerMessage(
+        EventId = 2,
+        Level = LogLevel.Warning,
+        Message = "Cannot generate upload SAS for blob {blob}: SAS not allowed.")]
+    private partial void LogUploadSasNotAllowed(string blob);
+
+    [LoggerMessage(
+        EventId = 3,
+        Level = LogLevel.Information,
+        Message = "Generated upload SAS for blob {blob}.")]
+    private partial void LogUploadSasGenerated(string blob);
+
+
+    [LoggerMessage(
+        EventId = 4,
+        Level = LogLevel.Information,
+        Message = "Successfully deleted blob {blob}.")]
+    private partial void LogDeleteSucceeded(string blob);
+
+    [LoggerMessage(
+        EventId = 5,
+        Level = LogLevel.Warning,
+        Message = "Blob {blob} not found during delete operation.")]
+    private partial void LogDeleteNotFound(string blob);
+
+    [LoggerMessage(
+        EventId = 6,
+        Level = LogLevel.Error,
+        Message = "Failed to delete blob {blob}.")]
+    private partial void LogFailedDelete(string blob, Exception exception);
+
+
+    // Records
     public sealed record SasDownloadResult(string DownloadUrl);
 
     public sealed record SasUploadResult(string UploadUrl, string BlobPath);
