@@ -5,19 +5,36 @@ namespace IntegrationTests.Extensions;
 
 public static class HttpResponseMessageExtension
 {
-    public static async Task<T> MapTo<T>(this HttpResponseMessage response, CancellationToken cancellationToken = default) where T : class
+    private static async Task<JObject> ReadAsJObject(
+        this HttpResponseMessage response,
+        CancellationToken cancellationToken)
     {
-        var obj = JObject.Parse(await response.Content.ReadAsStringAsync(cancellationToken))["value"]?.ToObject<T>();
-        obj.Should().NotBeNull();
-        
-        return obj;
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        return JObject.Parse(content);
     }
-    
-    public static async Task ContainsErrorCode(this HttpResponseMessage response, string errorCode, CancellationToken cancellationToken = default)
+
+    public static async Task<T> MapTo<T>(
+        this HttpResponseMessage response,
+        CancellationToken cancellationToken = default)
+        where T : class
     {
-        var value = JObject.Parse(await response.Content.ReadAsStringAsync(cancellationToken))["errorCode"]?.Value<string>();
-        value.Should().NotBeNull();
-        
-        value.ToLower().Should().Be(errorCode.ToLower());
+        var json = await response.ReadAsJObject(cancellationToken);
+        var obj = json["value"]?.ToObject<T>();
+
+        obj.Should().NotBeNull("the response should contain a 'value' object that maps to {0}", typeof(T).Name);
+
+        return obj!;
+    }
+
+    public static async Task ContainsErrorCode(
+        this HttpResponseMessage response,
+        string errorCode,
+        CancellationToken cancellationToken = default)
+    {
+        var json = await response.ReadAsJObject(cancellationToken);
+        var actual = json["errorCode"]?.Value<string>();
+
+        actual.Should().NotBeNull("the response should contain an 'errorCode' field");
+        actual.Should().BeEquivalentTo(errorCode, "error codes should match ignoring case");
     }
 }

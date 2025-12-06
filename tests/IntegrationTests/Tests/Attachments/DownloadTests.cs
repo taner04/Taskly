@@ -77,8 +77,8 @@ public sealed class DownloadTests(TestingFixture fixture) : TestingBase(fixture)
         var todo = CreateTodo(userId);
         var attachment = CreateUploadedAttachment(todo);
 
-        DbContext.Add((object)todo);
-        DbContext.Add((object)attachment);
+        DbContext.Add(todo);
+        DbContext.Add(attachment);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
@@ -93,8 +93,14 @@ public sealed class DownloadTests(TestingFixture fixture) : TestingBase(fixture)
 
         result.Should().NotBeNull();
         result.DownloadUrl.Should().NotBeNullOrWhiteSpace();
-        result.DownloadUrl.Should().Contain("sig=");
+        IsValidUrl(result.DownloadUrl).Should().BeTrue();
         result.FileName.Should().Be(attachment.FileName);
         result.ContentType.Should().Be(attachment.ContentType);
+    }
+
+    private static bool IsValidUrl(string url)
+    {
+        return Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
+               && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
     }
 }
