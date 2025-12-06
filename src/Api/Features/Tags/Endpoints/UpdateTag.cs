@@ -1,6 +1,4 @@
-﻿using Api.Features.Tags.Exceptions;
-
-namespace Api.Features.Tags.Endpoints;
+﻿namespace Api.Features.Tags.Endpoints;
 
 [Handler]
 [MapPut(Routes.Tags.Update)]
@@ -23,7 +21,10 @@ public static partial class UpdateTag
         var tag = await context.Tags
             .SingleOrDefaultAsync(t => t.Id == command.TagId && t.UserId == userId, ct);
 
-        if (tag is null) throw new TagNotFoundExceptions(command.TagId);
+        if (tag is null)
+        {
+            throw new ModelNotFoundException<Tag>(command.TagId.Value);
+        }
 
         tag.Rename(command.Body.NewName);
 

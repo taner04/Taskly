@@ -1,5 +1,4 @@
 ﻿using Api.Features.Tags.Exceptions;
-using Api.Features.Todos.Exceptions;
 
 namespace Api.Features.Todos.Endpoints;
 
@@ -24,16 +23,25 @@ public static partial class AddTags
         var todo = await context.Todos.SingleOrDefaultAsync(
             t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (todo is null) throw new TodoNotFoundException(command.TodoId);
+        if (todo is null)
+        {
+            throw new ModelNotFoundException<Todo>(command.TodoId.Value);
+        }
 
         var tags = await context.Tags
             .Where(tag => command.Body.TagIds.Contains(tag.Id) && tag.UserId == userId)
             .ToListAsync(ct);
 
-        if (tags.Count == 0) throw new TagsNotFoundExceptions(command.Body.TagIds);
+        if (tags.Count == 0)
+        {
+            throw new TagsNotFoundExceptions(command.Body.TagIds);
+        }
 
         var existingTagIds = todo.Tags.Select(t => t.Id).ToList();
-        foreach (var tag in tags.Where(tag => !existingTagIds.Contains(tag.Id))) todo.Tags.Add(tag);
+        foreach (var tag in tags.Where(tag => !existingTagIds.Contains(tag.Id)))
+        {
+            todo.Tags.Add(tag);
+        }
 
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);

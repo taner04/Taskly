@@ -29,14 +29,18 @@ public sealed class Auth0Service(IConfiguration configuration)
         var response = await httpClient.PostAsync(uri, content);
 
         if (!response.IsSuccessStatusCode)
+        {
             throw new InvalidOperationException("Failed to obtain access token from Auth0.");
+        }
 
         var json = await response.Content.ReadAsStringAsync();
 
         var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(json);
 
         if (string.IsNullOrWhiteSpace(tokenResponse?.AccessToken))
+        {
             throw new InvalidOperationException("Auth0 response does not contain access_token.");
+        }
 
         return tokenResponse.AccessToken;
     }

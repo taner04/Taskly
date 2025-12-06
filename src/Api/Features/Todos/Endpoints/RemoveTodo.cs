@@ -1,6 +1,4 @@
-﻿using Api.Features.Todos.Exceptions;
-
-namespace Api.Features.Todos.Endpoints;
+﻿namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapDelete(Routes.Todos.Remove)]
@@ -23,7 +21,10 @@ public static partial class RemoveTodo
         var todo = await context.Todos.SingleOrDefaultAsync(
             t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (todo is null) throw new TodoNotFoundException(command.TodoId);
+        if (todo is null)
+        {
+            throw new ModelNotFoundException<Todo>(command.TodoId.Value);
+        }
 
         context.Todos.Remove(todo);
         await context.SaveChangesAsync(ct);

@@ -1,6 +1,4 @@
-﻿using Api.Features.Todos.Exceptions;
-
-namespace Api.Features.Todos.Endpoints;
+﻿namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapPut(Routes.Todos.Update)]
@@ -23,7 +21,10 @@ public static partial class UpdateTodo
         var todo = await context.Todos.SingleOrDefaultAsync(
             t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (todo is null) throw new TodoNotFoundException(command.TodoId);
+        if (todo is null)
+        {
+            throw new ModelNotFoundException<Todo>(command.TodoId.Value);
+        }
 
         todo.Update(command.Body.Title, command.Body.Description, command.Body.Priority);
 

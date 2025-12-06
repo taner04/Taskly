@@ -14,3 +14,4 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Vogen;
 global using System.Net;
+global using Api.Features.Shared.Exceptions;

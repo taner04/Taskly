@@ -1,6 +1,4 @@
-﻿using Api.Features.Todos.Exceptions;
-
-namespace Api.Features.Todos.Endpoints;
+﻿namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapPost(Routes.Todos.Complete)]
@@ -23,7 +21,10 @@ public static partial class CompleteTodo
         var todo = await context.Todos.SingleOrDefaultAsync(
             t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (todo is null) throw new TodoNotFoundException(command.TodoId);
+        if (todo is null)
+        {
+            throw new ModelNotFoundException<Todo>(command.TodoId.Value);
+        }
 
         todo.SetCompletionStatus(command.Body.Completed);
 

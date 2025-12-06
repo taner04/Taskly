@@ -1,7 +1,4 @@
-﻿using Api.Features.Tags.Exceptions;
-using Api.Features.Todos.Exceptions;
-
-namespace Api.Features.Todos.Endpoints;
+﻿namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapDelete(Routes.Todos.RemoveTag)]
@@ -25,11 +22,17 @@ public static partial class RemoveTag
             .Include(t => t.Tags)
             .SingleOrDefaultAsync(t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (todo is null) throw new TodoNotFoundException(command.TodoId);
+        if (todo is null)
+        {
+            throw new ModelNotFoundException<Todo>(command.TodoId.Value);
+        }
 
         var tagToRemove = todo.Tags.SingleOrDefault(t => t.Id == command.TagId);
 
-        if (tagToRemove is null) throw new TagNotFoundExceptions(command.TagId);
+        if (tagToRemove is null)
+        {
+            throw new ModelNotFoundException<Tag>(command.TagId.Value);
+        }
 
         todo.Tags.Remove(tagToRemove);
         await context.SaveChangesAsync(ct);

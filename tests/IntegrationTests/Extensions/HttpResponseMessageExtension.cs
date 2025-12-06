@@ -11,10 +11,7 @@ public static class HttpResponseMessageExtension
     {
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-        if (string.IsNullOrWhiteSpace(content))
-            return JValue.CreateNull();
-
-        return JToken.Parse(content);
+        return string.IsNullOrWhiteSpace(content) ? JValue.CreateNull() : JToken.Parse(content);
     }
 
     public static async Task<T> MapTo<T>(
@@ -25,7 +22,10 @@ public static class HttpResponseMessageExtension
         var token = await response.ReadAsJToken(cancellationToken);
 
         // Case 1: { "value": ... }
-        if (token is JObject obj && obj["value"] is not null) return obj["value"]!.ToObject<T>()!;
+        if (token is JObject obj && obj["value"] is not null)
+        {
+            return obj["value"]!.ToObject<T>()!;
+        }
 
         // Case 2: raw object or array
         return token.ToObject<T>()!;

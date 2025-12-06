@@ -30,7 +30,9 @@ public static partial class CreateTag
         var newTag = new Tag(command.TagName, userId);
 
         if (await context.Tags.AnyAsync(t => t.Name == newTag.Name && t.UserId == userId, ct))
+        {
             throw new TagAlreadyExistsException(newTag.Name);
+        }
 
         context.Tags.Add(newTag);
         await context.SaveChangesAsync(ct);

@@ -1,5 +1,4 @@
-﻿using Api.Features.Attachments.Exceptions;
-using Api.Features.Attachments.Services;
+﻿using Api.Features.Attachments.Services;
 using Api.Features.Todos.Exceptions;
 
 namespace Api.Features.Todos.Endpoints;
@@ -28,16 +27,24 @@ public static partial class RemoveAttachment
             .Include(t => t.Attachments)
             .SingleOrDefaultAsync(t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (todo is null) throw new TodoNotFoundException(command.TodoId);
+        if (todo is null)
+        {
+            throw new ModelNotFoundException<Todo>(command.TodoId.Value);
+        }
 
         var attachment = todo.Attachments.SingleOrDefault(a => a.Id == command.AttachmentId);
 
-        if (attachment is null) throw new AttachmentNotFoundException(command.AttachmentId);
+        if (attachment is null) 
+        {
+            throw new ModelNotFoundException<Attachment>(command.AttachmentId.Value);
+        }
 
         todo.Attachments.Remove(attachment);
 
         if (!await attachments.DeleteAsync(attachment, ct))
+        {
             throw new TodoDeleteAttachmentException(command.AttachmentId);
+        }
 
         await context.SaveChangesAsync(ct);
     }

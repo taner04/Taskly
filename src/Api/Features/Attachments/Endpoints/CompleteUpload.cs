@@ -1,6 +1,4 @@
-﻿using Api.Features.Attachments.Exceptions;
-
-namespace Api.Features.Attachments.Endpoints;
+﻿namespace Api.Features.Attachments.Endpoints;
 
 [Handler]
 [MapPost(Routes.Attachments.CompleteUpload)]
@@ -27,7 +25,10 @@ public static partial class CompleteUpload
                                        && a.Todo.UserId == userId, ct);
 
 
-        if (attachment is null) throw new AttachmentNotFoundException(command.AttachmentId);
+        if (attachment is null)
+        {
+            throw new ModelNotFoundException<Attachment>(command.AttachmentId.Value);
+        }
 
         if (!command.Body.IsUploaded)
         {

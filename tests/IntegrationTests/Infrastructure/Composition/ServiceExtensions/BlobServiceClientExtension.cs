@@ -7,7 +7,10 @@ internal static class BlobServiceClientExtension
     {
         var existing = services.SingleOrDefault(s => s.ServiceType == typeof(BlobServiceClient));
 
-        if (existing != null) services.Remove(existing);
+        if (existing != null)
+        {
+            services.Remove(existing);
+        }
 
         services.AddSingleton(new BlobServiceClient(connectionString));
 

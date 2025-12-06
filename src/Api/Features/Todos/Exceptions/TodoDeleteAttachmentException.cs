@@ -1,9 +1,7 @@
-﻿using Api.Features.Shared.Exceptions;
-
-namespace Api.Features.Todos.Exceptions;
+﻿namespace Api.Features.Todos.Exceptions;
 
 public sealed class TodoDeleteAttachmentException(AttachmentId attachmentId) :
-    ApiException(
+    ModelBaseException(
         "Failed to delete attachment from todo.",
         $"An error occurred while deleting attachment with ID '{attachmentId}' from the todo.",
         "Todo.DeleteAttachmentError",

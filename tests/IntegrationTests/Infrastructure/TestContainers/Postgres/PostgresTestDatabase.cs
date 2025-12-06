@@ -32,6 +32,8 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
         await using var context = new ApplicationDbContext(_dbContextOptions);
 
         foreach (var sql in _dbTablesToClear.Select(tableName => $"Delete from \"{tableName}\""))
+        {
             await context.Database.ExecuteSqlRawAsync(sql, _postgresContainer.CurrentCancellationToken);
+        }
     }
 }

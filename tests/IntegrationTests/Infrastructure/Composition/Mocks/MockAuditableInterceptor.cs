@@ -10,7 +10,10 @@ public sealed class MockAuditableInterceptor : SaveChangesInterceptor
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        if (eventData.Context is not null) SetAuditableProperties(eventData.Context);
+        if (eventData.Context is not null)
+        {
+            SetAuditableProperties(eventData.Context);
+        }
 
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }

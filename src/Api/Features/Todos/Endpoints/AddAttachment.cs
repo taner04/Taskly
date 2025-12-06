@@ -1,5 +1,4 @@
 ﻿using Api.Features.Attachments.Services;
-using Api.Features.Todos.Exceptions;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Todos.Endpoints;
@@ -34,7 +33,10 @@ public static partial class AddAttachment
             .Include(t => t.Attachments)
             .SingleOrDefaultAsync(t => t.Id == command.TodoId && t.UserId == userId, ct);
 
-        if (todo is null) throw new TodoNotFoundException(command.TodoId);
+        if (todo is null)
+        {
+            throw new ModelNotFoundException<Todo>(command.TodoId.Value);
+        }
 
         var attachment = Attachment.CreatePending(
             todo.Id,

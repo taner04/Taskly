@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using Api.Features.Shared.Exceptions;
 using Api.Shared;
 
 namespace Api.Composition.Configs;
@@ -29,7 +28,7 @@ public static class ProblemDetailsConfig
                         )
                 },
 
-                ApiException modelsException => new ApiProblemDetails
+                ModelBaseException modelsException => new ApiProblemDetails
                 {
                     Status = (int)modelsException.StatusCode,
                     Title = modelsException.Title,
@@ -63,7 +62,10 @@ public static class ProblemDetailsConfig
             problemDetails.Extensions["traceId"] = Activity.Current?.Id ?? httpContext.TraceIdentifier;
             problemDetails.Extensions["errorCode"] = problemDetails.ErrorCode;
 
-            if (problemDetails.Errors.Count > 0) problemDetails.Extensions["errors"] = problemDetails.Errors;
+            if (problemDetails.Errors.Count > 0)
+            {
+                problemDetails.Extensions["errors"] = problemDetails.Errors;
+            }
 
             ctx.ProblemDetails = problemDetails;
         };

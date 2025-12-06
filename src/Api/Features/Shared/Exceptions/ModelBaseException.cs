@@ -1,6 +1,6 @@
 ﻿namespace Api.Features.Shared.Exceptions;
 
-public abstract class ApiException(
+public abstract class ModelBaseException(
     string title,
     string message,
     string errorCode,

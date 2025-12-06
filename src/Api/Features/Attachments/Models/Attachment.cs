@@ -57,7 +57,10 @@ public sealed class Attachment : Entity<AttachmentId>
             .TrimStart('.')
             .ToLowerInvariant();
 
-        if (!AllowedFileTypes.Contains(extension)) throw new AttachmentInvalidExtensionException(extension);
+        if (!AllowedFileTypes.Contains(extension))
+        {
+            throw new AttachmentInvalidExtensionException(extension);
+        }
 
         var blobName = $"todo/{todoId.Value}/{Guid.NewGuid()}.{extension}";
 
@@ -72,7 +75,10 @@ public sealed class Attachment : Entity<AttachmentId>
     public void MarkUploaded(
         long fileSize)
     {
-        if (fileSize is <= 0 or > MaxFileSizeInBytes) throw new AttachmentInvalidFileSizeException(fileSize);
+        if (fileSize is <= 0 or > MaxFileSizeInBytes)
+        {
+            throw new AttachmentInvalidFileSizeException(fileSize);
+        }
 
         FileSize = fileSize;
         Status = AttachmentStatus.Uploaded;

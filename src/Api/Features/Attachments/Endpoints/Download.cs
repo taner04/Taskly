@@ -1,5 +1,4 @@
-﻿using Api.Features.Attachments.Exceptions;
-using Api.Features.Attachments.Services;
+﻿using Api.Features.Attachments.Services;
 
 namespace Api.Features.Attachments.Endpoints;
 
@@ -30,7 +29,10 @@ public static partial class Download
                     a.Todo.UserId == userId,
                 ct);
 
-        if (attachment is null) throw new AttachmentNotFoundException(query.AttachmentId);
+        if (attachment is null)
+        {
+            throw new ModelNotFoundException<Attachment>(query.AttachmentId.Value);
+        }
 
         var sas = attachments.GenerateDownloadSas(attachment);
 

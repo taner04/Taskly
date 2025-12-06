@@ -67,7 +67,7 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
         // Arrange
         var client = CreateAuthenticatedClient();
         var userId = GetCurrentUserId();
-        var todo = CreateTodo(userId, false);
+        var todo = CreateTodo(userId);
 
         DbContext.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
@@ -126,7 +126,7 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
     {
         // Arrange
         var client = CreateAuthenticatedClient();
-        var foreignTodo = CreateTodo("another-user", false);
+        var foreignTodo = CreateTodo("another-user");
 
         DbContext.Add(foreignTodo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
