@@ -51,7 +51,6 @@ create_migration.py AddTodoTable
 
 **Requirements:**
 
-- `appsettings.json` must exist
 - .NET EF Core tools installed — [Installation guide](https://learn.microsoft.com/en-us/ef/core/cli/dotnet)
 
 ---
