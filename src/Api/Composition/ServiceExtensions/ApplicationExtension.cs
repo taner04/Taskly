@@ -6,22 +6,24 @@ namespace Api.Composition.ServiceExtensions;
 
 public static class ApplicationExtension
 {
-    public static IServiceCollection AddApplication(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    extension(IServiceCollection services)
     {
-        services.AddScoped<CurrentUserService>();
-
-        services.AddSingleton(_ =>
+        public IServiceCollection AddApplication(
+            IConfiguration configuration)
         {
-            var options = new BlobClientOptions();
+            services.AddScoped<CurrentUserService>();
 
-            return new BlobServiceClient(
-                configuration.GetConnectionString(AppHostConstants.AzureBlobStorage),
-                options);
-        });
+            services.AddSingleton(_ =>
+            {
+                var options = new BlobClientOptions();
 
-        services.AddSingleton<AttachmentService>();
-        return services;
+                return new BlobServiceClient(
+                    configuration.GetConnectionString(AppHostConstants.AzureBlobStorage),
+                    options);
+            });
+
+            services.AddSingleton<AttachmentService>();
+            return services;
+        }
     }
 }

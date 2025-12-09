@@ -1,6 +1,6 @@
 ﻿using Api.Composition.Options;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace Api.Composition.OpenApiDocumentTransformers;
 
@@ -15,6 +15,8 @@ internal sealed class BearerDocumentTransformer(IConfiguration configuration) : 
                            throw new InvalidOperationException("Auth0 configuration is missing.");
 
         document.Components ??= new OpenApiComponents();
+        
+        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
         
         document.Components.SecuritySchemes["JWT"] = new OpenApiSecurityScheme
         {

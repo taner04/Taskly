@@ -75,16 +75,15 @@ Both configuration files have the same structure. Use **SPA credentials** for `a
     "Audience": "your-api-audience",
     "ClientId": "your-client-id",
     "ClientSecret": "your-client-secret",
-    "UsePersistentStorage": false,
-    "Grant_Type": "client_credentials" // Only in appsettings.integration.json
+    "UsePersistentStorage": false
   },
-  "ConnectionStrings": {
-    "AzureBlobStorage": "your-azure-blob-storage-connection-string"
-  }
+  "ConnectionStrings": {                                            //
+    "AzureBlobStorage": "your-azure-blob-storage-connection-string" // Only in appsettings.json
+  }                                                                 //
 }
 ```
 
-**Note:** Add `"Grant_Type": "client_credentials"` only in `appsettings.integration.json` for M2M authentication.
+**Note:** Add `"Grant_Type": "client_credentials"` only in `appsettings.integration.json` for M2M authentication. The `ConnectionStrings` section is not necessary in `appsettings.integration.json`.
 
 ### 4. Run with Aspire
 

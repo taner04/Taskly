@@ -48,11 +48,7 @@ APPSETTINGS_INTEGRATION_TEMPLATE = {
         "Audience": "your-auth0-audience",
         "ClientId": "your-auth0-client-id",
         "ClientSecret": "your-auth0-client-secret",
-        "UsePersistentStorage": False,
-        "Grant_Type": "client_credentials"
-    },
-    "ConnectionStrings": {
-        "AzureBlobStorage": "your-azure-blob-storage-connection-string"
+        "UsePersistentStorage": False
     }
 }
 

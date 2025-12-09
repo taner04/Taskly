@@ -2,12 +2,14 @@
 
 internal static class ImmediateExtension
 {
-    internal static IServiceCollection AddImmediate(
-        this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        services.AddApiBehaviors();
-        services.AddApiHandlers();
+        internal IServiceCollection AddImmediate()
+        {
+            services.AddApiBehaviors();
+            services.AddApiHandlers();
 
-        return services;
+            return services;
+        }   
     }
 }

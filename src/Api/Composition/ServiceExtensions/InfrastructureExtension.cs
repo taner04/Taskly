@@ -6,24 +6,26 @@ namespace Api.Composition.ServiceExtensions;
 
 public static class InfrastructureExtension
 {
-    public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    extension(IServiceCollection services)
     {
-        services.AddScoped<ISaveChangesInterceptor, AuditableInterceptor>();
-
-        services.AddDbContext<ApplicationDbContext>((
-            sp,
-            opt) =>
+        public IServiceCollection AddInfrastructure(
+            IConfiguration configuration)
         {
-            var interceptors = sp.GetServices<ISaveChangesInterceptor>().ToList();
-            interceptors.ForEach(interceptor => { opt.AddInterceptors(interceptor); });
+            services.AddScoped<ISaveChangesInterceptor, AuditableInterceptor>();
 
-            opt.EnableSensitiveDataLogging();
-            opt.EnableDetailedErrors();
-            opt.UseNpgsql(configuration.GetConnectionString(AppHostConstants.Database));
-        });
+            services.AddDbContext<ApplicationDbContext>((
+                sp,
+                opt) =>
+            {
+                var interceptors = sp.GetServices<ISaveChangesInterceptor>().ToList();
+                interceptors.ForEach(interceptor => { opt.AddInterceptors(interceptor); });
 
-        return services;
+                opt.EnableSensitiveDataLogging();
+                opt.EnableDetailedErrors();
+                opt.UseNpgsql(configuration.GetConnectionString(AppHostConstants.Database));
+            });
+
+            return services;
+        }
     }
 }
