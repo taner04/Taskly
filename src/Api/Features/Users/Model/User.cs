@@ -13,7 +13,7 @@ public readonly partial struct UserId
 public sealed class User : Entity<UserId>
 {
     private User(
-        string email, 
+        string email,
         string auth0Id)
     {
         Id = UserId.From(Guid.CreateVersion7());
@@ -21,15 +21,15 @@ public sealed class User : Entity<UserId>
         Auth0Id = auth0Id;
     }
 
+    public string Email { get; private set; }
+    public string Auth0Id { get; private set; }
+
     public static User Create(
         string email,
         string auth0Id)
     {
-        return !new EmailAddressAttribute().IsValid(email) ? 
-            throw new UserInvalidEmailException(email) : 
-            new User(email, auth0Id);
+        return !new EmailAddressAttribute().IsValid(email)
+            ? throw new UserInvalidEmailException(email)
+            : new User(email, auth0Id);
     }
-
-    public string Email { get; private set; }
-    public string Auth0Id { get; private set; }
 }

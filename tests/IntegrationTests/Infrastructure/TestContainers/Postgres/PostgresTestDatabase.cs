@@ -1,6 +1,4 @@
-﻿using Api.Features.Users.Model;
-using IntegrationTests.Factories;
-using Microsoft.Testing.Platform.Builder;
+﻿using IntegrationTests.Factories;
 using Npgsql;
 
 namespace IntegrationTests.Infrastructure.TestContainers.Postgres;
@@ -18,7 +16,8 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
         await _postgresContainer.DisposeAsync();
     }
 
-    public async Task<UserId> InitializeContainerAsync(string auth0Id)
+    public async Task<UserId> InitializeContainerAsync(
+        string auth0Id)
     {
         await _postgresContainer.InitializeAsync();
 
@@ -28,7 +27,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
 
         await using var context = new ApplicationDbContext(_dbContextOptions);
         await context.Database.MigrateAsync(TestsContext.CurrentCancellationToken);
-        
+
         return await InitUserAsync(auth0Id, context);
     }
 
@@ -41,15 +40,17 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
             await context.Database.ExecuteSqlRawAsync(sql, TestsContext.CurrentCancellationToken);
         }
     }
-    
-    private async Task<UserId> InitUserAsync(string auth0Id, ApplicationDbContext context)
+
+    private async Task<UserId> InitUserAsync(
+        string auth0Id,
+        ApplicationDbContext context)
     {
         var user = UserFactory.Create(auth0Id);
         user.SetCreated(auth0Id);
 
         context.Users.Add(user);
         await context.SaveChangesAsync(TestsContext.CurrentCancellationToken);
-        
-        return  user.Id;
+
+        return user.Id;
     }
 }

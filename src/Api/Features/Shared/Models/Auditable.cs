@@ -1,6 +1,6 @@
 ﻿namespace Api.Features.Shared.Models;
 
-public abstract class Auditable 
+public abstract class Auditable
 {
     public const int MaxCreatedByLength = 256;
     public const int MaxUpdatedByLength = 256;

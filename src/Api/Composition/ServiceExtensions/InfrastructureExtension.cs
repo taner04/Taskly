@@ -6,7 +6,8 @@ namespace Api.Composition.ServiceExtensions;
 
 public static class InfrastructureExtension
 {
-    extension(IServiceCollection services)
+    extension(
+        IServiceCollection services)
     {
         public IServiceCollection AddInfrastructure(
             IConfiguration configuration)

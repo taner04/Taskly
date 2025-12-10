@@ -8,17 +8,17 @@ public sealed class TodoTests
 {
     private const string ValidTitle = "Valid Todo";
     private const string ValidDescription = "Valid description";
-    private readonly UserId _validUserId = UserId.From(Guid.Parse("00000000-0000-0000-0000-000000000001"));
 
     private const string TooShortString = "ab";
     private static readonly string TooLongTitle = new('x', Todo.MaxTitleLength + 1);
     private static readonly string TooLongDescription = new('x', Todo.MaxDescriptionLength + 1);
+    private readonly UserId _validUserId = UserId.From(Guid.Parse("00000000-0000-0000-0000-000000000001"));
 
     private Todo CreateTodo()
     {
         return Todo.Create(
             ValidTitle,
-            ValidDescription, 
+            ValidDescription,
             TodoPriority.Medium,
             _validUserId);
     }

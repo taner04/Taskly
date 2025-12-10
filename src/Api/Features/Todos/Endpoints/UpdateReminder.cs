@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-using Api.Features.Todos.Exceptions;
-
-namespace Api.Features.Todos.Endpoints;
+﻿namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapPut(Routes.Todos.UpdateReminder)]
@@ -30,9 +27,9 @@ public static partial class UpdateReminder
         {
             throw new ModelNotFoundException<Todo>(command.TodoId.Value);
         }
-        
+
         todo.SetReminder(command.Body.Date, command.Body.ReminderOffsetInMinutes);
-        
+
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);
     }
@@ -48,7 +45,7 @@ public static partial class UpdateReminder
         {
             public required DateTime Date { get; init; }
             public required int ReminderOffsetInMinutes { get; init; }
-            
+
             private static void AdditionalValidations(
                 ValidationResult errors,
                 Command command
@@ -57,10 +54,10 @@ public static partial class UpdateReminder
                 if (command.Body.Date.Kind != DateTimeKind.Utc)
                 {
                     errors.Add(
-                        new ValidationError()
+                        new ValidationError
                         {
                             PropertyName = "Date",
-                            ErrorMessage = $"The date '{command.Body.Date}' is not a valid utc date.",
+                            ErrorMessage = $"The date '{command.Body.Date}' is not a valid utc date."
                         }
                     );
                 }

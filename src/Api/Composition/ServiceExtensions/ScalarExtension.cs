@@ -5,7 +5,8 @@ namespace Api.Composition.ServiceExtensions;
 
 internal static class ScalarExtension
 {
-    extension(WebApplication app)
+    extension(
+        WebApplication app)
     {
         internal WebApplication MapScalar()
         {
@@ -38,6 +39,6 @@ internal static class ScalarExtension
             });
 
             return app;
-        }   
+        }
     }
 }

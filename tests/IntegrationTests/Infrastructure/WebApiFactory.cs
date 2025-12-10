@@ -8,7 +8,8 @@ using ServiceDefaults;
 
 namespace IntegrationTests.Infrastructure;
 
-public class WebApiFactory(DbConnection dbConnection, string azuriteConnectionString) : WebApplicationFactory<Api.Program>
+public class WebApiFactory(DbConnection dbConnection, string azuriteConnectionString)
+    : WebApplicationFactory<Api.Program>
 {
     protected override void ConfigureWebHost(
         IWebHostBuilder builder)

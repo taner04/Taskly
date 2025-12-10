@@ -8,7 +8,8 @@ namespace IntegrationTests.Tests.Todos;
 
 public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodo(UserId userId)
+    private static Todo CreateTodo(
+        UserId userId)
     {
         return Todo.Create(
             "Test Todo",
@@ -17,7 +18,9 @@ public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(
             userId);
     }
 
-    private static Attachment CreateAttachment(Todo todo, string fileName = "file.txt",
+    private static Attachment CreateAttachment(
+        Todo todo,
+        string fileName = "file.txt",
         string contentType = "text/plain")
     {
         return Attachment.CreatePending(

@@ -9,7 +9,8 @@ namespace IntegrationTests.Tests.Todos;
 
 public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodo(UserId userId)
+    private static Todo CreateTodo(
+        UserId userId)
     {
         return Todo.Create(
             "Test Todo",
@@ -19,7 +20,9 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
         );
     }
 
-    private static Tag CreateTag(string name, UserId userId)
+    private static Tag CreateTag(
+        string name,
+        UserId userId)
     {
         return new Tag(name, userId);
     }

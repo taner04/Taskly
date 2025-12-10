@@ -7,7 +7,7 @@ public abstract class ContainerBase<T> : IAsyncLifetime where T : DockerContaine
     private const int MaxRetries = 5;
 
     protected T Container = null!;
-    
+
     public async ValueTask InitializeAsync()
     {
         Container = BuildContainer();

@@ -1,5 +1,4 @@
 ﻿using Api;
-using Api.Features.Users.Model;
 
 namespace IntegrationTests.Infrastructure;
 

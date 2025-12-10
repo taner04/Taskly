@@ -55,7 +55,7 @@ See [Setup Guide](docs/SETUP.md) for detailed setup instructions.
 ## 🛠️ Tech Stack
 
 | Layer              | Technology                        |
-| ------------------ | --------------------------------- |
+|--------------------|-----------------------------------|
 | **Backend**        | .NET 9, ASP.NET Core, C#          |
 | **Database**       | PostgreSQL, Entity Framework Core |
 | **Authentication** | Auth0, JWT Bearer                 |

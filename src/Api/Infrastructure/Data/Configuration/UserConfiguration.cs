@@ -9,15 +9,15 @@ internal sealed class UserConfiguration : AuditableConfiguration<User>
         EntityTypeBuilder<User> builder)
     {
         builder.ToTable("Users");
-        
+
         builder.HasKey(u => u.Id);
-        
+
         builder.Property(u => u.Email)
             .IsRequired();
-        
+
         builder.Property(u => u.Auth0Id)
             .IsRequired();
-        
+
         builder.HasIndex(u => u.Email).IsUnique();
     }
 }

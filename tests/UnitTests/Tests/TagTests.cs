@@ -7,10 +7,10 @@ namespace UnitTests.Tests;
 public sealed class TagTests
 {
     private const string ValidName = "ValidName";
-    private readonly UserId _validUserId = UserId.From(Guid.Parse("00000000-0000-0000-0000-000000000001"));
 
     private const string TooShortName = "ab"; // length = 2 < MinNameLength
     private static readonly string TooLongName = new('a', Tag.MaxNameLength + 1);
+    private readonly UserId _validUserId = UserId.From(Guid.Parse("00000000-0000-0000-0000-000000000001"));
 
     [Fact]
     public void Constructor_WithValidData_ShouldCreateTag()

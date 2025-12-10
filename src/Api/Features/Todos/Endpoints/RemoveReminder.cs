@@ -18,18 +18,18 @@ public static partial class RemovReminder
         CancellationToken ct)
     {
         var userId = current.GetUserId();
-        
+
         var todo = await context.Todos
             .Where(t => t.Id == command.TodoId && t.UserId == userId)
             .FirstOrDefaultAsync(ct);
-        
-        if(todo is null)
+
+        if (todo is null)
         {
             throw new ModelNotFoundException<Todo>(command.TodoId.Value);
         }
-        
+
         todo.ClearReminder();
-        
+
         context.Update(todo);
         await context.SaveChangesAsync(ct);
     }

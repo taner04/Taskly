@@ -3,13 +3,13 @@ using Api.Features.Todos.Endpoints;
 using Api.Features.Todos.Model;
 using FluentAssertions;
 using IntegrationTests.Extensions;
-using Microsoft.EntityFrameworkCore;
 
 namespace IntegrationTests.Tests.Todos;
 
 public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodo(UserId userId)
+    private static Todo CreateTodo(
+        UserId userId)
     {
         return Todo.Create(
             "Test Todo",

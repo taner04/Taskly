@@ -8,7 +8,9 @@ namespace IntegrationTests.Tests.Todos;
 
 public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodo(UserId userId, bool completed = false)
+    private static Todo CreateTodo(
+        UserId userId,
+        bool completed = false)
     {
         var todo = Todo.Create(
             "Test Todo",

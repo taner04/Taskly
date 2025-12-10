@@ -9,7 +9,8 @@ namespace IntegrationTests.Tests.Attachments;
 
 public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodo(UserId userId)
+    private static Todo CreateTodo(
+        UserId userId)
     {
         return Todo.Create(
             "Test Todo",
@@ -19,7 +20,8 @@ public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fi
         );
     }
 
-    private static Attachment CreatePendingAttachment(Todo todo)
+    private static Attachment CreatePendingAttachment(
+        Todo todo)
     {
         return Attachment.CreatePending(
             todo.Id,

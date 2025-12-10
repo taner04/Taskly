@@ -31,7 +31,8 @@ public partial interface IApiClient
         CancellationToken cancellationToken = default);
 
     [Get(Routes.Todos.GetTodos)]
-    Task<HttpResponseMessage> GetTodosAsync(CancellationToken cancellationToken = default);
+    Task<HttpResponseMessage> GetTodosAsync(
+        CancellationToken cancellationToken = default);
 
     [Delete(Routes.Todos.RemoveAttachment)]
     Task<HttpResponseMessage> RemoveAttachmentFromTodoAsync(
@@ -55,16 +56,15 @@ public partial interface IApiClient
         TodoId todoId,
         [Body] UpdateTodo.Command.CommandBody body,
         CancellationToken cancellationToken = default);
-    
+
     [Delete(Routes.Todos.RemoveReminder)]
     Task<HttpResponseMessage> RemoveReminderAsync(
         TodoId todoId,
         CancellationToken cancellationToken = default);
-    
+
     [Put(Routes.Todos.UpdateReminder)]
     Task<HttpResponseMessage> UpdateReminderAsync(
         TodoId todoId,
         [Body] UpdateReminder.Command.CommandBody body,
         CancellationToken cancellationToken = default);
-    
 }

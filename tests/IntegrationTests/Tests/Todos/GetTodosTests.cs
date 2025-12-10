@@ -22,12 +22,15 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         return todo;
     }
 
-    private static Tag CreateTag(string name, UserId userId)
+    private static Tag CreateTag(
+        string name,
+        UserId userId)
     {
         return new Tag(name, userId);
     }
 
-    private static Attachment CreateAttachment(Todo todo)
+    private static Attachment CreateAttachment(
+        Todo todo)
     {
         return Attachment.CreatePending(
             todo.Id,

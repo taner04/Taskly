@@ -6,7 +6,8 @@ namespace Api.Composition.ServiceExtensions;
 
 public static class ApplicationExtension
 {
-    extension(IServiceCollection services)
+    extension(
+        IServiceCollection services)
     {
         public IServiceCollection AddApplication(
             IConfiguration configuration)

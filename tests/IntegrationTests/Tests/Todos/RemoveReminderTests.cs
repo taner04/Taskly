@@ -1,15 +1,14 @@
 ﻿using System.Net;
-using Api.Features.Todos.Endpoints;
 using Api.Features.Todos.Model;
 using FluentAssertions;
 using IntegrationTests.Extensions;
-using Microsoft.EntityFrameworkCore;
 
 namespace IntegrationTests.Tests.Todos;
 
 public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodoWithReminder(UserId userId)
+    private static Todo CreateTodoWithReminder(
+        UserId userId)
     {
         var todo = Todo.Create(
             "Test Todo",
@@ -18,7 +17,7 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
             userId);
 
         var deadline = DateTime.UtcNow.AddHours(2);
-        todo.SetReminder(deadline, reminder: 30);
+        todo.SetReminder(deadline, 30);
 
         return todo;
     }
@@ -98,7 +97,7 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
             UserId.EmptyId);
 
         var deadline = DateTime.UtcNow.AddHours(5);
-        foreignTodo.SetReminder(deadline, reminder: 60);
+        foreignTodo.SetReminder(deadline, 60);
 
         DbContext.Add(foreignTodo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);

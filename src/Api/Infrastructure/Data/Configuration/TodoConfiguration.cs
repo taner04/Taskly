@@ -37,13 +37,13 @@ internal sealed class TodoConfiguration : AuditableConfiguration<Todo>
             .HasMany(t => t.Attachments)
             .WithOne(a => a.Todo)
             .HasForeignKey(a => a.TodoId);
-        
+
         builder.Property(t => t.Deadline)
             .IsRequired(false);
-        
+
         builder.Property(t => t.ReminderOffsetInMinutes)
             .IsRequired(false);
-        
+
         builder.Ignore(t => t.ReminderAt);
     }
 }

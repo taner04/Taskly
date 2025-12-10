@@ -15,9 +15,9 @@ internal sealed class BearerDocumentTransformer(IConfiguration configuration) : 
                            throw new InvalidOperationException("Auth0 configuration is missing.");
 
         document.Components ??= new OpenApiComponents();
-        
+
         document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
-        
+
         document.Components.SecuritySchemes["JWT"] = new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.Http,
@@ -25,7 +25,7 @@ internal sealed class BearerDocumentTransformer(IConfiguration configuration) : 
             BearerFormat = "JWT",
             Description = "JWT Bearer Token"
         };
-        
+
         document.Components.SecuritySchemes["OAuth2"] = new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.OAuth2,

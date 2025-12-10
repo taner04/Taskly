@@ -29,4 +29,15 @@ var api = builder.AddProject<Api>(AppHostConstants.Api)
     .WaitFor(blobStorage)
     .WaitForCompletion(migration);
 
+
+var papercut = builder.AddPapercutSmtp("papercut", 80, 25);
+
+builder.AddProject<ReminderService>(AppHostConstants.ReminderService)
+    .WithReference(tasklyDb)
+    .WaitFor(tasklyDb)
+    .WithReference(papercut)
+    .WaitFor(papercut)
+    .WaitForCompletion(migration)
+    .WaitFor(api);
+
 builder.Build().Run();

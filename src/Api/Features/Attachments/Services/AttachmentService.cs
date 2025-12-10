@@ -15,7 +15,8 @@ public sealed partial class AttachmentService(
         await _container.CreateIfNotExistsAsync();
     }
 
-    public SasDownloadResult GenerateDownloadSas(Attachment attachment)
+    public SasDownloadResult GenerateDownloadSas(
+        Attachment attachment)
     {
         var blob = _container.GetBlobClient(attachment.BlobName);
 
@@ -42,7 +43,8 @@ public sealed partial class AttachmentService(
         return new SasDownloadResult(sasUri.ToString());
     }
 
-    public SasUploadResult GenerateUploadSas(Attachment attachment)
+    public SasUploadResult GenerateUploadSas(
+        Attachment attachment)
     {
         var blobClient = _container.GetBlobClient(attachment.BlobName);
 
@@ -70,7 +72,9 @@ public sealed partial class AttachmentService(
         return new SasUploadResult(sasUri.ToString(), attachment.BlobName);
     }
 
-    public async Task<bool> DeleteAsync(Attachment attachment, CancellationToken ct)
+    public async Task<bool> DeleteAsync(
+        Attachment attachment,
+        CancellationToken ct)
     {
         try
         {
@@ -99,45 +103,53 @@ public sealed partial class AttachmentService(
         EventId = 0,
         Level = LogLevel.Warning,
         Message = "Cannot generate download SAS for blob {blob}: SAS not allowed.")]
-    private partial void LogDownloadSasNotAllowed(string blob);
+    private partial void LogDownloadSasNotAllowed(
+        string blob);
 
     [LoggerMessage(
         EventId = 1,
         Level = LogLevel.Information,
         Message = "Generated download SAS for blob {blob}.")]
-    private partial void LogDownloadSasGenerated(string blob);
+    private partial void LogDownloadSasGenerated(
+        string blob);
 
 
     [LoggerMessage(
         EventId = 2,
         Level = LogLevel.Warning,
         Message = "Cannot generate upload SAS for blob {blob}: SAS not allowed.")]
-    private partial void LogUploadSasNotAllowed(string blob);
+    private partial void LogUploadSasNotAllowed(
+        string blob);
 
     [LoggerMessage(
         EventId = 3,
         Level = LogLevel.Information,
         Message = "Generated upload SAS for blob {blob}.")]
-    private partial void LogUploadSasGenerated(string blob);
+    private partial void LogUploadSasGenerated(
+        string blob);
 
 
     [LoggerMessage(
         EventId = 4,
         Level = LogLevel.Information,
         Message = "Successfully deleted blob {blob}.")]
-    private partial void LogDeleteSucceeded(string blob);
+    private partial void LogDeleteSucceeded(
+        string blob);
 
     [LoggerMessage(
         EventId = 5,
         Level = LogLevel.Warning,
         Message = "Blob {blob} not found during delete operation.")]
-    private partial void LogDeleteNotFound(string blob);
+    private partial void LogDeleteNotFound(
+        string blob);
 
     [LoggerMessage(
         EventId = 6,
         Level = LogLevel.Error,
         Message = "Failed to delete blob {blob}.")]
-    private partial void LogFailedDelete(string blob, Exception exception);
+    private partial void LogFailedDelete(
+        string blob,
+        Exception exception);
 
 
     // Records

@@ -17,19 +17,19 @@ public sealed class TestingFixture : IAsyncLifetime
     private readonly AzureTestBlobStorage _azureTestBlobStorage = new();
     private readonly PostgresTestDatabase _postgresTestDatabase = new();
     private ClaimsPrincipal _currentUser = null!;
+    private UserId _currentUserId = UserId.EmptyId;
     private string _jwtToken = null!;
     private IServiceScopeFactory _serviceScopeFactory = null!;
     private WebApiFactory _webApiFactory = null!;
-    private UserId _currentUserId = UserId.EmptyId;
 
     public async ValueTask InitializeAsync()
     {
         await InitilizeAuthentication();
-        
+
         _currentUserId = await _postgresTestDatabase.InitializeContainerAsync(GetCurrentUserAuth0Id());
-        
+
         await _azureTestBlobStorage.InitializeContainerAsync();
-        
+
         _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection, _azureTestBlobStorage.ConnectionString);
         _serviceScopeFactory = _webApiFactory.Services.GetRequiredService<IServiceScopeFactory>();
     }
@@ -86,7 +86,7 @@ public sealed class TestingFixture : IAsyncLifetime
             ? throw new UnauthorizedAccessException("UserId claim is missing.")
             : userId;
     }
-    
+
     private async Task InitilizeAuthentication()
     {
         var auth0Options = InitConfiguration().GetSection("Auth0").Get<Auth0Options>() ??
@@ -96,7 +96,7 @@ public sealed class TestingFixture : IAsyncLifetime
         var token = new JwtSecurityTokenHandler().ReadJwtToken(_jwtToken);
         _currentUser = new ClaimsPrincipal(new ClaimsIdentity(token.Claims));
     }
-    
+
     public UserId GetCurrentUserId()
     {
         return _currentUserId;

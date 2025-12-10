@@ -5,7 +5,8 @@ namespace Api.Composition.ServiceExtensions;
 
 internal static class AuthenticationExtension
 {
-    extension(IServiceCollection services)
+    extension(
+        IServiceCollection services)
     {
         public IServiceCollection AddAuthenticationAndAuthorization(
             IConfiguration configuration)
@@ -29,6 +30,6 @@ internal static class AuthenticationExtension
             services.AddAuthorization();
 
             return services;
-        }   
+        }
     }
 }

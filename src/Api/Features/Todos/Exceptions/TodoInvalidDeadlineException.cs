@@ -5,8 +5,8 @@ public sealed class TodoInvalidDeadlineException(
     int? reminder,
     string details = "The provided todo schedule is invalid.")
     : ModelBaseException(
-        title: "Invalid Todo Schedule",
-        message: $"{details} Deadline: {deadline?.ToString("O") ?? "none"}, " +
-                 $"Reminder minutes: {reminder?.ToString() ?? "none"}.",
-        errorCode: "Todo.InvalidDeadline",
-        statusCode: HttpStatusCode.BadRequest);
+        "Invalid Todo Schedule",
+        $"{details} Deadline: {deadline?.ToString("O") ?? "none"}, " +
+        $"Reminder minutes: {reminder?.ToString() ?? "none"}.",
+        "Todo.InvalidDeadline",
+        HttpStatusCode.BadRequest);

@@ -5,7 +5,8 @@ namespace IntegrationTests.Extensions;
 
 public static class HttpResponseMessageExtension
 {
-    extension(HttpResponseMessage response)
+    extension(
+        HttpResponseMessage response)
     {
         private async Task<JToken> ReadAsJToken(
             CancellationToken cancellationToken)
@@ -40,6 +41,6 @@ public static class HttpResponseMessageExtension
 
             actual.Should().NotBeNull("the response should contain an 'errorCode' field");
             actual.Should().BeEquivalentTo(errorCode, "error codes should match ignoring case");
-        }   
+        }
     }
 }

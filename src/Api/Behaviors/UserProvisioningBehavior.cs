@@ -23,8 +23,8 @@ public sealed class UserProvisioningBehavior<TRequest, TResponse>(
         if (user is null)
         {
             user = User.Create(
-                email: currentUserService.GetClaimValue<string>(ClaimTypes.Email),
-                auth0Id: auth0Id
+                currentUserService.GetClaimValue<string>(ClaimTypes.Email),
+                auth0Id
             );
 
             context.Users.Add(user);

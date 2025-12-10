@@ -6,7 +6,9 @@ namespace IntegrationTests.Infrastructure.Composition.ServiceExtensions;
 
 internal static class MockDbContext
 {
-    internal static IServiceCollection AddMockDbContext(this IServiceCollection services, DbConnection connection)
+    internal static IServiceCollection AddMockDbContext(
+        this IServiceCollection services,
+        DbConnection connection)
     {
         services.RemoveAll<ApplicationDbContext>();
         services.RemoveAll<DbContextOptions<ApplicationDbContext>>();

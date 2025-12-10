@@ -32,6 +32,23 @@ public sealed class Todo : Entity<TodoId>
         UserId = userId;
     }
 
+    public string Title { get; private set; }
+    public string? Description { get; private set; }
+    public TodoPriority Priority { get; private set; }
+    public bool IsCompleted { get; private set; }
+    public UserId UserId { get; private set; }
+    public DateTime? Deadline { get; private set; }
+    public int? ReminderOffsetInMinutes { get; private set; }
+
+    public DateTime? ReminderAt
+        => Deadline.HasValue &&
+           ReminderOffsetInMinutes.HasValue
+            ? Deadline.Value.AddMinutes(-ReminderOffsetInMinutes.Value)
+            : null;
+
+    public ICollection<Tag> Tags { get; init; } = [];
+    public ICollection<Attachment> Attachments { get; init; } = [];
+
     public static Todo Create(
         string title,
         string? description,
@@ -42,20 +59,6 @@ public sealed class Todo : Entity<TodoId>
 
         return new Todo(title, description, priority, userId);
     }
-
-    public string Title { get; private set; }
-    public string? Description { get; private set; }
-    public TodoPriority Priority { get; private set; }
-    public bool IsCompleted { get; private set; }
-    public UserId UserId { get; private set; }
-    public DateTime? Deadline { get; private set;}
-    public int? ReminderOffsetInMinutes { get; private set; }
-
-    public DateTime? ReminderAt 
-        => Deadline.HasValue && 
-           ReminderOffsetInMinutes.HasValue ? Deadline.Value.AddMinutes(-ReminderOffsetInMinutes.Value) : null;
-    public ICollection<Tag> Tags { get; init; } = [];
-    public ICollection<Attachment> Attachments { get; init; } = [];
 
     public void Update(
         string title,
@@ -102,33 +105,33 @@ public sealed class Todo : Entity<TodoId>
             Priority = priority;
         }
     }
-    
+
     public void ClearReminder()
     {
         Deadline = null;
         ReminderOffsetInMinutes = null;
     }
-    
+
     public void SetReminder(
         DateTime deadline,
         int reminder)
     {
-        if(deadline <= DateTime.UtcNow)
+        if (deadline <= DateTime.UtcNow)
         {
             throw new TodoInvalidDeadlineException(
                 deadline,
                 reminder,
                 "Deadline must be set to a future date and time.");
         }
-        
-        if(reminder < 0)
+
+        if (reminder < 0)
         {
             throw new TodoInvalidDeadlineException(
                 deadline,
                 reminder,
-                "Reminder minutes cannot be negative.");   
+                "Reminder minutes cannot be negative.");
         }
-        
+
         var reminderAt = deadline.AddMinutes(-reminder);
         if (reminderAt > deadline)
         {
@@ -137,7 +140,7 @@ public sealed class Todo : Entity<TodoId>
                 reminder,
                 "Reminder cannot occur after the deadline.");
         }
-        
+
         if (reminder > (deadline - DateTime.UtcNow).TotalMinutes)
         {
             throw new TodoInvalidDeadlineException(
@@ -145,7 +148,7 @@ public sealed class Todo : Entity<TodoId>
                 reminder,
                 "Reminder cannot be further in the past than the time until deadline.");
         }
-        
+
         Deadline = deadline;
         ReminderOffsetInMinutes = reminder;
     }

@@ -1,5 +1,4 @@
-﻿
-global using Api.Features.Attachments.Models;
+﻿global using Api.Features.Attachments.Models;
 global using Api.Features.Shared;
 global using Api.Features.Tags.Model;
 global using Api.Features.Todos.Model;
