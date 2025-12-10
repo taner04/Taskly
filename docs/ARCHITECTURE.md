@@ -1,6 +1,6 @@
 # Architecture
 
-![Architecture](./assets/Architecture.pdf)
+![Architecture](./assets/Architecture.png)
 
 ## 🔗 Component Interaction
 
@@ -14,6 +14,7 @@ The request flow follows this architecture:
 6. **API** → For file uploads/downloads, generates signed URLs to **Azure Blob Storage**
 7. **Client** → Uses the signed URL to upload/download files directly to/from **Azure Blob Storage**
 8. **API** → Returns the response to the client
+9. **Reminder Service** → Monitors database for upcoming todos and sends email reminders via SMTP
 
 ---
 
@@ -26,6 +27,7 @@ The request flow follows this architecture:
 - **ASP.NET Core** — Web framework with minimal APIs
 - **Auth0** — JWT-based authentication and authorization
 - **Azure Blob Storage** — Cloud file storage with SAS URLs
+- **MailKit** — SMTP client for sending email reminders
 - **Immediate.Apis** — For easily mapping handlers to endpoints
 - **Immediate.Validations** — For model validation
 - **Immediate.Handlers** — For implementing the Command and Query Responsibility Segregation (CQRS) pattern with minimal boilerplate
@@ -61,6 +63,7 @@ The request flow follows this architecture:
 
 - **Authentication** — Seamless Auth0 integration with JWT validation
 - **Feature-organized structure** — Code organized by business features
+- **Email Reminders** — Background service for automatic todo reminder emails
 - **Testing** — Comprehensive integration and unit tests
 - **Cloud-native ready** — Built with .NET Aspire for cloud deployment
 - **Error Handling** — RFC 7807 Problem Details for standardized error responses
