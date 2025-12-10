@@ -29,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projectelements", "Projecte
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReminderService", "src\ReminderService\ReminderService.csproj", "{24365380-DFAF-4F27-992D-981B6DC540A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{75266B16-BADA-49AC-8E43-FE171776A035}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75266B16-BADA-49AC-8E43-FE171776A035}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75266B16-BADA-49AC-8E43-FE171776A035}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24365380-DFAF-4F27-992D-981B6DC540A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24365380-DFAF-4F27-992D-981B6DC540A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24365380-DFAF-4F27-992D-981B6DC540A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24365380-DFAF-4F27-992D-981B6DC540A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,5 +76,6 @@ Global
 		{728B2DC3-4499-471E-BA6F-75F2F419026F} = {24B1FEA0-EA13-49C0-BB08-1840DBD1A74D}
 		{509037D3-8796-4D97-B265-B34041AF3C14} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
 		{75266B16-BADA-49AC-8E43-FE171776A035} = {654BBC95-6E46-4EE5-A552-D773C1A33B06}
+		{24365380-DFAF-4F27-992D-981B6DC540A9} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
 	EndGlobalSection
 EndGlobal

@@ -18,14 +18,12 @@ public sealed class Todo : Entity<TodoId>
     public const int MaxDescriptionLength = 512;
 
 
-    public Todo(
+    private Todo(
         string title,
         string? description,
         TodoPriority priority,
         UserId userId)
     {
-        Validate(title, description);
-
         Id = TodoId.From(Guid.CreateVersion7());
         Title = title;
         Description = description;
@@ -34,11 +32,28 @@ public sealed class Todo : Entity<TodoId>
         UserId = userId;
     }
 
+    public static Todo Create(
+        string title,
+        string? description,
+        TodoPriority priority,
+        UserId userId)
+    {
+        Validate(title, description);
+
+        return new Todo(title, description, priority, userId);
+    }
+
     public string Title { get; private set; }
     public string? Description { get; private set; }
     public TodoPriority Priority { get; private set; }
     public bool IsCompleted { get; private set; }
     public UserId UserId { get; private set; }
+    public DateTime? Deadline { get; private set;}
+    public int? ReminderOffsetInMinutes { get; private set; }
+
+    public DateTime? ReminderAt 
+        => Deadline.HasValue && 
+           ReminderOffsetInMinutes.HasValue ? Deadline.Value.AddMinutes(-ReminderOffsetInMinutes.Value) : null;
     public ICollection<Tag> Tags { get; init; } = [];
     public ICollection<Attachment> Attachments { get; init; } = [];
 
@@ -86,5 +101,52 @@ public sealed class Todo : Entity<TodoId>
         {
             Priority = priority;
         }
+    }
+    
+    public void ClearReminder()
+    {
+        Deadline = null;
+        ReminderOffsetInMinutes = null;
+    }
+    
+    public void SetReminder(
+        DateTime deadline,
+        int reminder)
+    {
+        if(deadline <= DateTime.UtcNow)
+        {
+            throw new TodoInvalidScheduleException(
+                deadline,
+                reminder,
+                "Deadline must be set to a future date and time.");
+        }
+        
+        if(reminder < 0)
+        {
+            throw new TodoInvalidScheduleException(
+                deadline,
+                reminder,
+                "Reminder minutes cannot be negative.");   
+        }
+        
+        var reminderAt = deadline.AddMinutes(-reminder);
+        if (reminderAt > deadline)
+        {
+            throw new TodoInvalidScheduleException(
+                deadline,
+                reminder,
+                "Reminder cannot occur after the deadline.");
+        }
+        
+        if (reminder > (deadline - DateTime.UtcNow).TotalMinutes)
+        {
+            throw new TodoInvalidScheduleException(
+                deadline,
+                reminder,
+                "Reminder cannot be further in the past than the time until deadline.");
+        }
+        
+        Deadline = deadline;
+        ReminderOffsetInMinutes = reminder;
     }
 }

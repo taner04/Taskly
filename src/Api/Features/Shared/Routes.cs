@@ -17,6 +17,9 @@ public static class Routes
 
         public const string AddAttachment = Base + "/{todoId}/attachments";
         public const string RemoveAttachment = Base + "/{todoId}/attachments/{attachmentId}";
+        
+        public const string UpdateReminder = Base + "/{todoId}/deadline";
+        public const string RemoveReminder = Base + "/{todoId}/reminder";
     }
 
 

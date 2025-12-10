@@ -10,7 +10,7 @@ public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixtur
 {
     private static Todo CreateTodo(UserId userId)
     {
-        return new Todo(
+        return Todo.Create(
             "Original Title",
             "Original Description",
             TodoPriority.Medium,

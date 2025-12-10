@@ -10,7 +10,7 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
 {
     private static Todo CreateTodo(UserId userId, bool completed = false)
     {
-        var todo = new Todo(
+        var todo = Todo.Create(
             "Test Todo",
             "Test Description",
             TodoPriority.Medium,

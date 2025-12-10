@@ -9,7 +9,7 @@ public sealed class RemoveTodoTests(TestingFixture fixture) : TestingBase(fixtur
 {
     private static Todo CreateTodo(UserId userId)
     {
-        return new Todo(
+        return Todo.Create(
             "Test Todo",
             "Test Description",
             TodoPriority.Medium,

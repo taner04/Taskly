@@ -2,7 +2,6 @@
 using Api.Features.Attachments.Endpoints;
 using Api.Features.Attachments.Models;
 using Api.Features.Todos.Model;
-using Api.Features.Users.Model;
 using FluentAssertions;
 using IntegrationTests.Extensions;
 
@@ -12,7 +11,7 @@ public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fi
 {
     private static Todo CreateTodo(UserId userId)
     {
-        return new Todo(
+        return Todo.Create(
             "Test Todo",
             "Test Description",
             TodoPriority.Medium,

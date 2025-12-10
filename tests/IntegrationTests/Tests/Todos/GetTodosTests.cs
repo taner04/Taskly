@@ -17,7 +17,7 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         TodoPriority priority = TodoPriority.Medium,
         bool completed = false)
     {
-        var todo = new Todo(title, description, priority, userId);
+        var todo = Todo.Create(title, description, priority, userId);
         todo.SetCompletionStatus(completed);
         return todo;
     }

@@ -10,7 +10,7 @@ public sealed class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture
 {
     private static Todo CreateTodo(UserId userId)
     {
-        return new Todo(
+        return Todo.Create(
             "Test Todo",
             "Test Description",
             TodoPriority.Medium,

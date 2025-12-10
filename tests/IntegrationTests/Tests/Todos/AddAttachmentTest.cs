@@ -11,7 +11,7 @@ public sealed class AddAttachmentTests(TestingFixture fixture) : TestingBase(fix
 {
     private static Todo CreateTodo(UserId userId)
     {
-        return new Todo(
+        return Todo.Create(
             "Test Todo",
             "Test Description",
             TodoPriority.Medium,

@@ -27,7 +27,7 @@ public static partial class CreateTodo
     {
         var userId = currentUserService.GetUserId();
 
-        var newTodo = new Todo(command.Title, command.Description, command.Priority, userId);
+        var newTodo = Todo.Create(command.Title, command.Description, command.Priority, userId);
 
         await context.Todos.AddAsync(newTodo, ct);
         await context.SaveChangesAsync(ct);
