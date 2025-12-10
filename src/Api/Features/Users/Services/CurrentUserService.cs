@@ -4,23 +4,23 @@ namespace Api.Features.Users.Services;
 
 public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
 {
+    private HttpContext HttpContext => httpContextAccessor.HttpContext
+        ?? throw new InvalidOperationException("HTTP context is not available.");
+    
+    private ClaimsPrincipal User => HttpContext.User;
+    
     private ClaimsPrincipal GetCurrentUser()
     {
-        var user = httpContextAccessor.HttpContext?.User;
-
-        return user?.Identity?.IsAuthenticated != true
+        return User.Identity?.IsAuthenticated != true
             ? throw new UnauthorizedAccessException("User is not authenticated.")
-            : user;
+            : User;
     }
 
     public string GetCurrentUserId()
     {
-        var user = GetCurrentUser();
+        var userId = 
+            GetCurrentUser().FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new UnauthorizedAccessException("user id is missing.");
 
-        var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        return string.IsNullOrEmpty(userId)
-            ? throw new UnauthorizedAccessException("UserId claim is missing.")
-            : userId;
+        return userId;  
     }
 }
