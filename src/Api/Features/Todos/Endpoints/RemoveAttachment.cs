@@ -21,7 +21,7 @@ public static partial class RemoveAttachment
         AttachmentService attachments,
         CancellationToken ct)
     {
-        var userId = current.GetCurrentUserId();
+        var userId = current.GetUserId();
 
         var todo = await context.Todos
             .Include(t => t.Attachments)

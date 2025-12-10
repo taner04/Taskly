@@ -28,7 +28,7 @@ internal static class ScalarExtension
                                 .WithPkce(Pkce.Sha256)
                                 .AddQueryParameter("audience", auth0Options.Audience)
                             ))
-                        .WithDefaultScopes("openid", "profile", "email")
+                        .WithDefaultScopes("openid", "profile", "email", "email_verified")
                     );
 
                 if (auth0Options.UsePersistentStorage)

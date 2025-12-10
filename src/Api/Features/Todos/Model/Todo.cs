@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Api.Features.Shared.Models;
 using Api.Features.Todos.Exceptions;
+using Api.Features.Users.Model;
 
 namespace Api.Features.Todos.Model;
 
@@ -21,7 +22,7 @@ public sealed class Todo : Entity<TodoId>
         string title,
         string? description,
         TodoPriority priority,
-        string userId)
+        UserId userId)
     {
         Validate(title, description);
 
@@ -37,7 +38,7 @@ public sealed class Todo : Entity<TodoId>
     public string? Description { get; private set; }
     public TodoPriority Priority { get; private set; }
     public bool IsCompleted { get; private set; }
-    public string UserId { get; private set; }
+    public UserId UserId { get; private set; }
     public ICollection<Tag> Tags { get; init; } = [];
     public ICollection<Attachment> Attachments { get; init; } = [];
 

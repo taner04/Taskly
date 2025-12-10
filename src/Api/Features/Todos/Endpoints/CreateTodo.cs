@@ -25,7 +25,7 @@ public static partial class CreateTodo
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var userId = currentUserService.GetCurrentUserId();
+        var userId = currentUserService.GetUserId();
 
         var newTodo = new Todo(command.Title, command.Description, command.Priority, userId);
 

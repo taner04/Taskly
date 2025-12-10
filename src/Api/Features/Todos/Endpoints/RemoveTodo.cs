@@ -17,7 +17,7 @@ public static partial class RemoveTodo
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var userId = currentUserService.GetCurrentUserId();
+        var userId = currentUserService.GetUserId();
         var todo = await context.Todos.SingleOrDefaultAsync(
             t => t.Id == command.TodoId && t.UserId == userId, ct);
 

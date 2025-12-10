@@ -9,7 +9,7 @@ namespace IntegrationTests.Tests.Todos;
 
 public sealed class AddAttachmentTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodo(string userId)
+    private static Todo CreateTodo(UserId userId)
     {
         return new Todo(
             "Test Todo",

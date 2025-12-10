@@ -11,7 +11,7 @@ namespace IntegrationTests.Tests.Todos;
 public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private static Todo CreateTodo(
-        string userId,
+        UserId userId,
         string title = "Test Todo",
         string description = "Test Description",
         TodoPriority priority = TodoPriority.Medium,
@@ -22,7 +22,7 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         return todo;
     }
 
-    private static Tag CreateTag(string name, string userId)
+    private static Tag CreateTag(string name, UserId userId)
     {
         return new Tag(name, userId);
     }
@@ -75,7 +75,7 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         var todo1 = CreateTodo(userId, "Todo A");
         var todo2 = CreateTodo(userId, "Todo B");
 
-        var foreignTodo = CreateTodo("another-user", "Foreign Todo");
+        var foreignTodo = CreateTodo(UserId.EmptyId, "Foreign Todo");
 
         DbContext.Add(todo1);
         DbContext.Add(todo2);

@@ -17,7 +17,7 @@ public static partial class CompleteUpload
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var userId = currentUserService.GetCurrentUserId();
+        var userId = currentUserService.GetUserId();
 
         var attachment = await context.Attachments
             .Include(a => a.Todo)

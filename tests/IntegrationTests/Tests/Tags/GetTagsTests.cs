@@ -10,7 +10,7 @@ namespace IntegrationTests.Tests.Tags;
 
 public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Tag CreateTag(string name, string userId)
+    private static Tag CreateTag(string name, UserId userId)
     {
         return new Tag(name, userId);
     }
@@ -72,7 +72,7 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
         var tag2 = CreateTag("Personal", userId);
 
         // Tag belonging to a different user — SHOULD NOT appear
-        var tagOtherUser = CreateTag("OtherUserTag", "different-user");
+        var tagOtherUser = CreateTag("OtherUserTag", UserId.EmptyId);
 
         DbContext.Tags.AddRange(tag1, tag2, tagOtherUser);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);

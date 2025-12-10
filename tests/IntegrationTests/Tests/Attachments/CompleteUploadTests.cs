@@ -2,6 +2,7 @@
 using Api.Features.Attachments.Endpoints;
 using Api.Features.Attachments.Models;
 using Api.Features.Todos.Model;
+using Api.Features.Users.Model;
 using FluentAssertions;
 using IntegrationTests.Extensions;
 
@@ -9,7 +10,7 @@ namespace IntegrationTests.Tests.Attachments;
 
 public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodo(string userId)
+    private static Todo CreateTodo(UserId userId)
     {
         return new Todo(
             "Test Todo",

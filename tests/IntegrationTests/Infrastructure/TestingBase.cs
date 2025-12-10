@@ -1,4 +1,5 @@
 ﻿using Api;
+using Api.Features.Users.Model;
 
 namespace IntegrationTests.Infrastructure;
 
@@ -44,7 +45,7 @@ public abstract class TestingBase : IAsyncLifetime
         return _fixture.CreateUnauthenticatedClient();
     }
 
-    protected string GetCurrentUserId()
+    protected UserId GetCurrentUserId()
     {
         return _fixture.GetCurrentUserId();
     }

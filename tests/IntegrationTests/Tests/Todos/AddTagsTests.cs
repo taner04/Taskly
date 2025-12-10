@@ -9,7 +9,7 @@ namespace IntegrationTests.Tests.Todos;
 
 public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodo(string userId)
+    private static Todo CreateTodo(UserId userId)
     {
         return new Todo(
             "Test Todo",
@@ -19,7 +19,7 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
         );
     }
 
-    private static Tag CreateTag(string name, string userId)
+    private static Tag CreateTag(string name, UserId userId)
     {
         return new Tag(name, userId);
     }
@@ -177,7 +177,7 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
 
         var todo = CreateTodo(userId);
         var tagValid = CreateTag("Valid", userId);
-        var tagForeign = CreateTag("Foreign", "other-user");
+        var tagForeign = CreateTag("Foreign", UserId.EmptyId);
 
         DbContext.Add(todo);
         DbContext.Add(tagValid);

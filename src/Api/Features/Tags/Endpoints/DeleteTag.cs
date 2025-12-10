@@ -17,7 +17,7 @@ public static partial class DeleteTag
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var userId = currentUserService.GetCurrentUserId();
+        var userId = currentUserService.GetUserId();
         var tag = await context.Tags
             .SingleOrDefaultAsync(t => t.Id == command.TagId && t.UserId == userId, ct);
 

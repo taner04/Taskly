@@ -26,7 +26,7 @@ public static partial class CreateTag
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var userId = currentUserService.GetCurrentUserId();
+        var userId = currentUserService.GetUserId();
         var newTag = new Tag(command.TagName, userId);
 
         if (await context.Tags.AnyAsync(t => t.Name == newTag.Name && t.UserId == userId, ct))

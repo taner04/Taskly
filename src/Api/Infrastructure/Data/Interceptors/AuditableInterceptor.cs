@@ -25,7 +25,7 @@ public sealed class AuditableInterceptor(CurrentUserService currentUserService) 
             .Entries<Auditable>()
             .ToList();
 
-        var changeMadeBy = currentUserService.GetCurrentUserId();
+        var changeMadeBy = currentUserService.GetAuth0Id();
 
         foreach (var entry in auditableEntries)
         {

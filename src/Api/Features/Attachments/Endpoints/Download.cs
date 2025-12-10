@@ -20,7 +20,7 @@ public static partial class Download
         AttachmentService attachments,
         CancellationToken ct)
     {
-        var userId = current.GetCurrentUserId();
+        var userId = current.GetUserId();
 
         var attachment = await db.Attachments
             .Include(a => a.Todo)

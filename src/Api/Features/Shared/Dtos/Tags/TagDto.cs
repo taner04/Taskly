@@ -3,7 +3,7 @@
 public sealed record TagDto(
     Guid Id,
     string Name,
-    string UserId
+    Guid UserId
 )
 {
     public static TagDto FromDomain(
@@ -12,7 +12,7 @@ public sealed record TagDto(
         return new TagDto(
             tag.Id.Value,
             tag.Name,
-            tag.UserId
+            tag.UserId.Value
         );
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Api.Features.Shared.Models;
 using Api.Features.Tags.Exceptions;
+using Api.Features.Users.Model;
 
 namespace Api.Features.Tags.Model;
 
@@ -15,7 +16,7 @@ public class Tag : Entity<TagId>
 
     public Tag(
         string name,
-        string userId)
+        UserId userId)
     {
         Validate(name);
 
@@ -25,7 +26,7 @@ public class Tag : Entity<TagId>
     }
 
     public string Name { get; private set; }
-    public string UserId { get; init; }
+    public UserId UserId { get; init; }
 
     public ICollection<Todo> Todos { get; init; } = [];
 

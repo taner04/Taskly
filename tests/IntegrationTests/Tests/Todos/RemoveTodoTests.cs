@@ -7,7 +7,7 @@ namespace IntegrationTests.Tests.Todos;
 
 public sealed class RemoveTodoTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodo(string userId)
+    private static Todo CreateTodo(UserId userId)
     {
         return new Todo(
             "Test Todo",
@@ -81,7 +81,7 @@ public sealed class RemoveTodoTests(TestingFixture fixture) : TestingBase(fixtur
         // Arrange
         var client = CreateAuthenticatedClient();
 
-        var foreignTodo = CreateTodo("another-user");
+        var foreignTodo = CreateTodo(UserId.EmptyId);
 
         DbContext.Add(foreignTodo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);

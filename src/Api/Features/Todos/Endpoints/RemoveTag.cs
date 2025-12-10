@@ -17,7 +17,7 @@ public static partial class RemoveTag
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var userId = currentUserService.GetCurrentUserId();
+        var userId = currentUserService.GetUserId();
         var todo = await context.Todos
             .Include(t => t.Tags)
             .SingleOrDefaultAsync(t => t.Id == command.TodoId && t.UserId == userId, ct);

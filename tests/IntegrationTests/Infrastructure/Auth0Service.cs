@@ -7,7 +7,7 @@ namespace IntegrationTests.Infrastructure;
 
 public sealed class Auth0Service(Auth0Options auth0Options)
 {
-    public async Task<string> GetAccessTokenAsync()
+    public async Task<string> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
         var uri = $"https://{auth0Options.Domain}/oauth/token";
 
@@ -27,14 +27,14 @@ public sealed class Auth0Service(Auth0Options auth0Options)
             "application/json"
         );
 
-        var response = await httpClient.PostAsync(uri, content);
+        var response = await httpClient.PostAsync(uri, content, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
             throw new InvalidOperationException("Failed to obtain access token from Auth0.");
         }
 
-        var json = await response.Content.ReadAsStringAsync();
+        var json = await response.Content.ReadAsStringAsync(cancellationToken);
 
         var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(json);
 

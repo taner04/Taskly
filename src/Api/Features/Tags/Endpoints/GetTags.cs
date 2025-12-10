@@ -19,7 +19,7 @@ public static partial class GetTags
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var userId = currentUserService.GetCurrentUserId();
+        var userId = currentUserService.GetUserId();
         var tags = await context.Tags.Where(t => t.UserId == userId).ToListAsync(ct);
 
         return tags.Select(TagDto.FromDomain).ToList();

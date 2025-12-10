@@ -26,7 +26,7 @@ public static partial class GetTodos
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var userId = currentUserService.GetCurrentUserId();
+        var userId = currentUserService.GetUserId();
         var todos = await context.Todos
             .Include(t => t.Tags)
             .Include(t => t.Attachments)
@@ -66,7 +66,7 @@ public static partial class GetTodos
         bool IsCompleted,
         List<TagDto> Tags,
         List<AttachmentDto> Attachments,
-        string UserId
+        Guid UserId
     )
     {
         public static Response FromDomain(
@@ -80,7 +80,7 @@ public static partial class GetTodos
                 todo.IsCompleted,
                 todo.Tags.Select(TagDto.FromDomain).ToList(),
                 todo.Attachments.Select(AttachmentDto.FromDomain).ToList(),
-                todo.UserId
+                todo.UserId.Value
             );
         }
     }

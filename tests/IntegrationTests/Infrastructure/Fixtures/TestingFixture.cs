@@ -20,21 +20,16 @@ public sealed class TestingFixture : IAsyncLifetime
     private string _jwtToken = null!;
     private IServiceScopeFactory _serviceScopeFactory = null!;
     private WebApiFactory _webApiFactory = null!;
+    private UserId _currentUserId = UserId.EmptyId;
 
     public async ValueTask InitializeAsync()
     {
-        await _postgresTestDatabase.InitializeContainerAsync();
+        await InitilizeAuthentication(TestContext.Current.CancellationToken);
+        _currentUserId = await _postgresTestDatabase.InitializeContainerAsync(GetCurrentUserAuth0Id());
         await _azureTestBlobStorage.InitializeContainerAsync();
-
+        
         _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection, _azureTestBlobStorage.ConnectionString);
         _serviceScopeFactory = _webApiFactory.Services.GetRequiredService<IServiceScopeFactory>();
-
-        var auth0Options = InitConfiguration().GetSection("Auth0").Get<Auth0Options>() ??
-                           throw new InvalidOperationException("Auth0 configuration is missing.");
-        _jwtToken = await new Auth0Service(auth0Options).GetAccessTokenAsync();
-
-        var token = new JwtSecurityTokenHandler().ReadJwtToken(_jwtToken);
-        _currentUser = new ClaimsPrincipal(new ClaimsIdentity(token.Claims));
     }
 
     public async ValueTask DisposeAsync()
@@ -81,12 +76,27 @@ public sealed class TestingFixture : IAsyncLifetime
             .Build();
     }
 
-    public string GetCurrentUserId()
+    private string GetCurrentUserAuth0Id()
     {
         var userId = _currentUser.FindFirst("sub")?.Value;
 
         return string.IsNullOrEmpty(userId)
             ? throw new UnauthorizedAccessException("UserId claim is missing.")
             : userId;
+    }
+    
+    private async Task InitilizeAuthentication(CancellationToken cancellationToken = default)
+    {
+        var auth0Options = InitConfiguration().GetSection("Auth0").Get<Auth0Options>() ??
+                           throw new InvalidOperationException("Auth0 configuration is missing.");
+        _jwtToken = await new Auth0Service(auth0Options).GetAccessTokenAsync(cancellationToken);
+
+        var token = new JwtSecurityTokenHandler().ReadJwtToken(_jwtToken);
+        _currentUser = new ClaimsPrincipal(new ClaimsIdentity(token.Claims));
+    }
+    
+    public UserId GetCurrentUserId()
+    {
+        return _currentUserId;
     }
 }
