@@ -24,8 +24,10 @@ public sealed class TestingFixture : IAsyncLifetime
 
     public async ValueTask InitializeAsync()
     {
-        await InitilizeAuthentication(TestContext.Current.CancellationToken);
+        await InitilizeAuthentication();
+        
         _currentUserId = await _postgresTestDatabase.InitializeContainerAsync(GetCurrentUserAuth0Id());
+        
         await _azureTestBlobStorage.InitializeContainerAsync();
         
         _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection, _azureTestBlobStorage.ConnectionString);
@@ -85,11 +87,11 @@ public sealed class TestingFixture : IAsyncLifetime
             : userId;
     }
     
-    private async Task InitilizeAuthentication(CancellationToken cancellationToken = default)
+    private async Task InitilizeAuthentication()
     {
         var auth0Options = InitConfiguration().GetSection("Auth0").Get<Auth0Options>() ??
                            throw new InvalidOperationException("Auth0 configuration is missing.");
-        _jwtToken = await new Auth0Service(auth0Options).GetAccessTokenAsync(cancellationToken);
+        _jwtToken = await new Auth0Service(auth0Options).GetAccessTokenAsync();
 
         var token = new JwtSecurityTokenHandler().ReadJwtToken(_jwtToken);
         _currentUser = new ClaimsPrincipal(new ClaimsIdentity(token.Claims));

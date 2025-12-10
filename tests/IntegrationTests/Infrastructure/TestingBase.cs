@@ -18,7 +18,7 @@ public abstract class TestingBase : IAsyncLifetime
         DbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     }
 
-    protected static CancellationToken CurrentCancellationToken => TestContext.Current.CancellationToken;
+    protected static CancellationToken CurrentCancellationToken => TestsContext.CurrentCancellationToken;
 
     protected ApplicationDbContext DbContext { get; }
 

@@ -30,10 +30,10 @@ internal sealed class AzureTestBlobStorage : IAsyncDisposable
     public async Task ResetContainerAsync()
     {
         await foreach (var blob in _blobContainerClient.GetBlobsAsync(
-                           cancellationToken: _azureContainer.CurrentCancellationToken))
+                           cancellationToken: TestsContext.CurrentCancellationToken))
         {
             var blobClient = _blobContainerClient.GetBlobClient(blob.Name);
-            await blobClient.DeleteIfExistsAsync(cancellationToken: _azureContainer.CurrentCancellationToken);
+            await blobClient.DeleteIfExistsAsync(cancellationToken: TestsContext.CurrentCancellationToken);
         }
     }
 }

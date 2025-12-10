@@ -27,7 +27,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
             .Options;
 
         await using var context = new ApplicationDbContext(_dbContextOptions);
-        await context.Database.MigrateAsync(_postgresContainer.CurrentCancellationToken);
+        await context.Database.MigrateAsync(TestsContext.CurrentCancellationToken);
         
         return await InitUserAsync(auth0Id, context);
     }
@@ -38,7 +38,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
 
         foreach (var sql in _dbTablesToClear.Select(tableName => $"Delete from \"{tableName}\""))
         {
-            await context.Database.ExecuteSqlRawAsync(sql, _postgresContainer.CurrentCancellationToken);
+            await context.Database.ExecuteSqlRawAsync(sql, TestsContext.CurrentCancellationToken);
         }
     }
     
@@ -48,7 +48,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
         user.SetCreated(auth0Id);
 
         context.Users.Add(user);
-        await context.SaveChangesAsync(_postgresContainer.CurrentCancellationToken);
+        await context.SaveChangesAsync(TestsContext.CurrentCancellationToken);
         
         return  user.Id;
     }

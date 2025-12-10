@@ -4,7 +4,7 @@ namespace IntegrationTests.Factories;
 
 internal static class UserFactory
 {
-    public const string DefaultEmail = "test@mail.com";
+    private const string DefaultEmail = "test@mail.com";
     
     internal static User Create(string auth0Id)
     {
