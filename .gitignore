@@ -18,6 +18,8 @@
 # Ignore appsettings for specific projects
 src/Api/appsettings.json
 src/Api/appsettings.*.json
+src/ReminderService/appsettings.json
+src/ReminderService/appsettings.*.json
 tests/IntegrationTests/appsettings.json
 tests/IntegrationTests/appsettings.*.json
 

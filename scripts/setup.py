@@ -15,13 +15,15 @@ from create_migration import add_migration
 # Content Templates
 # =========================================================================
 
+LOGGING_TEMPLATE = {
+    "LogLevel": {
+        "Default": "Information",
+        "Microsoft.AspNetCore": "Warning"
+    }
+}
+
 APPSETTINGS_API_TEMPLATE = {
-    "Logging": {
-        "LogLevel": {
-            "Default": "Information",
-            "Microsoft.AspNetCore": "Warning"
-        }
-    },
+    "Logging": LOGGING_TEMPLATE,
     "AllowedHosts": "*",
     "Auth0": {
         "Domain": "your-auth0-domain",
@@ -36,12 +38,7 @@ APPSETTINGS_API_TEMPLATE = {
 }
 
 APPSETTINGS_INTEGRATION_TEMPLATE = {
-    "Logging": {
-        "LogLevel": {
-            "Default": "Information",
-            "Microsoft.AspNetCore": "Warning"
-        }
-    },
+    "Logging": LOGGING_TEMPLATE,
     "AllowedHosts": "*",
     "Auth0": {
         "Domain": "your-auth0-domain",
@@ -49,6 +46,14 @@ APPSETTINGS_INTEGRATION_TEMPLATE = {
         "ClientId": "your-auth0-client-id",
         "ClientSecret": "your-auth0-client-secret",
         "UsePersistentStorage": False
+    }
+}
+
+APPSETTINGS_REMINDER_SERVICE_TEMPLATE = {
+    "Logging": LOGGING_TEMPLATE,
+    "Papercut": {
+        "Host": "localhost",
+        "Port": 25
     }
 }
 
@@ -75,10 +80,18 @@ def create_appsettings_api() -> None:
 
 
 def create_appsettings_integration_test() -> None:
-    """Create appsettings.integration.json for integration tests."""
+    """Create appsettings.json for integration tests."""
     create_appsettings(
         project_root / "tests" / "IntegrationTests" / "appsettings.integration.json",
         APPSETTINGS_INTEGRATION_TEMPLATE,
+    )
+
+
+def create_appsettings_reminder_service() -> None:
+    """Create appsettings.json for the ReminderService project."""
+    create_appsettings(
+        project_root / "src" / "ReminderService" / "appsettings.json",
+        APPSETTINGS_REMINDER_SERVICE_TEMPLATE,
     )
 
 
@@ -92,6 +105,7 @@ def main() -> None:
     console_logger.info("Initializing Taskly configuration files...")
     create_appsettings_api()
     create_appsettings_integration_test()
+    create_appsettings_reminder_service()
     console_logger.success("Initialization completed! You can now configure your values.")
 
     console_logger.info("Creating initial database migration...")

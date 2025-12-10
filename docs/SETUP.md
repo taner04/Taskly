@@ -92,3 +92,6 @@ Execute the AppHost project to run the API and managed services:
 ```bash
 dotnet run --project .\tools\AppHost
 ```
+
+> [!NOTE]
+> The **ReminderService** is automatically configured with Aspire and requires no additional setup. The Papercut SMTP configuration (Host: localhost, Port: 25) is pre-configured and will work out of the box when running through Aspire.
