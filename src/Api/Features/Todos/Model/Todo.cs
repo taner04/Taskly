@@ -115,7 +115,7 @@ public sealed class Todo : Entity<TodoId>
     {
         if(deadline <= DateTime.UtcNow)
         {
-            throw new TodoInvalidScheduleException(
+            throw new TodoInvalidDeadlineException(
                 deadline,
                 reminder,
                 "Deadline must be set to a future date and time.");
@@ -123,7 +123,7 @@ public sealed class Todo : Entity<TodoId>
         
         if(reminder < 0)
         {
-            throw new TodoInvalidScheduleException(
+            throw new TodoInvalidDeadlineException(
                 deadline,
                 reminder,
                 "Reminder minutes cannot be negative.");   
@@ -132,7 +132,7 @@ public sealed class Todo : Entity<TodoId>
         var reminderAt = deadline.AddMinutes(-reminder);
         if (reminderAt > deadline)
         {
-            throw new TodoInvalidScheduleException(
+            throw new TodoInvalidDeadlineException(
                 deadline,
                 reminder,
                 "Reminder cannot occur after the deadline.");
@@ -140,7 +140,7 @@ public sealed class Todo : Entity<TodoId>
         
         if (reminder > (deadline - DateTime.UtcNow).TotalMinutes)
         {
-            throw new TodoInvalidScheduleException(
+            throw new TodoInvalidDeadlineException(
                 deadline,
                 reminder,
                 "Reminder cannot be further in the past than the time until deadline.");

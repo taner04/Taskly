@@ -1,6 +1,6 @@
 ﻿namespace Api.Features.Todos.Exceptions;
 
-public sealed class TodoInvalidScheduleException(
+public sealed class TodoInvalidDeadlineException(
     DateTime? deadline,
     int? reminder,
     string details = "The provided todo schedule is invalid.")
@@ -8,5 +8,5 @@ public sealed class TodoInvalidScheduleException(
         title: "Invalid Todo Schedule",
         message: $"{details} Deadline: {deadline?.ToString("O") ?? "none"}, " +
                  $"Reminder minutes: {reminder?.ToString() ?? "none"}.",
-        errorCode: "Todo.InvalidSchedule",
+        errorCode: "Todo.InvalidDeadline",
         statusCode: HttpStatusCode.BadRequest);

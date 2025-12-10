@@ -183,7 +183,7 @@ public sealed class TodoTests
         var todo = CreateTodo();
         var past = DateTime.UtcNow.AddHours(-1);
 
-        Assert.Throws<TodoInvalidScheduleException>(() =>
+        Assert.Throws<TodoInvalidDeadlineException>(() =>
             todo.SetReminder(past, 30));
     }
 
@@ -193,7 +193,7 @@ public sealed class TodoTests
         var todo = CreateTodo();
         var deadline = DateTime.UtcNow.AddHours(2);
 
-        Assert.Throws<TodoInvalidScheduleException>(() =>
+        Assert.Throws<TodoInvalidDeadlineException>(() =>
             todo.SetReminder(deadline, -5));
     }
 
@@ -203,7 +203,7 @@ public sealed class TodoTests
         var todo = CreateTodo();
         var deadline = DateTime.UtcNow.AddMinutes(20);
 
-        Assert.Throws<TodoInvalidScheduleException>(() =>
+        Assert.Throws<TodoInvalidDeadlineException>(() =>
             todo.SetReminder(deadline, 999));
     }
 

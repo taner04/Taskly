@@ -30,7 +30,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
             todoId,
             new UpdateReminder.Command.CommandBody
             {
-                Date = "2025-01-01T10:00:00Z",
+                Date = DateTime.Parse("2025-01-01T10:00:00Z"),
                 ReminderOffsetInMinutes = 30
             },
             CurrentCancellationToken);
@@ -51,7 +51,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
             todoId,
             new UpdateReminder.Command.CommandBody
             {
-                Date = "2025-01-01T10:00:00Z",
+                Date = DateTime.Parse("2025-01-01T10:00:00Z"),
                 ReminderOffsetInMinutes = 30
             },
             CurrentCancellationToken);
@@ -77,7 +77,8 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
             todo.Id,
             new UpdateReminder.Command.CommandBody
             {
-                Date = "invalid-date-string",
+                // DateTime.MinValue (UTC) is treated as invalid input by your domain
+                Date = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc),
                 ReminderOffsetInMinutes = 10
             },
             CurrentCancellationToken);
@@ -99,7 +100,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
         DbContext.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var pastDate = DateTime.UtcNow.AddMinutes(-10).ToString("O");
+        var pastDate = DateTime.UtcNow.AddMinutes(-10);
 
         // Act
         var response = await client.UpdateReminderAsync(
@@ -113,7 +114,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        await response.ContainsErrorCode("Todo.InvalidSchedule", CurrentCancellationToken);
+        await response.ContainsErrorCode("Todo.InvalidDeadline", CurrentCancellationToken);
     }
 
     [Fact]
@@ -127,7 +128,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
         DbContext.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var futureDate = DateTime.UtcNow.AddHours(2).ToString("O");
+        var futureDate = DateTime.UtcNow.AddHours(2);
 
         // Act
         var response = await client.UpdateReminderAsync(
@@ -141,7 +142,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        await response.ContainsErrorCode("Todo.InvalidSchedule", CurrentCancellationToken);
+        await response.ContainsErrorCode("Todo.InvalidDeadline", CurrentCancellationToken);
     }
 
     [Fact]
@@ -155,7 +156,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
         DbContext.Add(todo);
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var futureDate = DateTime.UtcNow.AddHours(1).ToString("O");
+        var futureDate = DateTime.UtcNow.AddHours(1);
 
         // reminder > time until deadline → invalid
         var offset = 200;
@@ -172,7 +173,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        await response.ContainsErrorCode("Todo.InvalidSchedule", CurrentCancellationToken);
+        await response.ContainsErrorCode("Todo.InvalidDeadline", CurrentCancellationToken);
     }
 
     [Fact]
@@ -187,9 +188,10 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
         await DbContext.SaveChangesAsync(CurrentCancellationToken);
 
         var deadline = DateTime.UtcNow.AddHours(3);
+
         var body = new UpdateReminder.Command.CommandBody
         {
-            Date = deadline.ToString("O"),
+            Date = deadline,
             ReminderOffsetInMinutes = 60
         };
 

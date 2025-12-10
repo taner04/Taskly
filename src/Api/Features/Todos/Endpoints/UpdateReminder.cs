@@ -31,24 +31,7 @@ public static partial class UpdateReminder
             throw new ModelNotFoundException<Todo>(command.TodoId.Value);
         }
         
-        if (!DateTime.TryParse(
-                command.Body.Date,
-                null,
-                DateTimeStyles.RoundtripKind,
-                out var date))
-        {
-            throw new TodoInvalidDeadline(command.Body.Date);
-        }
-        
-        date = date.Kind switch
-        {
-            DateTimeKind.Utc => date,
-            DateTimeKind.Local => date.ToUniversalTime(),
-            DateTimeKind.Unspecified => DateTime.SpecifyKind(date, DateTimeKind.Utc),
-            _ => date
-        };
-
-        todo.SetReminder(date, command.Body.ReminderOffsetInMinutes);
+        todo.SetReminder(command.Body.Date, command.Body.ReminderOffsetInMinutes);
         
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);
@@ -63,8 +46,25 @@ public static partial class UpdateReminder
         [Validate]
         public sealed partial record CommandBody : IValidationTarget<CommandBody>
         {
-            public required string Date { get; init; }
+            public required DateTime Date { get; init; }
             public required int ReminderOffsetInMinutes { get; init; }
+            
+            private static void AdditionalValidations(
+                ValidationResult errors,
+                Command command
+            )
+            {
+                if (command.Body.Date.Kind != DateTimeKind.Utc)
+                {
+                    errors.Add(
+                        new ValidationError()
+                        {
+                            PropertyName = "Date",
+                            ErrorMessage = $"The date '{command.Body.Date}' is not a valid utc date.",
+                        }
+                    );
+                }
+            }
         }
     }
 }
