@@ -1,6 +1,7 @@
 # Scripts Documentation
 
-This folder contains Python utility scripts for managing the Taskly project initialization, database migrations, and build processes.
+This folder contains Python utility scripts for managing the Taskly project initialization, database migrations, and
+build processes.
 
 ## Overview
 
@@ -13,7 +14,8 @@ All scripts import the [`shared.py`](./shared.py) module which provides:
 
 ### [`setup.py`](./setup.py)
 
-**Purpose:** One-time initialization script that creates required configuration files with template values for the Taskly project.
+**Purpose:** One-time initialization script that creates required configuration files with template values for the
+Taskly project.
 
 **Usage:**
 

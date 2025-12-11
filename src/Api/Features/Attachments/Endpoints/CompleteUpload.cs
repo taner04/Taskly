@@ -2,7 +2,7 @@
 
 [Handler]
 [MapPost(Routes.Attachments.CompleteUpload)]
-[Authorize]
+[Authorize(Policy = Policies.User)]
 public static partial class CompleteUpload
 {
     internal static void CustomizeEndpoint(

@@ -5,7 +5,7 @@ namespace Api.Features.Tags.Endpoints;
 
 [Handler]
 [MapPost(Routes.Tags.Create)]
-[Authorize]
+[Authorize(Policy = Policies.User)]
 public static partial class CreateTag
 {
     internal static void CustomizeEndpoint(

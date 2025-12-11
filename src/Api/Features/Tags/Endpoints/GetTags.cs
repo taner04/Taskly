@@ -4,7 +4,7 @@ namespace Api.Features.Tags.Endpoints;
 
 [Handler]
 [MapGet(Routes.Tags.GetTags)]
-[Authorize]
+[Authorize(Policy = Policies.User)]
 public static partial class GetTags
 {
     internal static void CustomizeEndpoint(

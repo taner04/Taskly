@@ -1,5 +1,4 @@
 ﻿using Api.Features.Shared.Exceptions;
-using Api.Features.Tags.Exceptions;
 using Api.Features.Tags.Model;
 using Api.Features.Users.Model;
 

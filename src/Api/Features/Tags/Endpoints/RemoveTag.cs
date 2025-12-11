@@ -1,13 +1,12 @@
 ﻿using Api.Features.Tags.Specifications;
-using Api.Features.Todos.Specifications;
 using Ardalis.Specification.EntityFrameworkCore;
 
 namespace Api.Features.Tags.Endpoints;
 
 [Handler]
-[MapDelete(Routes.Tags.Delete)]
-[Authorize]
-public static partial class DeleteTag
+[MapDelete(Routes.Tags.Remove)]
+[Authorize(Policy = Policies.User)]
+public static partial class RemoveTag
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)

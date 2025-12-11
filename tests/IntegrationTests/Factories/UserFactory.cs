@@ -2,11 +2,11 @@
 
 internal static class UserFactory
 {
-    private const string DefaultEmail = "test@mail.com";
+    public const string Email = "userfactory@mail.com";
+    public const string Sub = "auth0|userfactory123";
 
-    internal static User Create(
-        string auth0Id)
+    internal static User Create()
     {
-        return User.Create(DefaultEmail, auth0Id);
+        return User.Create(Email, Sub);
     }
 }

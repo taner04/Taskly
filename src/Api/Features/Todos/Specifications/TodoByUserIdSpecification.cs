@@ -6,7 +6,7 @@ namespace Api.Features.Todos.Specifications;
 public class TodoByUserIdSpecification : Specification<Todo>
 {
     public TodoByUserIdSpecification(
-        TodoId todoId, 
+        TodoId todoId,
         UserId userId)
     {
         Query.Where(t => t.Id == todoId && t.UserId == userId);

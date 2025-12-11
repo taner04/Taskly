@@ -47,7 +47,7 @@ public sealed class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task RemoveTag_Should_Return404_When_TodoDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var todoId = TodoId.From(Guid.NewGuid());
         var tagId = TagId.From(Guid.NewGuid());
 
@@ -66,16 +66,17 @@ public sealed class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task RemoveTag_Should_Return404_When_TagNotAssignedToTodo()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var todo = CreateTodo(userId);
         var existingTag = CreateTag("Existing", userId);
 
-        DbContext.Add(todo);
-        DbContext.Add(existingTag);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        dbContext.Add(existingTag);
 
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.RemoveTagFromTodoAsync(
@@ -92,18 +93,19 @@ public sealed class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task RemoveTag_Should_Return200_And_RemoveTagFromTodo()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var todo = CreateTodo(userId);
         var tag = CreateTag("MyTag", userId);
 
         todo.Tags.Add(tag);
 
-        DbContext.Add(tag);
-        DbContext.Add(todo);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(tag);
+        dbContext.Add(todo);
 
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.RemoveTagFromTodoAsync(
@@ -114,7 +116,7 @@ public sealed class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await DbContext.Todos
+        var updated = await GetDbContext().Todos
             .Include(t => t.Tags)
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);

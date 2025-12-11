@@ -5,7 +5,7 @@ namespace Api.Features.Tags.Endpoints;
 
 [Handler]
 [MapPut(Routes.Tags.Update)]
-[Authorize]
+[Authorize(Policy = Policies.User)]
 public static partial class UpdateTag
 {
     internal static void CustomizeEndpoint(

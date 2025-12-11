@@ -36,16 +36,16 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task GetTags_Should_ReturnEmptyList_When_UserHasNoTags()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
         // Ensure DB is empty for this user
-        var userId = GetCurrentUserId();
-        var existing = await DbContext.Tags
+        var userId = CurrentUserId;
+        var existing = await GetDbContext().Tags
             .Where(t => t.UserId == userId)
             .ToListAsync(CurrentCancellationToken);
 
-        DbContext.Tags.RemoveRange(existing);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        GetDbContext().Tags.RemoveRange(existing);
+        await GetDbContext().SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.GetTagsAsync(
@@ -66,8 +66,8 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task GetTags_Should_ReturnTags_OnlyForAuthenticatedUser()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         // Tags belonging to the authenticated user
         var tag1 = CreateTag("Work", userId);
@@ -76,8 +76,9 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
         // Tag belonging to a different user — SHOULD NOT appear
         var tagOtherUser = CreateTag("OtherUserTag", UserId.EmptyId);
 
-        DbContext.Tags.AddRange(tag1, tag2, tagOtherUser);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Tags.AddRange(tag1, tag2, tagOtherUser);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.GetTagsAsync(
@@ -90,7 +91,7 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
         var result = await response.MapTo<List<TagDto>>(CurrentCancellationToken);
 
         result.Should().NotBeNull();
-        result!.Should().HaveCount(2);
+        result.Should().HaveCount(2);
 
         result.Select(t => t.Name).Should().BeEquivalentTo("Work", "Personal");
         result.Should().OnlyContain(t => t.Name != "OtherUserTag");

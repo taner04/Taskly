@@ -7,7 +7,7 @@ namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapPost(Routes.Todos.AddAttachment)]
-[Authorize]
+[Authorize(Policy = Policies.User)]
 public static partial class AddAttachment
 {
     internal static void CustomizeEndpoint(
@@ -34,7 +34,7 @@ public static partial class AddAttachment
         var todo = await context.Todos
             .WithSpecification(spec)
             .SingleOrDefaultAsync(ct);
-        
+
         if (todo is null)
         {
             throw new ModelNotFoundException<Todo>(command.TodoId.Value);

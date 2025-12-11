@@ -56,7 +56,7 @@ public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fi
     public async Task CompleteUpload_Should_Return404_When_AttachmentDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
         var randomId = AttachmentId.From(Guid.NewGuid());
 
@@ -79,15 +79,16 @@ public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fi
     public async Task CompleteUpload_Should_DeleteAttachment_When_IsUploadedIsFalse()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
-        var userId = GetCurrentUserId();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
         var attachment = CreatePendingAttachment(todo);
 
-        DbContext.Add(todo);
-        DbContext.Add(attachment);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        dbContext.Add(attachment);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.CompleteAttachmentUploadAsync(
@@ -102,7 +103,7 @@ public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fi
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        (await DbContext.Attachments
+        (await GetDbContext().Attachments
                 .AnyAsync(a => a.Id == attachment.Id, CurrentCancellationToken))
             .Should().BeFalse();
     }
@@ -111,15 +112,16 @@ public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fi
     public async Task CompleteUpload_Should_SetStatusUploaded_When_IsUploadedIsTrue()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
-        var userId = GetCurrentUserId();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
         var attachment = CreatePendingAttachment(todo);
 
-        DbContext.Add(todo);
-        DbContext.Add(attachment);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        dbContext.Add(attachment);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.CompleteAttachmentUploadAsync(
@@ -134,7 +136,7 @@ public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fi
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await DbContext.Attachments
+        var updated = await GetDbContext().Attachments
             .AsNoTracking()
             .FirstAsync(a => a.Id == attachment.Id, CurrentCancellationToken);
 
@@ -146,15 +148,16 @@ public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fi
     public async Task CompleteUpload_Should_Return400_When_FileSizeExceedsLimit()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
-        var userId = GetCurrentUserId();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
         var attachment = CreatePendingAttachment(todo);
 
-        DbContext.Add(todo);
-        DbContext.Add(attachment);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        dbContext.Add(attachment);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.CompleteAttachmentUploadAsync(

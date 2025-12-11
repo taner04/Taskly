@@ -6,7 +6,7 @@ namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapPost(Routes.Todos.AddTags)]
-[Authorize]
+[Authorize(Policy = Policies.User)]
 public static partial class AddTags
 {
     internal static void CustomizeEndpoint(
@@ -22,12 +22,12 @@ public static partial class AddTags
         CancellationToken ct)
     {
         var userId = currentUserService.GetUserId();
-        
+
         var spec = new TodoByUserIdWithTagsSpecification(command.TodoId, userId);
         var todo = await context.Todos
             .WithSpecification(spec)
             .SingleOrDefaultAsync(ct);
-        
+
         if (todo is null)
         {
             throw new ModelNotFoundException<Todo>(command.TodoId.Value);

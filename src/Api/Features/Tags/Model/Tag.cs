@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Api.Features.Shared.Extensions;
 using Api.Features.Shared.Models;
-using Api.Features.Tags.Exceptions;
 using Api.Features.Users.Model;
 
 namespace Api.Features.Tags.Model;

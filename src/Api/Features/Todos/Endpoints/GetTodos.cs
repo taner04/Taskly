@@ -5,7 +5,7 @@ namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapGet(Routes.Todos.GetTodos)]
-[Authorize]
+[Authorize(Policy = Policies.User)]
 public static partial class GetTodos
 {
     internal static void CustomizeEndpoint(

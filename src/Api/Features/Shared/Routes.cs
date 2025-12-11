@@ -30,7 +30,7 @@ public static class Routes
         public const string GetTags = Base;
         public const string Create = Base;
         public const string Update = Base + "/{tagId}";
-        public const string Delete = Base + "/{tagId}";
+        public const string Remove = Base + "/{tagId}";
     }
 
     public static class Attachments
@@ -39,5 +39,14 @@ public static class Routes
 
         public const string Download = Base + "/{attachmentId}/download";
         public const string CompleteUpload = Base + "/{attachmentId}/complete";
+    }
+
+    public static class Users
+    {
+        private const string Base = "/api/users";
+
+        public const string GetUsers = Base;
+        public const string RemoveUser = Base + "/{userId}";
+        public const string GetByEmail = Base + "/by-email/{email}";
     }
 }

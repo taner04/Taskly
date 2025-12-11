@@ -4,7 +4,7 @@ namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapPost(Routes.Todos.Create)]
-[Authorize]
+[Authorize(Policy = Policies.User)]
 public static partial class CreateTodo
 {
     internal static void CustomizeEndpoint(

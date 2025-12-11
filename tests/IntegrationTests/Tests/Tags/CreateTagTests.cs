@@ -30,8 +30,8 @@ public sealed class CreateTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task CreateTag_Should_Return201_When_TagIsCreated()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         // Act
         var response = await client.CreateTagAsync(
@@ -51,7 +51,7 @@ public sealed class CreateTagTests(TestingFixture fixture) : TestingBase(fixture
         var tagId = TagId.From(Guid.Parse(uriLocation.ToString().Split('/').Last()));
         tagId.Should().NotBeNull();
 
-        var createdTag = await DbContext.Tags
+        var createdTag = await GetDbContext().Tags
             .AsNoTracking()
             .FirstOrDefaultAsync(t => t.Id == tagId, CurrentCancellationToken);
 
@@ -64,13 +64,14 @@ public sealed class CreateTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task CreateTag_Should_Return409_When_TagAlreadyExists()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var existingTag = new Tag("ExistingName", userId);
 
-        DbContext.Tags.Add(existingTag);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Tags.Add(existingTag);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.CreateTagAsync(
@@ -89,7 +90,7 @@ public sealed class CreateTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task CreateTag_Should_Return400_When_NameIsTooShort()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
         // Act
         var response = await client.CreateTagAsync(
@@ -108,7 +109,7 @@ public sealed class CreateTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task CreateTag_Should_Return400_When_NameIsTooLong()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
         var tooLongName = new string('x', Tag.MaxNameLength + 1);
 

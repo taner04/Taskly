@@ -26,7 +26,6 @@ public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
         throw new UnauthorizedAccessException("User not provisioned.");
     }
 
-
     public T GetClaimValue<T>(
         string claimType)
     {

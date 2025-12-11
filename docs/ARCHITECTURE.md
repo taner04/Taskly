@@ -30,7 +30,8 @@ The request flow follows this architecture:
 - **MailKit** — SMTP client for sending email reminders
 - **Immediate.Apis** — For easily mapping handlers to endpoints
 - **Immediate.Validations** — For model validation
-- **Immediate.Handlers** — For implementing the Command and Query Responsibility Segregation (CQRS) pattern with minimal boilerplate
+- **Immediate.Handlers** — For implementing the Command and Query Responsibility Segregation (CQRS) pattern with minimal
+  boilerplate
 - **Vogen** — Strongly-typed value object code generation
 - **Refit** — Type-safe HTTP client generation
 

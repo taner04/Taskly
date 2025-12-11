@@ -43,7 +43,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
     public async Task UpdateReminder_Should_Return404_When_TodoDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var todoId = TodoId.From(Guid.NewGuid());
 
         // Act
@@ -65,12 +65,13 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
     public async Task UpdateReminder_Should_Return400_When_Date_IsInvalid()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.UpdateReminderAsync(
@@ -92,13 +93,14 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
     public async Task UpdateReminder_Should_Return400_When_DeadlineIsInThePast()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var todo = CreateTodo(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         var pastDate = DateTime.UtcNow.AddMinutes(-10);
 
@@ -121,12 +123,13 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
     public async Task UpdateReminder_Should_Return400_When_ReminderOffset_IsNegative()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
-
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         var futureDate = DateTime.UtcNow.AddHours(2);
 
@@ -149,17 +152,18 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
     public async Task UpdateReminder_Should_Return400_When_ReminderOccursAfterDeadline()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         var futureDate = DateTime.UtcNow.AddHours(1);
 
         // reminder > time until deadline → invalid
-        var offset = 200;
+        const int offset = 200;
 
         // Act
         var response = await client.UpdateReminderAsync(
@@ -180,12 +184,13 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
     public async Task UpdateReminder_Should_Return200_And_UpdateReminderValues()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         var deadline = DateTime.UtcNow.AddHours(3);
 
@@ -204,7 +209,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await DbContext.Todos
+        var updated = await GetDbContext().Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 

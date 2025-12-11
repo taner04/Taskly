@@ -34,7 +34,8 @@ This creates the required `appsettings.json` and `appsettings.integration.json` 
 
 **Without Python (Manual Setup):**
 
-Create `appsettings.json` in `.\src\Api` and `appsettings.integration.json` in `.\tests\IntegrationTests` with the configuration values shown in the next step.
+Create `appsettings.json` in `.\src\Api` and `appsettings.integration.json` in `.\tests\IntegrationTests` with the
+configuration values shown in the next step.
 
 ### 3. Configure Auth0 credentials
 
@@ -52,14 +53,15 @@ Update the generated or manually created files with your Auth0 tenant values:
 2. Navigate to **Applications** → **Applications**
 3. Click **+ Create Application**
 4. Choose your application type:
-   - **Single Page Web Applications** (for API/SPA)
-   - **Machine to Machine Applications** (for Integration Tests)
+    - **Single Page Web Applications** (for API/SPA)
+    - **Machine to Machine Applications** (for Integration Tests)
 5. For M2M app, select an API (or create one if needed)
 6. Copy your `Domain`, `Client ID`, and `Client Secret` from the application settings
 
 #### Update Configuration Files
 
-Both configuration files have the same structure. Use **SPA credentials** for `appsettings.json` and **M2M credentials** for `appsettings.integration.json`:
+Both configuration files have the same structure. Use **SPA credentials** for `appsettings.json` and **M2M credentials**
+for `appsettings.integration.json`:
 
 ```json
 {
@@ -83,7 +85,8 @@ Both configuration files have the same structure. Use **SPA credentials** for `a
 }
 ```
 
-**Note:** Add `"Grant_Type": "client_credentials"` only in `appsettings.integration.json` for M2M authentication. The `ConnectionStrings` section is not necessary in `appsettings.integration.json`.
+**Note:** Add `"Grant_Type": "client_credentials"` only in `appsettings.integration.json` for M2M authentication. The
+`ConnectionStrings` section is not necessary in `appsettings.integration.json`.
 
 ### 4. Run with Aspire
 
@@ -94,4 +97,5 @@ dotnet run --project .\tools\AppHost
 ```
 
 > [!NOTE]
-> The **ReminderService** is automatically configured with Aspire and requires no additional setup. The Papercut SMTP configuration (Host: localhost, Port: 25) is pre-configured and will work out of the box when running through Aspire.
+> The **ReminderService** is automatically configured with Aspire and requires no additional setup. The Papercut SMTP
+> configuration (Host: localhost, Port: 25) is pre-configured and will work out of the box when running through Aspire.

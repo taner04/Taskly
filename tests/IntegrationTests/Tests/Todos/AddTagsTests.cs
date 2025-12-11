@@ -51,7 +51,7 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task AddTags_Should_Return404_When_TodoDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var todoId = TodoId.From(Guid.NewGuid());
 
         // Act
@@ -72,12 +72,13 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task AddTags_Should_Return404_When_TagsDoNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.AddTagsToTodoAsync(
@@ -97,17 +98,19 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task AddTags_Should_AddTagsToTodo()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var todo = CreateTodo(userId);
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         var tag1 = CreateTag("TagOne", userId);
         var tag2 = CreateTag("TagTwo", userId);
-        DbContext.AddRange(tag1, tag2);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        dbContext.AddRange(tag1, tag2);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.AddTagsToTodoAsync(
@@ -121,7 +124,7 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await DbContext.Todos
+        var updated = await GetDbContext().Todos
             .Include(t => t.Tags)
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
@@ -134,20 +137,21 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task AddTags_Should_NotDuplicateExistingTags()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var tagA = CreateTag("Alpha", userId);
         var tagB = CreateTag("Beta", userId);
 
-        DbContext.Add(tagA);
-        DbContext.Add(tagB);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(tagA);
+        dbContext.Add(tagB);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         var todo = CreateTodo(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.AddTagsToTodoAsync(
@@ -161,7 +165,7 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await DbContext.Todos
+        var updated = await GetDbContext().Todos
             .Include(t => t.Tags)
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
@@ -175,18 +179,19 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task AddTags_Should_NotAddTagsFromAnotherUser()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var todo = CreateTodo(userId);
         var tagValid = CreateTag("Valid", userId);
         var tagForeign = CreateTag("Foreign", UserId.EmptyId);
 
-        DbContext.Add(todo);
-        DbContext.Add(tagValid);
-        DbContext.Add(tagForeign);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        dbContext.Add(tagValid);
+        dbContext.Add(tagForeign);
 
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.AddTagsToTodoAsync(
@@ -200,7 +205,7 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await DbContext.Todos
+        var updated = await GetDbContext().Todos
             .Include(t => t.Tags)
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);

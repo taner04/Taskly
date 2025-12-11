@@ -18,9 +18,6 @@ public sealed class Todo : Entity<TodoId>
     public const int MinDescriptionLength = 3;
     public const int MaxDescriptionLength = 512;
 
-    private readonly List<Tag> _tags = [];
-    private readonly List<Attachment> _attachments = [];
-    
     private Todo(
         string title,
         string? description,

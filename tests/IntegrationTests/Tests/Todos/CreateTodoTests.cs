@@ -38,7 +38,7 @@ public sealed class CreateTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task CreateTodo_Should_Return400_When_TitleIsTooShort()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var command = new CreateTodo.Command
         {
             Title = "Hi",
@@ -60,7 +60,7 @@ public sealed class CreateTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task CreateTodo_Should_Return400_When_TitleIsTooLong()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var longTitle = new string('a', Todo.MaxTitleLength + 1);
 
         var command = new CreateTodo.Command
@@ -84,7 +84,7 @@ public sealed class CreateTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task CreateTodo_Should_Return400_When_DescriptionIsTooShort()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
         var command = new CreateTodo.Command
         {
@@ -107,7 +107,7 @@ public sealed class CreateTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task CreateTodo_Should_Return400_When_DescriptionIsTooLong()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var longDesc = new string('x', Todo.MaxDescriptionLength + 1);
 
         var command = new CreateTodo.Command
@@ -131,7 +131,7 @@ public sealed class CreateTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task CreateTodo_Should_Return201_And_CreateTodo()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var command = CreateValidCommand();
 
         // Act
@@ -155,7 +155,7 @@ public sealed class CreateTodoTests(TestingFixture fixture) : TestingBase(fixtur
             .Should()
             .Be(body.TodoId.ToString());
 
-        var created = await DbContext.Todos
+        var created = await GetDbContext().Todos
             .AsNoTracking()
             .FirstOrDefaultAsync(t => t.Id == TodoId.From(body.TodoId), CurrentCancellationToken);
 

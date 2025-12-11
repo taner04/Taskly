@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Api.Features.Shared.Models;
 using Api.Features.Users.Exceptions;
+using Newtonsoft.Json;
 
 namespace Api.Features.Users.Model;
 
@@ -12,6 +13,7 @@ public readonly partial struct UserId
 
 public sealed class User : Entity<UserId>
 {
+    [JsonConstructor]
     private User(
         string email,
         string auth0Id)
@@ -23,6 +25,7 @@ public sealed class User : Entity<UserId>
 
     public string Email { get; private set; }
     public string Auth0Id { get; private set; }
+    public List<string> Roles { get; private set; } = [];
 
     public static User Create(
         string email,

@@ -56,7 +56,7 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task GetTodos_Should_ReturnEmptyList_When_UserHasNoTodos()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
         // Act
         var response = await client.GetTodosAsync(CurrentCancellationToken);
@@ -72,19 +72,20 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task GetTodos_Should_ReturnOnlyTodos_ForAuthenticatedUser()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var todo1 = CreateTodo(userId, "Todo A");
         var todo2 = CreateTodo(userId, "Todo B");
 
         var foreignTodo = CreateTodo(UserId.EmptyId, "Foreign Todo");
 
-        DbContext.Add(todo1);
-        DbContext.Add(todo2);
-        DbContext.Add(foreignTodo);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo1);
+        dbContext.Add(todo2);
+        dbContext.Add(foreignTodo);
 
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.GetTodosAsync(CurrentCancellationToken);
@@ -103,8 +104,8 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task GetTodos_Should_ReturnTodos_WithTags_And_Attachments()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var todo = CreateTodo(userId);
 
@@ -117,12 +118,13 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         todo.Tags.Add(tag2);
         todo.Attachments.Add(attachment);
 
-        DbContext.Add(tag1);
-        DbContext.Add(tag2);
-        DbContext.Add(todo);
-        DbContext.Add(attachment);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(tag1);
+        dbContext.Add(tag2);
+        dbContext.Add(todo);
+        dbContext.Add(attachment);
 
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.GetTodosAsync(CurrentCancellationToken);

@@ -43,7 +43,7 @@ public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task UpdateTodo_Should_Return404_When_TodoDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
         // Act
         var response = await client.UpdateTodoAsync(
@@ -65,12 +65,13 @@ public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task UpdateTodo_Should_Return400_When_TitleIsInvalid()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.UpdateTodoAsync(
@@ -92,12 +93,13 @@ public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task UpdateTodo_Should_Return400_When_DescriptionIsInvalid()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.UpdateTodoAsync(
@@ -119,12 +121,13 @@ public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task UpdateTodo_Should_Return200_And_UpdateTodo()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         var body = new UpdateTodo.Command.CommandBody
         {
@@ -142,7 +145,7 @@ public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixtur
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await DbContext.Todos
+        var updated = await GetDbContext().Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
@@ -155,12 +158,13 @@ public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task UpdateTodo_Should_NotUpdate_Todos_From_OtherUsers()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
         var foreignTodo = CreateTodo(UserId.EmptyId);
 
-        DbContext.Add(foreignTodo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(foreignTodo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         var body = new UpdateTodo.Command.CommandBody
         {
@@ -179,7 +183,7 @@ public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixtur
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         await response.ContainsErrorCode("Todo.NotFound", CurrentCancellationToken);
 
-        var untouched = await DbContext.Todos
+        var untouched = await GetDbContext().Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == foreignTodo.Id, CurrentCancellationToken);
 

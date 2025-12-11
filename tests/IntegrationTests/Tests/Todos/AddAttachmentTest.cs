@@ -45,7 +45,7 @@ public sealed class AddAttachmentTests(TestingFixture fixture) : TestingBase(fix
     public async Task AddAttachment_Should_Return404_When_TodoDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var randomTodoId = TodoId.From(Guid.NewGuid());
 
         // Act
@@ -67,16 +67,17 @@ public sealed class AddAttachmentTests(TestingFixture fixture) : TestingBase(fix
     public async Task AddAttachment_Should_Return200_And_CreatePendingAttachment()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var todo = CreateTodo(userId);
 
-        DbContext.Todos.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Todos.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var fileName = "testfile.txt";
-        var contentType = "text/plain";
+        const string fileName = "testfile.txt";
+        const string contentType = "text/plain";
 
         // Act
         var response = await client.AddAttachmentAsync(
@@ -98,7 +99,7 @@ public sealed class AddAttachmentTests(TestingFixture fixture) : TestingBase(fix
         result.BlobPath.Should().NotBeNullOrWhiteSpace();
 
         // Validate database state
-        var createdAttachment = await DbContext.Attachments
+        var createdAttachment = await GetDbContext().Attachments
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Id == AttachmentId.From(result.AttachmentId), CurrentCancellationToken);
 

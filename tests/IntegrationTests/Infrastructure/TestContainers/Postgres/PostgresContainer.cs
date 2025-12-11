@@ -4,8 +4,6 @@ namespace IntegrationTests.Infrastructure.TestContainers.Postgres;
 
 public sealed class PostgresContainer : ContainerBase<PostgreSqlContainer>
 {
-    private const int MaxRetries = 5;
-
     public string ConnectionString => Container.GetConnectionString();
 
     protected override PostgreSqlContainer BuildContainer()

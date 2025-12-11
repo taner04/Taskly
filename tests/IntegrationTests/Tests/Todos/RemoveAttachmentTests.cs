@@ -49,7 +49,7 @@ public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(
     public async Task RemoveAttachment_Should_Return404_When_TodoDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
         // Act
         var response = await client.RemoveAttachmentFromTodoAsync(
@@ -66,12 +66,13 @@ public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(
     public async Task RemoveAttachment_Should_Return404_When_AttachmentDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.RemoveAttachmentFromTodoAsync(
@@ -88,17 +89,18 @@ public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(
     public async Task RemoveAttachment_Should_Return200_And_RemoveAttachment()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var todo = CreateTodo(userId);
         var attachment = CreateAttachment(todo);
 
         todo.Attachments.Add(attachment);
 
-        DbContext.Add(todo);
-        DbContext.Add(attachment);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();    
+        dbContext.Add(todo);
+        dbContext.Add(attachment);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         var container = GetService<BlobServiceClient>().GetBlobContainerClient("attachments");
 
@@ -119,7 +121,7 @@ public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var exists = await DbContext.Attachments
+        var exists = await GetDbContext().Attachments
             .AnyAsync(a => a.Id == attachment.Id, CurrentCancellationToken);
 
         exists.Should().BeFalse();

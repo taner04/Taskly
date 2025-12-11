@@ -55,7 +55,7 @@ public sealed class DownloadTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task DownloadAttachment_Should_Return404_When_NotFound()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
         var randomId = AttachmentId.From(Guid.NewGuid());
 
@@ -73,15 +73,16 @@ public sealed class DownloadTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task DownloadAttachment_Should_ReturnSasUrl_And_FileInfo()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
-        var userId = GetCurrentUserId();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
         var attachment = CreateUploadedAttachment(todo);
 
-        DbContext.Add(todo);
-        DbContext.Add(attachment);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        dbContext.Add(attachment);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.DownloadAttachmentAsync(

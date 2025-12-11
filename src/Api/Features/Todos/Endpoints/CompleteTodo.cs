@@ -5,7 +5,7 @@ namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapPost(Routes.Todos.Complete)]
-[Authorize]
+[Authorize(Policy = Policies.User)]
 public static partial class CompleteTodo
 {
     internal static void CustomizeEndpoint(
@@ -25,7 +25,7 @@ public static partial class CompleteTodo
         var todo = await context.Todos
             .WithSpecification(spec)
             .SingleOrDefaultAsync(ct);
-        
+
         if (todo is null)
         {
             throw new ModelNotFoundException<Todo>(command.TodoId.Value);

@@ -1,4 +1,5 @@
 ﻿using Api;
+using IntegrationTests.Infrastructure.Composition.Mocks;
 using IntegrationTests.Infrastructure.Composition.ServiceExtensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -23,6 +24,7 @@ public class WebApiFactory(DbConnection dbConnection, string azuriteConnectionSt
         builder.ConfigureServices(services =>
         {
             services.AddMockDbContext(dbConnection);
+            services.AddMockJwtBearerOptions();
             services.AddRefitClient<IApiClient>();
         });
 

@@ -5,7 +5,6 @@ namespace IntegrationTests.Infrastructure.TestContainers.Postgres;
 
 public sealed class PostgresTestDatabase : IAsyncDisposable
 {
-    private readonly List<string> _dbTablesToClear = ["Todos", "Tags", "Attachments"];
     private readonly PostgresContainer _postgresContainer = new();
     private DbContextOptions<ApplicationDbContext> _dbContextOptions = null!;
 
@@ -16,8 +15,7 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
         await _postgresContainer.DisposeAsync();
     }
 
-    public async Task<UserId> InitializeContainerAsync(
-        string auth0Id)
+    public async Task InitializeContainerAsync()
     {
         await _postgresContainer.InitializeAsync();
 
@@ -28,29 +26,29 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
         await using var context = new ApplicationDbContext(_dbContextOptions);
         await context.Database.MigrateAsync(TestsContext.CurrentCancellationToken);
 
-        return await InitUserAsync(auth0Id, context);
+        await InitUserAsync(context);
     }
 
     public async Task ResetContainerAsync()
     {
         await using var context = new ApplicationDbContext(_dbContextOptions);
+        
+        const string sql = """
+            DELETE FROM "Todos";
+            DELETE FROM "Tags";
+            DELETE FROM "Attachments";
+            """;
 
-        foreach (var sql in _dbTablesToClear.Select(tableName => $"Delete from \"{tableName}\""))
-        {
-            await context.Database.ExecuteSqlRawAsync(sql, TestsContext.CurrentCancellationToken);
-        }
+        await context.Database.ExecuteSqlRawAsync(sql, TestsContext.CurrentCancellationToken);
     }
 
-    private async Task<UserId> InitUserAsync(
-        string auth0Id,
+    private static async Task InitUserAsync(
         ApplicationDbContext context)
     {
-        var user = UserFactory.Create(auth0Id);
-        user.SetCreated(auth0Id);
+        var user = UserFactory.Create();
+        user.SetCreated(UserFactory.Sub);
 
         context.Users.Add(user);
         await context.SaveChangesAsync(TestsContext.CurrentCancellationToken);
-
-        return user.Id;
     }
 }

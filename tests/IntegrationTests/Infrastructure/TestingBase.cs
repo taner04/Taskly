@@ -1,56 +1,59 @@
 ﻿using Api;
+using Api.Features.Shared;
 
 namespace IntegrationTests.Infrastructure;
 
 [Collection("TestingFixtureCollection")]
-public abstract class TestingBase : IAsyncLifetime
+public abstract class TestingBase(TestingFixture fixture) : IAsyncLifetime
 {
-    private readonly TestingFixture _fixture;
-    private readonly IServiceScope _scope;
+    private IServiceScope _scope = null!;
 
-    protected TestingBase(
-        TestingFixture fixture)
-    {
-        _fixture = fixture;
-        _scope = _fixture.CreateScope();
-
-        DbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    }
+    private ApplicationDbContext DbContext { get; set; } = null!;
+    protected UserId CurrentUserId { get; private set; }
 
     protected static CancellationToken CurrentCancellationToken => TestsContext.CurrentCancellationToken;
 
-    protected ApplicationDbContext DbContext { get; }
-
     public async ValueTask InitializeAsync()
     {
-        await _fixture.SetUpAsync();
+        await fixture.SetUpAsync();
+
+        _scope = fixture.CreateScope();
+        DbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        CurrentUserId = await DbContext.Users
+            .Select(u => u.Id)
+            .FirstAsync();
     }
 
-    public ValueTask DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         _scope.Dispose();
-        GC.SuppressFinalize(this);
+        await DbContext.DisposeAsync();
 
-        return ValueTask.CompletedTask;
+        GC.SuppressFinalize(this);
     }
 
-    protected IApiClient CreateAuthenticatedClient()
+    protected ApplicationDbContext GetDbContext()
     {
-        return _fixture.CreateAuthenticatedClient();
+        return DbContext;
+    }
+
+    protected IApiClient CreateAuthenticatedUserClient()
+    {
+        return fixture.CreateAuthenticatedClient(Policies.User);
+    }
+
+    protected IApiClient CreateAuthenticatedAdminClient()
+    {
+        return fixture.CreateAuthenticatedClient(Policies.Admin);
     }
 
     protected IApiClient CreateUnauthenticatedClient()
     {
-        return _fixture.CreateUnauthenticatedClient();
+        return fixture.CreateUnauthenticatedClient();
     }
 
-    protected UserId GetCurrentUserId()
-    {
-        return _fixture.GetCurrentUserId();
-    }
-
-    protected T GetService<T>()
-        where T : notnull
+    protected T GetService<T>() where T : class
     {
         return _scope.ServiceProvider.GetRequiredService<T>();
     }

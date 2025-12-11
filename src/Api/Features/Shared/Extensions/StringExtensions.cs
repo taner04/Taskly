@@ -2,7 +2,8 @@
 
 internal static class StringExtensions
 {
-    extension(string str)
+    extension(
+        string str)
     {
         public void EnsureLengthInRange<T>(
             int minLength,

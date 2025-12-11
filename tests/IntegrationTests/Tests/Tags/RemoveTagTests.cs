@@ -6,7 +6,7 @@ using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Tags;
 
-public sealed class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture)
+public sealed class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private static Todo CreateTodo(
         UserId userId)
@@ -46,7 +46,7 @@ public sealed class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task DeleteTag_Should_Return404_When_TagDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var randomId = TagId.From(Guid.NewGuid());
 
         // Act
@@ -63,13 +63,14 @@ public sealed class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task DeleteTag_Should_RemoveTag_When_TagExists()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var tag = CreateTag("TagToDelete", userId);
 
-        DbContext.Tags.Add(tag);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Tags.Add(tag);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.DeleteTagAsync(
@@ -79,7 +80,7 @@ public sealed class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        (await DbContext.Tags
+        (await GetDbContext().Tags
                 .AnyAsync(t => t.Id == tag.Id, CurrentCancellationToken))
             .Should().BeFalse();
     }
@@ -88,17 +89,18 @@ public sealed class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task DeleteTag_Should_RemoveTagFromTodosBeforeDeletion()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var todo = CreateTodo(userId);
         var tag = CreateTag("TagInUse", userId);
 
         todo.Tags.Add(tag);
 
-        DbContext.Todos.Add(todo);
-        DbContext.Tags.Add(tag);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Todos.Add(todo);
+        dbContext.Tags.Add(tag);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.DeleteTagAsync(
@@ -108,14 +110,14 @@ public sealed class DeleteTagTests(TestingFixture fixture) : TestingBase(fixture
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updatedTodo = await DbContext.Todos
+        var updatedTodo = await GetDbContext().Todos
             .Include(t => t.Tags)
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
         updatedTodo.Tags.Should().BeEmpty();
 
-        (await DbContext.Tags.AnyAsync(t => t.Id == tag.Id, CurrentCancellationToken))
+        (await GetDbContext().Tags.AnyAsync(t => t.Id == tag.Id, CurrentCancellationToken))
             .Should().BeFalse();
     }
 }

@@ -12,7 +12,7 @@ public partial interface IApiClient
         CreateTag.Command command,
         CancellationToken cancellationToken = default);
 
-    [Delete(Routes.Tags.Delete)]
+    [Delete(Routes.Tags.Remove)]
     Task<HttpResponseMessage> DeleteTagAsync(
         TagId tagId,
         CancellationToken cancellationToken = default);

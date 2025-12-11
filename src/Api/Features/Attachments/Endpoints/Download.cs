@@ -4,7 +4,7 @@ namespace Api.Features.Attachments.Endpoints;
 
 [Handler]
 [MapGet(Routes.Attachments.Download)]
-[Authorize]
+[Authorize(Policy = Policies.User)]
 public static partial class Download
 {
     internal static void CustomizeEndpoint(

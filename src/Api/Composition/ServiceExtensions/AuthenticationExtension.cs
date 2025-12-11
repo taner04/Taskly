@@ -23,11 +23,14 @@ internal static class AuthenticationExtension
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidAudience = configuration["Auth0:Audience"],
-                    ValidIssuer = $"https://{configuration["Auth0:Domain"]}/"
+                    ValidIssuer = $"https://{configuration["Auth0:Domain"]}/",
+                    RoleClaimType = $"{configuration["Auth0:Audience"]}/roles"
                 };
             });
 
-            services.AddAuthorization();
+            services.AddAuthorizationBuilder()
+                .AddPolicy(Policies.User, policy => policy.RequireRole(Policies.User))
+                .AddPolicy(Policies.Admin, policy => policy.RequireRole(Policies.Admin));
 
             return services;
         }

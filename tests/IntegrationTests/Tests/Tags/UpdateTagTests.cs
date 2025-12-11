@@ -39,7 +39,7 @@ public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task UpdateTag_Should_Return404_When_TagDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var randomId = TagId.From(Guid.NewGuid());
 
         // Act
@@ -60,13 +60,14 @@ public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task UpdateTag_Should_Return400_When_NewNameIsInvalid()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var tag = CreateTag("OriginalName", userId);
 
-        DbContext.Tags.Add(tag);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Tags.Add(tag);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.UpdateTagAsync(
@@ -86,15 +87,16 @@ public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task UpdateTag_Should_Return200_And_UpdateTheTag()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var tag = CreateTag("BeforeRename", userId);
 
-        DbContext.Tags.Add(tag);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Tags.Add(tag);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var newName = "AfterRename";
+        const string newName = "AfterRename";
 
         // Act
         var response = await client.UpdateTagAsync(
@@ -108,7 +110,7 @@ public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await DbContext.Tags
+        var updated = await GetDbContext().Tags
             .AsNoTracking()
             .FirstAsync(t => t.Id == tag.Id, CurrentCancellationToken);
 

@@ -46,7 +46,7 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
     public async Task CompleteTodo_Should_Return404_When_TodoDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var todoId = TodoId.From(Guid.NewGuid());
 
         // Act
@@ -67,12 +67,13 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
     public async Task CompleteTodo_Should_SetCompletedTrue()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.CompleteTodoAsync(
@@ -86,7 +87,7 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await DbContext.Todos
+        var updated = await GetDbContext().Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
@@ -97,12 +98,13 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
     public async Task CompleteTodo_Should_SetCompletedFalse()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
         var todo = CreateTodo(userId, true);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.CompleteTodoAsync(
@@ -116,7 +118,7 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await DbContext.Todos
+        var updated = await GetDbContext().Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
@@ -127,11 +129,12 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
     public async Task CompleteTodo_Should_NotAffect_Todos_From_OtherUsers()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var foreignTodo = CreateTodo(UserId.EmptyId);
 
-        DbContext.Add(foreignTodo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(foreignTodo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.CompleteTodoAsync(
@@ -146,7 +149,7 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         await response.ContainsErrorCode("Todo.NotFound", CurrentCancellationToken);
 
-        var unchanged = await DbContext.Todos
+        var unchanged = await GetDbContext().Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == foreignTodo.Id, CurrentCancellationToken);
 

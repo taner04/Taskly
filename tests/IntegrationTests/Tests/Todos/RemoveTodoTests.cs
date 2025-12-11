@@ -37,7 +37,7 @@ public sealed class RemoveTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task RemoveTodo_Should_Return404_When_TodoDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var todoId = TodoId.From(Guid.NewGuid());
 
         // Act
@@ -54,13 +54,14 @@ public sealed class RemoveTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task RemoveTodo_Should_Return200_And_RemoveTodo()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var todo = CreateTodo(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.RemoveTodoAsync(
@@ -70,7 +71,7 @@ public sealed class RemoveTodoTests(TestingFixture fixture) : TestingBase(fixtur
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var exists = await DbContext.Todos
+        var exists = await GetDbContext().Todos
             .AnyAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
         exists.Should().BeFalse();
@@ -80,12 +81,13 @@ public sealed class RemoveTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task RemoveTodo_Should_NotRemove_Todos_From_OtherUsers()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
         var foreignTodo = CreateTodo(UserId.EmptyId);
 
-        DbContext.Add(foreignTodo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(foreignTodo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.RemoveTodoAsync(
@@ -96,7 +98,7 @@ public sealed class RemoveTodoTests(TestingFixture fixture) : TestingBase(fixtur
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         await response.ContainsErrorCode("Todo.NotFound", CurrentCancellationToken);
 
-        var stillExists = await DbContext.Todos
+        var stillExists = await GetDbContext().Todos
             .AnyAsync(t => t.Id == foreignTodo.Id, CurrentCancellationToken);
 
         stillExists.Should().BeTrue();

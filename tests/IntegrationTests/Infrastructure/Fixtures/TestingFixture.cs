@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
-using System.Security.Claims;
 using System.Text.Json;
 using Api;
-using Api.Composition.Options;
+using Api.Features.Shared;
+using IntegrationTests.Factories;
+using IntegrationTests.Infrastructure.Composition.Mocks;
 using IntegrationTests.Infrastructure.TestContainers.Azure;
 using IntegrationTests.Infrastructure.TestContainers.Postgres;
 using Refit;
@@ -16,17 +16,27 @@ public sealed class TestingFixture : IAsyncLifetime
 {
     private readonly AzureTestBlobStorage _azureTestBlobStorage = new();
     private readonly PostgresTestDatabase _postgresTestDatabase = new();
-    private ClaimsPrincipal _currentUser = null!;
-    private UserId _currentUserId = UserId.EmptyId;
-    private string _jwtToken = null!;
+    private readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+    private readonly RefitSettings _refitSettings;
+    
+    private string _adminJwtToken = null!;
     private IServiceScopeFactory _serviceScopeFactory = null!;
+    private string _userJwtToken = null!;
     private WebApiFactory _webApiFactory = null!;
+
+    public TestingFixture()
+    {
+        _refitSettings = new RefitSettings(new SystemTextJsonContentSerializer(_jsonOptions));
+    }
 
     public async ValueTask InitializeAsync()
     {
-        await InitilizeAuthentication();
+        InitilizeTokens();
 
-        _currentUserId = await _postgresTestDatabase.InitializeContainerAsync(GetCurrentUserAuth0Id());
+        await _postgresTestDatabase.InitializeContainerAsync();
 
         await _azureTestBlobStorage.InitializeContainerAsync();
 
@@ -51,54 +61,32 @@ public sealed class TestingFixture : IAsyncLifetime
         return _serviceScopeFactory.CreateScope();
     }
 
-    public IApiClient CreateAuthenticatedClient()
+    public IApiClient CreateAuthenticatedClient(
+        string role)
     {
         var client = _webApiFactory.CreateClient();
 
-        client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", _jwtToken);
+        var token = role switch
+        {
+            Policies.User => _userJwtToken,
+            Policies.Admin => _adminJwtToken,
+            _ => throw new ArgumentOutOfRangeException(nameof(role), "Invalid role specified.")
+        };
 
-        return RestService.For<IApiClient>(client, new RefitSettings(
-            new SystemTextJsonContentSerializer(
-                new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                })));
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", token);
+
+        return RestService.For<IApiClient>(client, _refitSettings);
     }
 
     public IApiClient CreateUnauthenticatedClient()
     {
-        return RestService.For<IApiClient>(_webApiFactory.CreateClient());
+        return RestService.For<IApiClient>(_webApiFactory.CreateClient(), _refitSettings);
     }
 
-    private static IConfiguration InitConfiguration()
+    private void InitilizeTokens()
     {
-        return new ConfigurationBuilder()
-            .AddJsonFile("appsettings.integration.json", false, false)
-            .Build();
-    }
-
-    private string GetCurrentUserAuth0Id()
-    {
-        var userId = _currentUser.FindFirst("sub")?.Value;
-
-        return string.IsNullOrEmpty(userId)
-            ? throw new UnauthorizedAccessException("UserId claim is missing.")
-            : userId;
-    }
-
-    private async Task InitilizeAuthentication()
-    {
-        var auth0Options = InitConfiguration().GetSection("Auth0").Get<Auth0Options>() ??
-                           throw new InvalidOperationException("Auth0 configuration is missing.");
-        _jwtToken = await new Auth0Service(auth0Options).GetAccessTokenAsync();
-
-        var token = new JwtSecurityTokenHandler().ReadJwtToken(_jwtToken);
-        _currentUser = new ClaimsPrincipal(new ClaimsIdentity(token.Claims));
-    }
-
-    public UserId GetCurrentUserId()
-    {
-        return _currentUserId;
+        _userJwtToken = MockJwtTokens.CreateToken(UserFactory.Sub, Policies.User);
+        _adminJwtToken = MockJwtTokens.CreateToken(UserFactory.Sub,Policies.Admin);
     }
 }

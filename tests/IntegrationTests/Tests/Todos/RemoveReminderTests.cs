@@ -42,7 +42,7 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
     public async Task RemoveReminder_Should_Return404_When_TodoDoesNotExist()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
         var todoId = TodoId.From(Guid.NewGuid());
 
         // Act
@@ -59,13 +59,14 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
     public async Task RemoveReminder_Should_Return204_And_ClearDeadline_And_ReminderOffset()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
-        var userId = GetCurrentUserId();
+        var client = CreateAuthenticatedUserClient();
+        var userId = CurrentUserId;
 
         var todo = CreateTodoWithReminder(userId);
 
-        DbContext.Add(todo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(todo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.RemoveReminderAsync(
@@ -75,7 +76,7 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await DbContext.Todos
+        var updated = await GetDbContext().Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
@@ -88,7 +89,7 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
     public async Task RemoveReminder_Should_NotAllow_Removing_Reminder_From_OtherUsers_Todo()
     {
         // Arrange
-        var client = CreateAuthenticatedClient();
+        var client = CreateAuthenticatedUserClient();
 
         var foreignTodo = Todo.Create(
             "Test",
@@ -99,8 +100,9 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
         var deadline = DateTime.UtcNow.AddHours(5);
         foreignTodo.SetReminder(deadline, 60);
 
-        DbContext.Add(foreignTodo);
-        await DbContext.SaveChangesAsync(CurrentCancellationToken);
+        await using var dbContext = GetDbContext();
+        dbContext.Add(foreignTodo);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.RemoveReminderAsync(
@@ -111,7 +113,7 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         await response.ContainsErrorCode("Todo.NotFound", CurrentCancellationToken);
 
-        var unchanged = await DbContext.Todos
+        var unchanged = await GetDbContext().Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == foreignTodo.Id, CurrentCancellationToken);
 
