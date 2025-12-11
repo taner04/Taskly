@@ -13,6 +13,7 @@ authentication with **Auth0** and cloud-native architecture with **.NET Aspire**
 ## 🎯 Features
 
 - **🔐 Secure Authentication** — Auth0 JWT-based authentication and authorization
+- **👥 Role-Based Access Control** — Admin and User policies for endpoint protection
 - **📦 RESTful API** — Clean, feature-driven architecture with CQRS patterns
 - **💾 Data Persistence** — PostgreSQL database with Entity Framework Core
 - **📂 File Storage** — Azure Blob Storage with secure SAS URLs for attachments

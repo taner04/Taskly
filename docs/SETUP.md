@@ -88,3 +88,32 @@ dotnet run --project .\tools\AppHost
 > [!NOTE]
 > The **ReminderService** is automatically configured with Aspire and requires no additional setup. The Papercut SMTP
 > configuration (Host: localhost, Port: 25) is pre-configured and will work out of the box when running through Aspire.
+
+---
+
+## Authorization & Access Control
+
+The API implements **role-based access control (RBAC)** using Auth0 roles:
+
+### Policies
+
+- **User Policy** — Default policy for regular users
+  - Can create, read, update, and delete their own todos
+  - Can manage tags and attachments
+  - Can set reminders for their todos
+
+- **Admin Policy** — Administrative access
+  - All User policy permissions
+  - Access to admin-only endpoints
+  - Can view system-wide statistics and logs
+
+### Role Claims
+
+Roles are transmitted via JWT claims using the pattern: `{Audience}/roles`
+
+Example claim:
+```
+"https://taskly-api/roles": "User"
+```
+
+Ensure your Auth0 application is configured to include role claims in the JWT token for proper authorization.
