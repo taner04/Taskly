@@ -1,3 +1,4 @@
+using Api.Features.Shared.Exceptions;
 using Api.Features.Todos.Exceptions;
 using Api.Features.Todos.Model;
 using Api.Features.Users.Model;
@@ -42,14 +43,14 @@ public sealed class TodoTests
     [Fact]
     public void Create_WithTooShortTitle_ShouldThrow()
     {
-        Assert.Throws<TodoInvalidTitleException>(() =>
+        Assert.Throws<ModelInvalidStringException<Todo>>(() =>
             Todo.Create(TooShortString, ValidDescription, TodoPriority.Low, _validUserId));
     }
 
     [Fact]
     public void Create_WithTooLongTitle_ShouldThrow()
     {
-        Assert.Throws<TodoInvalidTitleException>(() =>
+        Assert.Throws<ModelInvalidStringException<Todo>>(() =>
             Todo.Create(TooLongTitle, ValidDescription, TodoPriority.Low, _validUserId));
     }
 
@@ -72,14 +73,14 @@ public sealed class TodoTests
     [Fact]
     public void Create_WithTooShortDescription_ShouldThrow()
     {
-        Assert.Throws<TodoInvalidDescriptionException>(() =>
+        Assert.Throws<ModelInvalidStringException<Todo>>(() =>
             Todo.Create(ValidTitle, TooShortString, TodoPriority.Low, _validUserId));
     }
 
     [Fact]
     public void Create_WithTooLongDescription_ShouldThrow()
     {
-        Assert.Throws<TodoInvalidDescriptionException>(() =>
+        Assert.Throws<ModelInvalidStringException<Todo>>(() =>
             Todo.Create(ValidTitle, TooLongDescription, TodoPriority.Low, _validUserId));
     }
 
@@ -112,7 +113,7 @@ public sealed class TodoTests
     public void Update_WithTooShortTitle_ShouldThrow()
     {
         var todo = CreateTodo();
-        Assert.Throws<TodoInvalidTitleException>(() =>
+        Assert.Throws<ModelInvalidStringException<Todo>>(() =>
             todo.Update(TooShortString, ValidDescription, TodoPriority.High));
     }
 
@@ -120,7 +121,7 @@ public sealed class TodoTests
     public void Update_WithTooLongTitle_ShouldThrow()
     {
         var todo = CreateTodo();
-        Assert.Throws<TodoInvalidTitleException>(() =>
+        Assert.Throws<ModelInvalidStringException<Todo>>(() =>
             todo.Update(TooLongTitle, ValidDescription, TodoPriority.High));
     }
 
@@ -128,7 +129,7 @@ public sealed class TodoTests
     public void Update_WithTooShortDescription_ShouldThrow()
     {
         var todo = CreateTodo();
-        Assert.Throws<TodoInvalidDescriptionException>(() =>
+        Assert.Throws<ModelInvalidStringException<Todo>>(() =>
             todo.Update(ValidTitle, TooShortString, TodoPriority.High));
     }
 
@@ -136,7 +137,7 @@ public sealed class TodoTests
     public void Update_WithTooLongDescription_ShouldThrow()
     {
         var todo = CreateTodo();
-        Assert.Throws<TodoInvalidDescriptionException>(() =>
+        Assert.Throws<ModelInvalidStringException<Todo>>(() =>
             todo.Update(ValidTitle, TooLongDescription, TodoPriority.High));
     }
 

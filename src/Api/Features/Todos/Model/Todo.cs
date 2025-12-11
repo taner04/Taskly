@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Api.Features.Shared.Extensions;
 using Api.Features.Shared.Models;
 using Api.Features.Todos.Exceptions;
 using Api.Features.Users.Model;
@@ -78,16 +79,8 @@ public sealed class Todo : Entity<TodoId>
         string title,
         string? description)
     {
-        if (title.Length is > MaxTitleLength or < MinTitleLength)
-        {
-            throw new TodoInvalidTitleException(title.Length);
-        }
-
-        if (!string.IsNullOrEmpty(description) &&
-            description.Length is > MaxDescriptionLength or < MinDescriptionLength)
-        {
-            throw new TodoInvalidDescriptionException(description.Length);
-        }
+        title.EnsureLengthInRange<Todo>(MinTitleLength, MaxTitleLength, nameof(Title));
+        description?.EnsureLengthInRange<Todo>(MinDescriptionLength, MaxDescriptionLength, nameof(Description));
     }
 
     public void SetCompletionStatus(

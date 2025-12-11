@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Api.Features.Shared.Extensions;
 using Api.Features.Shared.Models;
 using Api.Features.Tags.Exceptions;
 using Api.Features.Users.Model;
@@ -33,10 +34,7 @@ public class Tag : Entity<TagId>
     private static void Validate(
         string name)
     {
-        if (name.Length is > MaxNameLength or < MinNameLength)
-        {
-            throw new TagInvalidNameException(name.Length);
-        }
+        name.EnsureLengthInRange<Tag>(MinNameLength, MaxNameLength, nameof(Name));
     }
 
     public void Rename(

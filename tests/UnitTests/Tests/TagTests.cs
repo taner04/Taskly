@@ -1,4 +1,5 @@
-﻿using Api.Features.Tags.Exceptions;
+﻿using Api.Features.Shared.Exceptions;
+using Api.Features.Tags.Exceptions;
 using Api.Features.Tags.Model;
 using Api.Features.Users.Model;
 
@@ -25,13 +26,13 @@ public sealed class TagTests
     [Fact]
     public void Constructor_WithNameTooShort_ShouldThrow()
     {
-        Assert.Throws<TagInvalidNameException>(() => new Tag(TooShortName, _validUserId));
+        Assert.Throws<ModelInvalidStringException<Tag>>(() => new Tag(TooShortName, _validUserId));
     }
 
     [Fact]
     public void Constructor_WithNameTooLong_ShouldThrow()
     {
-        Assert.Throws<TagInvalidNameException>(() => new Tag(TooLongName, _validUserId));
+        Assert.Throws<ModelInvalidStringException<Tag>>(() => new Tag(TooLongName, _validUserId));
     }
 
     [Fact]
@@ -70,7 +71,7 @@ public sealed class TagTests
     {
         var tag = new Tag(ValidName, _validUserId);
 
-        Assert.Throws<TagInvalidNameException>(() => tag.Rename(TooShortName));
+        Assert.Throws<ModelInvalidStringException<Tag>>(() => tag.Rename(TooShortName));
     }
 
     [Fact]
@@ -78,7 +79,7 @@ public sealed class TagTests
     {
         var tag = new Tag(ValidName, _validUserId);
 
-        Assert.Throws<TagInvalidNameException>(() => tag.Rename(TooLongName));
+        Assert.Throws<ModelInvalidStringException<Tag>>(() => tag.Rename(TooLongName));
     }
 
     [Fact]

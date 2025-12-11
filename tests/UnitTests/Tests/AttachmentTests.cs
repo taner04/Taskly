@@ -52,7 +52,7 @@ public sealed class AttachmentTests
         string fileName)
     {
         var attachment = Attachment.CreatePending(_todoId, fileName, "application/test");
-
+        
         Assert.Equal(Path.GetExtension(fileName).TrimStart('.'),
             Path.GetExtension(attachment.BlobName).TrimStart('.'));
     }

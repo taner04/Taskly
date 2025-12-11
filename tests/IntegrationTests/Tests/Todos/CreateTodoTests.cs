@@ -53,7 +53,7 @@ public sealed class CreateTodoTests(TestingFixture fixture) : TestingBase(fixtur
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        await response.ContainsErrorCode("Todo.InvalidDescription", CurrentCancellationToken);
+        await response.ContainsErrorCode("Todo.InvalidTitle", CurrentCancellationToken);
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public sealed class CreateTodoTests(TestingFixture fixture) : TestingBase(fixtur
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        await response.ContainsErrorCode("Todo.InvalidDescription", CurrentCancellationToken);
+        await response.ContainsErrorCode("Todo.InvalidTitle", CurrentCancellationToken);
     }
 
     [Fact]
