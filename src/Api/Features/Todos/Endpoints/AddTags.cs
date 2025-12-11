@@ -40,7 +40,7 @@ public static partial class AddTags
         var existingTagIds = todo.Tags.Select(t => t.Id).ToList();
         foreach (var tag in tags.Where(tag => !existingTagIds.Contains(tag.Id)))
         {
-            todo.Tags.Add(tag);
+            todo.AddTag(tag);
         }
 
         context.Todos.Update(todo);

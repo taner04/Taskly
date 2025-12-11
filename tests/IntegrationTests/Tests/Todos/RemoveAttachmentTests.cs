@@ -94,7 +94,7 @@ public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(
         var todo = CreateTodo(userId);
         var attachment = CreateAttachment(todo);
 
-        todo.Attachments.Add(attachment);
+        todo.AddAttachment(attachment);
 
         DbContext.Add(todo);
         DbContext.Add(attachment);

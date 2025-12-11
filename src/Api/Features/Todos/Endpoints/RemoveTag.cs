@@ -34,7 +34,7 @@ public static partial class RemoveTag
             throw new ModelNotFoundException<Tag>(command.TagId.Value);
         }
 
-        todo.Tags.Remove(tagToRemove);
+        todo.RemoveTag(tagToRemove);
         await context.SaveChangesAsync(ct);
     }
 

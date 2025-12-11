@@ -27,4 +27,9 @@
         <ProjectReference Include="..\..\tools\ServiceDefaults\ServiceDefaults.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features\Goals\Endpoints\" />
+      <Folder Include="Features\Goals\Exceptions\" />
+    </ItemGroup>
+
 </Project>

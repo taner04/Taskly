@@ -39,7 +39,7 @@ public static partial class RemoveAttachment
             throw new ModelNotFoundException<Attachment>(command.AttachmentId.Value);
         }
 
-        todo.Attachments.Remove(attachment);
+        todo.RemoveAttachment(attachment);
 
         if (!await attachments.DeleteAsync(attachment, ct))
         {

@@ -17,7 +17,9 @@ public sealed class Todo : Entity<TodoId>
     public const int MinDescriptionLength = 3;
     public const int MaxDescriptionLength = 512;
 
-
+    private readonly List<Tag> _tags = [];
+    private readonly List<Attachment> _attachments = [];
+    
     private Todo(
         string title,
         string? description,
@@ -46,8 +48,8 @@ public sealed class Todo : Entity<TodoId>
             ? Deadline.Value.AddMinutes(-ReminderOffsetInMinutes.Value)
             : null;
 
-    public ICollection<Tag> Tags { get; init; } = [];
-    public ICollection<Attachment> Attachments { get; init; } = [];
+    public IReadOnlyCollection<Tag> Tags => _tags.AsReadOnly();
+    public IReadOnlyCollection<Attachment> Attachments => _attachments.AsReadOnly();
 
     public static Todo Create(
         string title,
@@ -151,5 +153,35 @@ public sealed class Todo : Entity<TodoId>
 
         Deadline = deadline;
         ReminderOffsetInMinutes = reminder;
+    }
+    
+    public void AddTag(
+        Tag tag)
+    {
+        if (!_tags.Contains(tag))
+        {
+            _tags.Add(tag);
+        }
+    }
+    
+    public void RemoveTag(
+        Tag tag)
+    {
+        _tags.Remove(tag);
+    }
+    
+    public void AddAttachment(
+        Attachment attachment)
+    {
+        if (!_attachments.Contains(attachment))
+        {
+            _attachments.Add(attachment);
+        }
+    }
+    
+    public void RemoveAttachment(
+        Attachment attachment)
+    {
+        _attachments.Remove(attachment);
     }
 }

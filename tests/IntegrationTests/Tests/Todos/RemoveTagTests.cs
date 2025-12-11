@@ -98,7 +98,7 @@ public sealed class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture
         var todo = CreateTodo(userId);
         var tag = CreateTag("MyTag", userId);
 
-        todo.Tags.Add(tag);
+        todo.AddTag(tag);
 
         DbContext.Add(tag);
         DbContext.Add(todo);

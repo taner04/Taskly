@@ -33,7 +33,7 @@ public static partial class DeleteTag
             .Include(todo => todo.Tags)
             .ToListAsync(ct);
 
-        todos.ForEach(t => t.Tags.Remove(tag));
+        todos.ForEach(t => t.RemoveTag(tag));
 
         context.Tags.Remove(tag);
         await context.SaveChangesAsync(ct);
