@@ -21,15 +21,32 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\Api\Api.csproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrationService", "tools\MigrationService\MigrationService.csproj", "{75266B16-BADA-49AC-8E43-FE171776A035}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projectelements", "Projectelements", "{84D27F74-D2BA-6C25-2661-968F101900D9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "meta", "meta", "{84D27F74-D2BA-6C25-2661-968F101900D9}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Packages.props = Directory.Packages.props
 		README.md = README.md
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
+		global.json = global.json
+		LICENSE.md = LICENSE.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReminderService", "src\ReminderService\ReminderService.csproj", "{24365380-DFAF-4F27-992D-981B6DC540A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{FDA7101B-4AB3-41FB-913E-0DA3ADA9860F}"
+	ProjectSection(SolutionItems) = preProject
+		docs\ARCHITECTURE.md = docs\ARCHITECTURE.md
+		docs\CONTRIBUTING.md = docs\CONTRIBUTING.md
+		docs\SCRIPTS.md = docs\SCRIPTS.md
+		docs\SETUP.md = docs\SETUP.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{6A52FDC1-3A64-42F5-8A34-3480936497BE}"
+	ProjectSection(SolutionItems) = preProject
+		docs\assets\Architecture.png = docs\assets\Architecture.png
+		docs\assets\Logo.png = docs\assets\Logo.png
+		docs\assets\Logo-Transparent.png = docs\assets\Logo-Transparent.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,5 +94,7 @@ Global
 		{509037D3-8796-4D97-B265-B34041AF3C14} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
 		{75266B16-BADA-49AC-8E43-FE171776A035} = {654BBC95-6E46-4EE5-A552-D773C1A33B06}
 		{24365380-DFAF-4F27-992D-981B6DC540A9} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
+		{FDA7101B-4AB3-41FB-913E-0DA3ADA9860F} = {84D27F74-D2BA-6C25-2661-968F101900D9}
+		{6A52FDC1-3A64-42F5-8A34-3480936497BE} = {FDA7101B-4AB3-41FB-913E-0DA3ADA9860F}
 	EndGlobalSection
 EndGlobal
