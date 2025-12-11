@@ -1,4 +1,6 @@
 ﻿using Api.Features.Tags.Exceptions;
+using Api.Features.Todos.Specifications;
+using Ardalis.Specification.EntityFrameworkCore;
 
 namespace Api.Features.Todos.Endpoints;
 
@@ -20,9 +22,12 @@ public static partial class AddTags
         CancellationToken ct)
     {
         var userId = currentUserService.GetUserId();
-        var todo = await context.Todos.SingleOrDefaultAsync(
-            t => t.Id == command.TodoId && t.UserId == userId, ct);
-
+        
+        var spec = new TodoByUserIdWithTagsSpecification(command.TodoId, userId);
+        var todo = await context.Todos
+            .WithSpecification(spec)
+            .SingleOrDefaultAsync(ct);
+        
         if (todo is null)
         {
             throw new ModelNotFoundException<Todo>(command.TodoId.Value);

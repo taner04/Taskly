@@ -1,4 +1,7 @@
-﻿namespace Api.Features.Todos.Endpoints;
+﻿using Api.Features.Todos.Specifications;
+using Ardalis.Specification.EntityFrameworkCore;
+
+namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapDelete(Routes.Todos.RemoveTag)]
@@ -18,10 +21,12 @@ public static partial class RemoveTag
         CancellationToken ct)
     {
         var userId = currentUserService.GetUserId();
+        
+        var spec = new TodoByUserIdWithTagsSpecification(command.TodoId, userId);
         var todo = await context.Todos
-            .Include(t => t.Tags)
-            .SingleOrDefaultAsync(t => t.Id == command.TodoId && t.UserId == userId, ct);
-
+            .WithSpecification(spec)
+            .SingleOrDefaultAsync(ct);
+        
         if (todo is null)
         {
             throw new ModelNotFoundException<Todo>(command.TodoId.Value);

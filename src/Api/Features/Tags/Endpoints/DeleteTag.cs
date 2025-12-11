@@ -1,4 +1,8 @@
-﻿namespace Api.Features.Tags.Endpoints;
+﻿using Api.Features.Tags.Specifications;
+using Api.Features.Todos.Specifications;
+using Ardalis.Specification.EntityFrameworkCore;
+
+namespace Api.Features.Tags.Endpoints;
 
 [Handler]
 [MapDelete(Routes.Tags.Delete)]
@@ -18,8 +22,10 @@ public static partial class DeleteTag
         CancellationToken ct)
     {
         var userId = currentUserService.GetUserId();
+        var spec = new TagByIdSpecification(command.TagId, userId);
         var tag = await context.Tags
-            .SingleOrDefaultAsync(t => t.Id == command.TagId && t.UserId == userId, ct);
+            .WithSpecification(spec)
+            .SingleOrDefaultAsync(ct);
 
         if (tag is null)
         {

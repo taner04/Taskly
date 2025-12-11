@@ -1,4 +1,7 @@
-﻿namespace Api.Features.Todos.Endpoints;
+﻿using Api.Features.Todos.Specifications;
+using Ardalis.Specification.EntityFrameworkCore;
+
+namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapDelete(Routes.Todos.RemoveReminder)]
@@ -14,15 +17,15 @@ public static partial class RemovReminder
     private static async ValueTask HandleAsync(
         Command command,
         ApplicationDbContext context,
-        CurrentUserService current,
+        CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var userId = current.GetUserId();
-
+        var userId = currentUserService.GetUserId();
+        var spec = new TodoByUserIdSpecification(command.TodoId, userId);
         var todo = await context.Todos
-            .Where(t => t.Id == command.TodoId && t.UserId == userId)
-            .FirstOrDefaultAsync(ct);
-
+            .WithSpecification(spec)
+            .SingleOrDefaultAsync(ct);
+        
         if (todo is null)
         {
             throw new ModelNotFoundException<Todo>(command.TodoId.Value);

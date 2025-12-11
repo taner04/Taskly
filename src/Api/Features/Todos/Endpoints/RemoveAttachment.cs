@@ -1,5 +1,7 @@
 ﻿using Api.Features.Attachments.Services;
 using Api.Features.Todos.Exceptions;
+using Api.Features.Todos.Specifications;
+using Ardalis.Specification.EntityFrameworkCore;
 
 namespace Api.Features.Todos.Endpoints;
 
@@ -17,16 +19,17 @@ public static partial class RemoveAttachment
     private static async ValueTask HandleAsync(
         Command command,
         ApplicationDbContext context,
-        CurrentUserService current,
+        CurrentUserService currentUserService,
         AttachmentService attachments,
         CancellationToken ct)
     {
-        var userId = current.GetUserId();
-
+        var userId = currentUserService.GetUserId();
+        
+        var spec = new TodoByUserIdSpecificationWithAttachmentsSpec(command.TodoId, userId);
         var todo = await context.Todos
-            .Include(t => t.Attachments)
-            .SingleOrDefaultAsync(t => t.Id == command.TodoId && t.UserId == userId, ct);
-
+            .WithSpecification(spec)
+            .SingleOrDefaultAsync(ct);
+        
         if (todo is null)
         {
             throw new ModelNotFoundException<Todo>(command.TodoId.Value);

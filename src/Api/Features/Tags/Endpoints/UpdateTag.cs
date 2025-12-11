@@ -1,4 +1,7 @@
-﻿namespace Api.Features.Tags.Endpoints;
+﻿using Api.Features.Tags.Specifications;
+using Ardalis.Specification.EntityFrameworkCore;
+
+namespace Api.Features.Tags.Endpoints;
 
 [Handler]
 [MapPut(Routes.Tags.Update)]
@@ -17,9 +20,10 @@ public static partial class UpdateTag
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
-        var userId = currentUserService.GetUserId();
+        var spec = new TagByIdSpecification(command.TagId, currentUserService.GetUserId());
         var tag = await context.Tags
-            .SingleOrDefaultAsync(t => t.Id == command.TagId && t.UserId == userId, ct);
+            .WithSpecification(spec)
+            .SingleOrDefaultAsync(ct);
 
         if (tag is null)
         {

@@ -1,4 +1,7 @@
-﻿namespace Api.Features.Todos.Endpoints;
+﻿using Api.Features.Todos.Specifications;
+using Ardalis.Specification.EntityFrameworkCore;
+
+namespace Api.Features.Todos.Endpoints;
 
 [Handler]
 [MapPut(Routes.Todos.Update)]
@@ -18,9 +21,11 @@ public static partial class UpdateTodo
         CancellationToken ct)
     {
         var userId = currentUserService.GetUserId();
-        var todo = await context.Todos.SingleOrDefaultAsync(
-            t => t.Id == command.TodoId && t.UserId == userId, ct);
-
+        var spec = new TodoByUserIdSpecification(command.TodoId, userId);
+        var todo = await context.Todos
+            .WithSpecification(spec)
+            .SingleOrDefaultAsync(ct);
+        
         if (todo is null)
         {
             throw new ModelNotFoundException<Todo>(command.TodoId.Value);
