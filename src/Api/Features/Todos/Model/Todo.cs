@@ -48,8 +48,8 @@ public sealed class Todo : Entity<TodoId>
             ? Deadline.Value.AddMinutes(-ReminderOffsetInMinutes.Value)
             : null;
 
-    public IReadOnlyCollection<Tag> Tags => _tags.AsReadOnly();
-    public IReadOnlyCollection<Attachment> Attachments => _attachments.AsReadOnly();
+    public List<Tag> Tags { get; private set; } = [];
+    public List<Attachment> Attachments { get; private set; } = [];
 
     public static Todo Create(
         string title,
@@ -153,35 +153,5 @@ public sealed class Todo : Entity<TodoId>
 
         Deadline = deadline;
         ReminderOffsetInMinutes = reminder;
-    }
-    
-    public void AddTag(
-        Tag tag)
-    {
-        if (!_tags.Contains(tag))
-        {
-            _tags.Add(tag);
-        }
-    }
-    
-    public void RemoveTag(
-        Tag tag)
-    {
-        _tags.Remove(tag);
-    }
-    
-    public void AddAttachment(
-        Attachment attachment)
-    {
-        if (!_attachments.Contains(attachment))
-        {
-            _attachments.Add(attachment);
-        }
-    }
-    
-    public void RemoveAttachment(
-        Attachment attachment)
-    {
-        _attachments.Remove(attachment);
     }
 }

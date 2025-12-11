@@ -46,7 +46,7 @@ public static partial class AddAttachment
 
         var sas = attachments.GenerateUploadSas(attachment);
 
-        todo.AddAttachment(attachment);
+        todo.Attachments.Add(attachment);
 
         context.Update(todo);
         await context.SaveChangesAsync(ct);

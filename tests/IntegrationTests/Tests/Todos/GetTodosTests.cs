@@ -113,9 +113,9 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
 
         var attachment = CreateAttachment(todo);
 
-        todo.AddTag(tag1);
-        todo.AddTag(tag2);
-        todo.AddAttachment(attachment);
+        todo.Tags.Add(tag1);
+        todo.Tags.Add(tag2);
+        todo.Attachments.Add(attachment);
 
         DbContext.Add(tag1);
         DbContext.Add(tag2);
