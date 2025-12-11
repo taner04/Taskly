@@ -12,7 +12,6 @@
 
 - Auth0 account — [Sign up free](https://auth0.com/signup)
 - SPA application credentials
-- Machine-to-Machine application credentials
 
 ## Setup Steps
 
@@ -30,38 +29,31 @@ git clone https://github.com/taner04/Taskly
 python3 .\scripts\setup.py
 ```
 
-This creates the required `appsettings.json` and `appsettings.integration.json` files.
+This creates the required `appsettings.json` file.
 
 **Without Python (Manual Setup):**
 
-Create `appsettings.json` in `.\src\Api` and `appsettings.integration.json` in `.\tests\IntegrationTests` with the
-configuration values shown in the next step.
+Create `appsettings.json` in `.\src\Api` with the configuration values shown in the next step.
 
 ### 3. Configure Auth0 credentials
 
-Update the generated or manually created files with your Auth0 tenant values:
+Update the generated or manually created `appsettings.json` file with your Auth0 tenant values:
 
 #### Getting Auth0 Credentials
 
-> [!WARNING]
-> You need to create **two separate Auth0 applications**:
->
-> - **SPA Application** for the API (`appsettings.json`)
-> - **Machine-to-Machine Application** for Integration Tests (`appsettings.integration.json`)
+> [!NOTE]
+> You only need to create **one Auth0 SPA application** for the API (`appsettings.json`).
+> Integration tests use mocked JWT tokens and do not require Auth0 credentials.
 
 1. Go to [Auth0 Dashboard](https://manage.auth0.com/)
 2. Navigate to **Applications** → **Applications**
 3. Click **+ Create Application**
-4. Choose your application type:
-    - **Single Page Web Applications** (for API/SPA)
-    - **Machine to Machine Applications** (for Integration Tests)
-5. For M2M app, select an API (or create one if needed)
-6. Copy your `Domain`, `Client ID`, and `Client Secret` from the application settings
+4. Choose **Single Page Web Applications**
+5. Copy your `Domain`, `Client ID`, and `Client Secret` from the application settings
 
-#### Update Configuration Files
+#### Update Configuration File
 
-Both configuration files have the same structure. Use **SPA credentials** for `appsettings.json` and **M2M credentials**
-for `appsettings.integration.json`:
+Update `appsettings.json` in `.\src\Api` with your SPA credentials:
 
 ```json
 {
@@ -79,14 +71,11 @@ for `appsettings.integration.json`:
     "ClientSecret": "your-client-secret",
     "UsePersistentStorage": false
   },
-  "ConnectionStrings": {                                            //
-    "AzureBlobStorage": "your-azure-blob-storage-connection-string" // Only in appsettings.json
-  }                                                                 //
+  "ConnectionStrings": {
+    "AzureBlobStorage": "your-azure-blob-storage-connection-string"
+  }
 }
 ```
-
-**Note:** Add `"Grant_Type": "client_credentials"` only in `appsettings.integration.json` for M2M authentication. The
-`ConnectionStrings` section is not necessary in `appsettings.integration.json`.
 
 ### 4. Run with Aspire
 

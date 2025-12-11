@@ -37,18 +37,6 @@ APPSETTINGS_API_TEMPLATE = {
     }
 }
 
-APPSETTINGS_INTEGRATION_TEMPLATE = {
-    "Logging": LOGGING_TEMPLATE,
-    "AllowedHosts": "*",
-    "Auth0": {
-        "Domain": "your-auth0-domain",
-        "Audience": "your-auth0-audience",
-        "ClientId": "your-auth0-client-id",
-        "ClientSecret": "your-auth0-client-secret",
-        "UsePersistentStorage": False
-    }
-}
-
 APPSETTINGS_REMINDER_SERVICE_TEMPLATE = {
     "Logging": LOGGING_TEMPLATE,
     "Papercut": {
@@ -79,14 +67,6 @@ def create_appsettings_api() -> None:
     )
 
 
-def create_appsettings_integration_test() -> None:
-    """Create appsettings.json for integration tests."""
-    create_appsettings(
-        project_root / "tests" / "IntegrationTests" / "appsettings.integration.json",
-        APPSETTINGS_INTEGRATION_TEMPLATE,
-    )
-
-
 def create_appsettings_reminder_service() -> None:
     """Create appsettings.json for the ReminderService project."""
     create_appsettings(
@@ -104,7 +84,6 @@ def main() -> None:
     """Initialize all required configuration files."""
     console_logger.info("Initializing Taskly configuration files...")
     create_appsettings_api()
-    create_appsettings_integration_test()
     create_appsettings_reminder_service()
     console_logger.success("Initialization completed! You can now configure your values.")
 

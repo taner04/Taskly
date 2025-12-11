@@ -43,7 +43,6 @@ python3 .\scripts\setup.py
 
 # 3. Configure Auth0 credentials in:
 #    - appsettings.json (SPA credentials)
-#    - appsettings.integration.json (M2M credentials)
 
 # 4. Run the API
 dotnet run --project .\tools\AppHost
