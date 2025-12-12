@@ -3,7 +3,7 @@ using Api.Features.Users.Model;
 using Api.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace ReminderService.Data;
+namespace ReminderService.Services;
 
 public sealed class TodoService(ApplicationDbContext context)
 {
@@ -11,9 +11,9 @@ public sealed class TodoService(ApplicationDbContext context)
         CancellationToken ct)
     {
         var now = DateTime.UtcNow;
-
+        
         return await context.Todos
-            .Include(t => t.User) // Add this before Where()
+            .Include(t => t.User) 
             .Where(t =>
                 t.Deadline.HasValue &&
                 t.ReminderOffsetInMinutes.HasValue &&

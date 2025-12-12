@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Api.Infrastructure.Data;
-using ReminderService.Data;
 using ReminderService.Emails;
+using ReminderService.Services;
 
 namespace ReminderService.Processors;
 

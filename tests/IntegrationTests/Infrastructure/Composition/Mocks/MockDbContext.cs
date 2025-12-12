@@ -1,8 +1,7 @@
 ﻿using Api.Infrastructure.Data.Interceptors;
-using IntegrationTests.Infrastructure.Composition.Mocks;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace IntegrationTests.Infrastructure.Composition.ServiceExtensions;
+namespace IntegrationTests.Infrastructure.Composition.Mocks;
 
 internal static class MockDbContext
 {

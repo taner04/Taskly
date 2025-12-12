@@ -1,8 +1,8 @@
 using Api.Infrastructure.Data;
 using ReminderService;
-using ReminderService.Data;
 using ReminderService.Emails;
 using ReminderService.Processors;
+using ReminderService.Services;
 using ServiceDefaults;
 
 var builder = Host.CreateApplicationBuilder(args);
