@@ -23,12 +23,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrationService", "tools\M
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "meta", "meta", "{84D27F74-D2BA-6C25-2661-968F101900D9}"
 	ProjectSection(SolutionItems) = preProject
-		Directory.Packages.props = Directory.Packages.props
-		README.md = README.md
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
 		global.json = global.json
 		LICENSE.md = LICENSE.md
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReminderService", "src\ReminderService\ReminderService.csproj", "{24365380-DFAF-4F27-992D-981B6DC540A9}"
@@ -44,9 +44,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{6A52FDC1-3A64-42F5-8A34-3480936497BE}"
 	ProjectSection(SolutionItems) = preProject
 		docs\assets\Architecture.png = docs\assets\Architecture.png
-		docs\assets\Logo.png = docs\assets\Logo.png
 		docs\assets\Logo-Transparent.png = docs\assets\Logo-Transparent.png
+		docs\assets\Logo.png = docs\assets\Logo.png
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Desktop", "Desktop\Desktop.csproj", "{E11194EF-9242-4C11-9E5B-51E215B953D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +84,10 @@ Global
 		{24365380-DFAF-4F27-992D-981B6DC540A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24365380-DFAF-4F27-992D-981B6DC540A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24365380-DFAF-4F27-992D-981B6DC540A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E11194EF-9242-4C11-9E5B-51E215B953D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E11194EF-9242-4C11-9E5B-51E215B953D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E11194EF-9242-4C11-9E5B-51E215B953D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E11194EF-9242-4C11-9E5B-51E215B953D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,5 +102,6 @@ Global
 		{24365380-DFAF-4F27-992D-981B6DC540A9} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
 		{FDA7101B-4AB3-41FB-913E-0DA3ADA9860F} = {84D27F74-D2BA-6C25-2661-968F101900D9}
 		{6A52FDC1-3A64-42F5-8A34-3480936497BE} = {FDA7101B-4AB3-41FB-913E-0DA3ADA9860F}
+		{E11194EF-9242-4C11-9E5B-51E215B953D9} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
 	EndGlobalSection
 EndGlobal
