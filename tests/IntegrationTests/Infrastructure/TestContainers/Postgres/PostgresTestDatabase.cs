@@ -32,14 +32,30 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
     public async Task ResetContainerAsync()
     {
         await using var context = new ApplicationDbContext(_dbContextOptions);
-        
+
         const string sql = """
-            DELETE FROM "Todos";
-            DELETE FROM "Tags";
-            DELETE FROM "Attachments";
-            """;
+                           DELETE FROM "Todos";
+                           DELETE FROM "Tags";
+                           DELETE FROM "Attachments";
+                           DELETE FROM "Users";
+                           """;
 
         await context.Database.ExecuteSqlRawAsync(sql, TestsContext.CurrentCancellationToken);
+
+        await InitUserAsync(context);
+    }
+
+    public async Task<UserId> CreateForeignUserAsync()
+    {
+        await using var context = new ApplicationDbContext(_dbContextOptions);
+
+        var user = User.Create("otheruser@mail.com", "auth0|otheruserid123");
+        user.SetCreated("auth0|otheruserid123");
+
+        context.Users.Add(user);
+        await context.SaveChangesAsync(TestsContext.CurrentCancellationToken);
+
+        return user.Id;
     }
 
     private static async Task InitUserAsync(

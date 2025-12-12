@@ -48,6 +48,7 @@ public sealed class Todo : Entity<TodoId>
 
     public List<Tag> Tags { get; private set; } = [];
     public List<Attachment> Attachments { get; private set; } = [];
+    public User User { get; private set; } = null!;
 
     public static Todo Create(
         string title,
@@ -108,7 +109,9 @@ public sealed class Todo : Entity<TodoId>
         DateTime deadline,
         int reminder)
     {
-        if (deadline <= DateTime.UtcNow)
+        var now = DateTime.UtcNow;
+
+        if (deadline <= now)
         {
             throw new TodoInvalidDeadlineException(
                 deadline,
@@ -133,7 +136,7 @@ public sealed class Todo : Entity<TodoId>
                 "Reminder cannot occur after the deadline.");
         }
 
-        if (reminder > (deadline - DateTime.UtcNow).TotalMinutes)
+        if (reminder > (deadline - now).TotalMinutes)
         {
             throw new TodoInvalidDeadlineException(
                 deadline,

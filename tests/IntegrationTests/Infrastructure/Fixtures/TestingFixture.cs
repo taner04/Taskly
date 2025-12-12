@@ -15,13 +15,15 @@ namespace IntegrationTests.Infrastructure.Fixtures;
 public sealed class TestingFixture : IAsyncLifetime
 {
     private readonly AzureTestBlobStorage _azureTestBlobStorage = new();
-    private readonly PostgresTestDatabase _postgresTestDatabase = new();
+
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
+
+    private readonly PostgresTestDatabase _postgresTestDatabase = new();
     private readonly RefitSettings _refitSettings;
-    
+
     private string _adminJwtToken = null!;
     private IServiceScopeFactory _serviceScopeFactory = null!;
     private string _userJwtToken = null!;
@@ -56,6 +58,11 @@ public sealed class TestingFixture : IAsyncLifetime
         await _azureTestBlobStorage.ResetContainerAsync();
     }
 
+    public async Task<UserId> CreateForeignUserAsync()
+    {
+        return await _postgresTestDatabase.CreateForeignUserAsync();
+    }
+
     public IServiceScope CreateScope()
     {
         return _serviceScopeFactory.CreateScope();
@@ -87,6 +94,6 @@ public sealed class TestingFixture : IAsyncLifetime
     private void InitilizeTokens()
     {
         _userJwtToken = MockJwtTokens.CreateToken(UserFactory.Sub, Policies.User);
-        _adminJwtToken = MockJwtTokens.CreateToken(UserFactory.Sub,Policies.Admin);
+        _adminJwtToken = MockJwtTokens.CreateToken(UserFactory.Sub, Policies.Admin);
     }
 }

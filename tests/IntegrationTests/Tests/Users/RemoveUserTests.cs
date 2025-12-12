@@ -6,8 +6,11 @@ namespace IntegrationTests.Tests.Users;
 
 public sealed class RemoveUserTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static User CreateUser(string email)
-        => User.Create(email, "auth|123");
+    private static User CreateUser(
+        string email)
+    {
+        return User.Create(email, "auth|123");
+    }
 
     [Fact]
     public async Task RemoveUser_Should_Return401_When_Unauthenticated()
@@ -77,7 +80,7 @@ public sealed class RemoveUserTests(TestingFixture fixture) : TestingBase(fixtur
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        
+
         var exists = await dbContext.Users
             .AnyAsync(u => u.Id == user.Id, CurrentCancellationToken);
 

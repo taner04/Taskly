@@ -7,11 +7,12 @@ namespace IntegrationTests.Tests.Users;
 
 public sealed class GetUsersTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static User CreateUser(string email)
+    private static User CreateUser(
+        string email)
     {
         return User.Create(
             email,
-            auth0Id: "auth|123");
+            "auth|123");
     }
 
     [Fact]
@@ -63,6 +64,8 @@ public sealed class GetUsersTests(TestingFixture fixture) : TestingBase(fixture)
         var list = await response.MapTo<List<User>>(CurrentCancellationToken);
 
         list.Should().HaveCount(3); // Including +1 for the seeded user from TestingBase
-        list.Select(u => u.Email).Should().BeEquivalentTo("a@test.com", "b@test.com", UserFactory.Email); // UserFactory.Email is the seeded user email
+        list.Select(u => u.Email).Should()
+            .BeEquivalentTo("a@test.com", "b@test.com",
+                UserFactory.Email); // UserFactory.Email is the seeded user email
     }
 }

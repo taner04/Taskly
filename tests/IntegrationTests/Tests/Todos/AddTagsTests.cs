@@ -102,7 +102,7 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
         var userId = CurrentUserId;
 
         var todo = CreateTodo(userId);
-        
+
         await using var dbContext = GetDbContext();
         dbContext.Add(todo);
         await dbContext.SaveChangesAsync(CurrentCancellationToken);

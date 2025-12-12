@@ -160,7 +160,8 @@ public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixtur
         // Arrange
         var client = CreateAuthenticatedUserClient();
 
-        var foreignTodo = CreateTodo(UserId.EmptyId);
+        var foreignUserId = await CreateForeignUserAsync();
+        var foreignTodo = CreateTodo(foreignUserId);
 
         await using var dbContext = GetDbContext();
         dbContext.Add(foreignTodo);

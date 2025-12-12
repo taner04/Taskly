@@ -97,7 +97,7 @@ public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(
 
         todo.Attachments.Add(attachment);
 
-        await using var dbContext = GetDbContext();    
+        await using var dbContext = GetDbContext();
         dbContext.Add(todo);
         dbContext.Add(attachment);
         await dbContext.SaveChangesAsync(CurrentCancellationToken);

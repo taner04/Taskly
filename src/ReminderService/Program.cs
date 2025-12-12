@@ -1,5 +1,8 @@
 using Api.Infrastructure.Data;
 using ReminderService;
+using ReminderService.Data;
+using ReminderService.Emails;
+using ReminderService.Processors;
 using ServiceDefaults;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -11,7 +14,11 @@ builder.Services.AddHostedService<Worker>();
 builder.Services.AddOpenTelemetry().WithTracing(t => { t.AddSource(Worker.ActivitySourceName); });
 
 builder.AddNpgsqlDbContext<ApplicationDbContext>(AppHostConstants.Database);
-builder.Services.AddSingleton<EmailService>();
+builder.Services.AddHostedService<Worker>();
+
+builder.Services.AddScoped<TodoService>();
+builder.Services.AddScoped<SendReminderProcessor>();
+builder.Services.AddScoped<EmailService>();
 
 var host = builder.Build();
 

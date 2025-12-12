@@ -91,11 +91,12 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
         // Arrange
         var client = CreateAuthenticatedUserClient();
 
+        var foreignUserId = await CreateForeignUserAsync();
         var foreignTodo = Todo.Create(
             "Test",
             "Desc",
             TodoPriority.Low,
-            UserId.EmptyId);
+            foreignUserId);
 
         var deadline = DateTime.UtcNow.AddHours(5);
         foreignTodo.SetReminder(deadline, 60);

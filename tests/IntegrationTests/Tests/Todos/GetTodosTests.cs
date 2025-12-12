@@ -78,7 +78,8 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         var todo1 = CreateTodo(userId, "Todo A");
         var todo2 = CreateTodo(userId, "Todo B");
 
-        var foreignTodo = CreateTodo(UserId.EmptyId, "Foreign Todo");
+        var foreignUserId = await CreateForeignUserAsync();
+        var foreignTodo = CreateTodo(foreignUserId, "Foreign Todo");
 
         await using var dbContext = GetDbContext();
         dbContext.Add(todo1);

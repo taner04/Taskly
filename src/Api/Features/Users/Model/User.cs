@@ -25,7 +25,7 @@ public sealed class User : Entity<UserId>
 
     public string Email { get; private set; }
     public string Auth0Id { get; private set; }
-    public List<string> Roles { get; private set; } = [];
+    public List<Todo> Todos { get; private set; } = [];
 
     public static User Create(
         string email,

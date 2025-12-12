@@ -2,7 +2,7 @@
 using MailKit.Security;
 using MimeKit;
 
-namespace ReminderService;
+namespace ReminderService.Emails;
 
 public sealed class EmailService(IConfiguration configuration)
 {

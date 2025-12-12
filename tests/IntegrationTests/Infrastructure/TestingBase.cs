@@ -8,7 +8,6 @@ public abstract class TestingBase(TestingFixture fixture) : IAsyncLifetime
 {
     private IServiceScope _scope = null!;
 
-    private ApplicationDbContext DbContext { get; set; } = null!;
     protected UserId CurrentUserId { get; private set; }
 
     protected static CancellationToken CurrentCancellationToken => TestsContext.CurrentCancellationToken;
@@ -18,24 +17,23 @@ public abstract class TestingBase(TestingFixture fixture) : IAsyncLifetime
         await fixture.SetUpAsync();
 
         _scope = fixture.CreateScope();
-        DbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        CurrentUserId = await DbContext.Users
+        CurrentUserId = await GetDbContext().Users
             .Select(u => u.Id)
             .FirstAsync();
     }
 
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
         _scope.Dispose();
-        await DbContext.DisposeAsync();
-
         GC.SuppressFinalize(this);
+
+        return ValueTask.CompletedTask;
     }
 
     protected ApplicationDbContext GetDbContext()
     {
-        return DbContext;
+        return _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     }
 
     protected IApiClient CreateAuthenticatedUserClient()
@@ -51,6 +49,11 @@ public abstract class TestingBase(TestingFixture fixture) : IAsyncLifetime
     protected IApiClient CreateUnauthenticatedClient()
     {
         return fixture.CreateUnauthenticatedClient();
+    }
+
+    protected async Task<UserId> CreateForeignUserAsync()
+    {
+        return await fixture.CreateForeignUserAsync();
     }
 
     protected T GetService<T>() where T : class

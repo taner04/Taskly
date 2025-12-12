@@ -98,20 +98,21 @@ The API implements **role-based access control (RBAC)** using Auth0 roles:
 ### Policies
 
 - **User Policy** — Default policy for regular users
-  - Can create, read, update, and delete their own todos
-  - Can manage tags and attachments
-  - Can set reminders for their todos
+    - Can create, read, update, and delete their own todos
+    - Can manage tags and attachments
+    - Can set reminders for their todos
 
 - **Admin Policy** — Administrative access
-  - All User policy permissions
-  - Access to admin-only endpoints
-  - Can view system-wide statistics and logs
+    - All User policy permissions
+    - Access to admin-only endpoints
+    - Can view system-wide statistics and logs
 
 ### Role Claims
 
 Roles are transmitted via JWT claims using the pattern: `{Audience}/roles`
 
 Example claim:
+
 ```
 "https://taskly-api/roles": "User"
 ```

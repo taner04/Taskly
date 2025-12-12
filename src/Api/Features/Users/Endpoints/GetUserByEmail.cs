@@ -31,13 +31,13 @@ public static partial class GetUserByEmail
     public sealed partial record Query : IValidationTarget<Query>
     {
         public required string Email { get; set; }
-        
+
         private static void AdditionalValidations(
             ValidationResult errors,
             Query target
         )
         {
-            if(!new EmailAddressAttribute().IsValid(target.Email))
+            if (!new EmailAddressAttribute().IsValid(target.Email))
             {
                 errors.Add(nameof(target.Email), $"The email '{target.Email}' is not a valid email address.");
             }
