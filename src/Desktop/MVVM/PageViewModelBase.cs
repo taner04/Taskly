@@ -16,7 +16,7 @@ public abstract partial class PageViewModelBase : ViewModelBase, INavigationAwar
         if (!_isInitialized)
         {
             InitializeViewModel();
-            _isInitialized = false;
+            _isInitialized = true;
         }
 
         return Task.CompletedTask;
