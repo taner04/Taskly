@@ -1,5 +1,4 @@
 ﻿using Desktop.Attributes;
-using Desktop.MVVM.Tag;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,18 +13,18 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Wpf.Ui.Abstractions.Controls;
 
-namespace Desktop.MVVM.Home;
-
+namespace Desktop.MVVM.Tag;
 /// <summary>
-/// Interaction logic for HomePage.xaml
+/// Interaction logic for TagPage.xaml
 /// </summary>
-
-[PageRegistration(typeof(HomePageViewModel))]
-public partial class HomePage : INavigableView<HomePageViewModel>
+/// 
+[RequiresAuthorizedUser]
+[PageRegistration(typeof(TagPageViewModel))]
+public partial class TagPage : INavigableView<TagPageViewModel>
 {
-    public HomePageViewModel ViewModel { get; }
+    public TagPageViewModel ViewModel { get; }
 
-    public HomePage(HomePageViewModel viewModel)
+    public TagPage(TagPageViewModel viewModel)
     {
         ViewModel = viewModel;
         DataContext = this;

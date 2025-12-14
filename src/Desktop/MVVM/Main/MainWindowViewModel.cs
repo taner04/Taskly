@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Desktop.MVVM.Home;
 using Desktop.MVVM.Settings;
+using Desktop.MVVM.Todo;
 using Wpf.Ui.Controls;
 
 namespace Desktop.MVVM.Main
@@ -18,6 +19,18 @@ namespace Desktop.MVVM.Main
                 Content = "Home",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Home24 },
                 TargetPageType = typeof(HomePage)
+            },
+            new NavigationViewItem()
+            {
+                Content = "Todos",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.TaskListLtr24 },
+                TargetPageType = typeof(TodoPage)
+            },
+            new NavigationViewItem()
+            {
+                Content = "Tags",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.TagQuestionMark24 },
+                TargetPageType = typeof(TodoPage)
             }
         ];
 

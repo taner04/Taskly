@@ -3,7 +3,7 @@ using Wpf.Ui.Appearance;
 
 namespace Desktop.MVVM.Settings
 {
-    public partial class SettingsViewModel : ViewModelBase, INavigationAware
+    public partial class SettingsPageViewModel : ViewModelBase, INavigationAware
     {
         public override string Title => "Settings";
 

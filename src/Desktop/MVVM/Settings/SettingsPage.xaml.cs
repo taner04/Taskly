@@ -1,17 +1,20 @@
-﻿using Wpf.Ui.Abstractions.Controls;
+﻿using Desktop.Attributes;
+using Desktop.MVVM.Tag;
+using Wpf.Ui.Abstractions.Controls;
 
-namespace Desktop.MVVM.Settings
+namespace Desktop.MVVM.Settings;
+
+
+[PageRegistration(typeof(SettingsPageViewModel))]
+public partial class SettingsPage : INavigableView<SettingsPageViewModel>
 {
-    public partial class SettingsPage : INavigableView<SettingsViewModel>
+    public SettingsPageViewModel ViewModel { get; }
+
+    public SettingsPage(SettingsPageViewModel viewModel)
     {
-        public SettingsViewModel ViewModel { get; }
+        ViewModel = viewModel;
+        DataContext = this;
 
-        public SettingsPage(SettingsViewModel viewModel)
-        {
-            ViewModel = viewModel;
-            DataContext = this;
-
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

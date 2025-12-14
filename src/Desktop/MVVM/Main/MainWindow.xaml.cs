@@ -1,4 +1,6 @@
-﻿using Wpf.Ui;
+﻿using Desktop.Attributes;
+using Desktop.MVVM.Settings;
+using Wpf.Ui;
 using Wpf.Ui.Abstractions;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
@@ -24,6 +26,18 @@ namespace Desktop.MVVM.Main
             SetPageService(navigationViewPageProvider);
 
             navigationService.SetNavigationControl(RootNavigation);
+
+            navigationService.GetNavigationControl().Navigating += OnNavigating;
+        }
+
+        private void OnNavigating(NavigationView sender, NavigatingCancelEventArgs args)
+        {
+            var nextPageType = args.Page.GetType();
+
+            if (Attribute.IsDefined(nextPageType, typeof(RequiresAuthorizedUserAttribute)))
+            {
+                args.Cancel = true;
+            }
         }
 
         #region INavigationWindow methods

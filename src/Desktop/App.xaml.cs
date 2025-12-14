@@ -1,16 +1,15 @@
-﻿using Desktop.MVVM.Home;
+﻿using Desktop.Composition.ServiceExtensions;
 using Desktop.MVVM.Main;
-using Desktop.MVVM.Settings;
 using Desktop.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.IO;
+using System.Reflection;
 using System.Windows.Threading;
 using Wpf.Ui;
 using Wpf.Ui.DependencyInjection;
 using MainWindowViewModel = Desktop.MVVM.Main.MainWindowViewModel;
-using SettingsViewModel = Desktop.MVVM.Settings.SettingsViewModel;
 
 namespace Desktop;
 /// <summary>
@@ -45,11 +44,7 @@ public partial class App
             services.AddSingleton<INavigationWindow, MainWindow>();
             services.AddSingleton<MainWindowViewModel>();
 
-            services.AddSingleton<HomePage>();
-            services.AddSingleton<HomePageViewModel>();
-
-            services.AddSingleton<SettingsPage>();
-            services.AddSingleton<SettingsViewModel>();
+            services.AddPagesFromAssembly(Assembly.GetExecutingAssembly());
         }).Build();
 
     /// <summary>
