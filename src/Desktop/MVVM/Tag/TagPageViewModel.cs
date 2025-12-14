@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Desktop.MVVM.Tag;
 
-namespace Desktop.MVVM.Tag;
-
-public sealed partial class TagPageViewModel : ViewModelBase
+public sealed partial class TagPageViewModel : PageViewModelBase
 {
     public override string Title => "Tag";
 }

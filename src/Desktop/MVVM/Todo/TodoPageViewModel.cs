@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Desktop.MVVM.Todo;
 
-namespace Desktop.MVVM.Todo;
-
-public sealed partial class TodoPageViewModel : ViewModelBase
+public sealed partial class TodoPageViewModel : PageViewModelBase
 {
     public override string Title => "Todo";
 }

@@ -1,13 +1,10 @@
-﻿using Wpf.Ui.Abstractions.Controls;
-using Wpf.Ui.Appearance;
+﻿using Wpf.Ui.Appearance;
 
 namespace Desktop.MVVM.Settings
 {
-    public partial class SettingsPageViewModel : ViewModelBase, INavigationAware
+    public partial class SettingsPageViewModel : PageViewModelBase
     {
         public override string Title => "Settings";
-
-        private bool _isInitialized = false;
 
         [ObservableProperty]
         private string _appVersion = String.Empty;
@@ -15,22 +12,12 @@ namespace Desktop.MVVM.Settings
         [ObservableProperty]
         private ApplicationTheme _currentTheme = ApplicationTheme.Unknown;
 
-        public Task OnNavigatedToAsync()
-        {
-            if (!_isInitialized)
-                InitializeViewModel();
-            
-            return Task.CompletedTask;
-        }
-
-        public Task OnNavigatedFromAsync() => Task.CompletedTask;
-
-        private void InitializeViewModel()
+        protected override Task InitializeViewModel()
         {
             CurrentTheme = ApplicationThemeManager.GetAppTheme();
             AppVersion = $"UiDesktopApp1 - {GetAssemblyVersion()}";
 
-            _isInitialized = true;
+            return Task.CompletedTask;
         }
 
         private string GetAssemblyVersion()
