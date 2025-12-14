@@ -1,8 +1,16 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Desktop.MVVM.Home;
+using Desktop.MVVM.Main;
+using Desktop.MVVM.Settings;
+using Desktop.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.IO;
-using System.Windows;
 using System.Windows.Threading;
+using Wpf.Ui;
+using Wpf.Ui.DependencyInjection;
+using MainWindowViewModel = Desktop.MVVM.Main.MainWindowViewModel;
+using SettingsViewModel = Desktop.MVVM.Settings.SettingsViewModel;
 
 namespace Desktop;
 /// <summary>
@@ -20,7 +28,28 @@ public partial class App
         .ConfigureAppConfiguration(c => { c.SetBasePath(Path.GetDirectoryName(AppContext.BaseDirectory)!); })
         .ConfigureServices((context, services) =>
         {
-            throw new NotImplementedException("No service or window was registered.");
+            services.AddNavigationViewPageProvider();
+
+            services.AddHostedService<ApplicationHostService>();
+
+            // Theme manipulation
+            services.AddSingleton<IThemeService, ThemeService>();
+
+            // TaskBar manipulation
+            services.AddSingleton<ITaskBarService, TaskBarService>();
+
+            // Service containing navigation, same as INavigationWindow... but without window
+            services.AddSingleton<INavigationService, NavigationService>();
+
+            // Main window with navigation
+            services.AddSingleton<INavigationWindow, MainWindow>();
+            services.AddSingleton<MainWindowViewModel>();
+
+            services.AddSingleton<HomePage>();
+            services.AddSingleton<HomePageViewModel>();
+
+            services.AddSingleton<SettingsPage>();
+            services.AddSingleton<SettingsViewModel>();
         }).Build();
 
     /// <summary>
