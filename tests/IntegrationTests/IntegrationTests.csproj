@@ -30,8 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Api.Client\Api.Client.csproj"/>
-        <ProjectReference Include="..\..\src\Api\Api.csproj"/>
+        <ProjectReference Include="..\..\src\Api.Client\Api.Client.csproj" />
         <ProjectReference Include="..\..\src\ReminderService\ReminderService.csproj"/>
         <ProjectReference Include="..\..\tools\MigrationService\MigrationService.csproj"/>
     </ItemGroup>
