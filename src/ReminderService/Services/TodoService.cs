@@ -11,9 +11,9 @@ public sealed class TodoService(ApplicationDbContext context)
         CancellationToken ct)
     {
         var now = DateTime.UtcNow;
-        
+
         return await context.Todos
-            .Include(t => t.User) 
+            .Include(t => t.User)
             .Where(t =>
                 t.Deadline.HasValue &&
                 t.ReminderOffsetInMinutes.HasValue &&

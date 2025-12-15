@@ -2,12 +2,11 @@
 
 namespace Desktop.Attributes;
 
-[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public sealed class PageRegistrationAttribute : Attribute
 {
-    public Type ViewModelType { get; }
-
-    public PageRegistrationAttribute(Type viewModelType)
+    public PageRegistrationAttribute(
+        Type viewModelType)
     {
         ArgumentNullException.ThrowIfNull(viewModelType);
 
@@ -20,4 +19,6 @@ public sealed class PageRegistrationAttribute : Attribute
 
         ViewModelType = viewModelType;
     }
+
+    public Type ViewModelType { get; }
 }

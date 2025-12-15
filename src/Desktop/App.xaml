@@ -12,6 +12,11 @@
                 <ui:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
+
+            <Color x:Key="AccentColor">#6495ED</Color>
+
+            <SolidColorBrush x:Key="AccentBrush"
+                             Color="{StaticResource AccentColor}" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -45,6 +45,14 @@ APPSETTINGS_REMINDER_SERVICE_TEMPLATE = {
     }
 }
 
+APP_CONFIG_DESKTOP_TEMPLATE = """<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+	<appSettings>
+		<add key="Auth0:Domain" value="{{DOMAIN}}"/>
+		<add key="Auth0:ClientId" value="{{CLIENT_ID}}"/>
+	</appSettings>
+</configuration>"""
+
 # =========================================================================
 # Setup Tasks
 # =========================================================================
@@ -75,6 +83,19 @@ def create_appsettings_reminder_service() -> None:
     )
 
 
+def create_app_config_desktop() -> None:
+    """Create App.config for the Desktop project."""
+    config_path = project_root / "src" / "Desktop" / "App.config"
+    if config_path.exists():
+        console_logger.success("App.config already exists")
+        return
+
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(APP_CONFIG_DESKTOP_TEMPLATE)
+
+    console_logger.success("Created App.config")
+
+
 # =========================================================================
 # Main Entry Point
 # =========================================================================
@@ -85,6 +106,7 @@ def main() -> None:
     console_logger.info("Initializing Taskly configuration files...")
     create_appsettings_api()
     create_appsettings_reminder_service()
+    create_app_config_desktop()
     console_logger.success("Initialization completed! You can now configure your values.")
 
     console_logger.info("Creating initial database migration...")

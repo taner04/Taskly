@@ -4,7 +4,6 @@ using Api.Features.Tags.Model;
 using Api.Features.Todos.Endpoints;
 using Api.Features.Todos.Model;
 using FluentAssertions;
-using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Todos;
 

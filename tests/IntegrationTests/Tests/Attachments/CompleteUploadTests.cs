@@ -3,7 +3,6 @@ using Api.Features.Attachments.Endpoints;
 using Api.Features.Attachments.Models;
 using Api.Features.Todos.Model;
 using FluentAssertions;
-using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Attachments;
 

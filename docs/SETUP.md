@@ -77,6 +77,22 @@ Update `appsettings.json` in `.\src\Api` with your SPA credentials:
 }
 ```
 
+#### (Optional) Configure Desktop Application
+
+If you want to run the **Desktop WPF application**, update `App.config` in `.\src\Desktop` with your Auth0 credentials:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+	<appSettings>
+		<add key="Auth0:Domain" value="your-auth0-domain"/>
+		<add key="Auth0:ClientId" value="your-client-id"/>
+	</appSettings>
+</configuration>
+```
+
+This step is only required if you plan to run the Desktop application locally.
+
 ### 4. Run with Aspire
 
 Execute the AppHost project to run the API and managed services:

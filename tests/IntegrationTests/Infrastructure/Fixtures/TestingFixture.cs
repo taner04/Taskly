@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using Api;
+using Api.Client;
 using Api.Features.Shared;
 using IntegrationTests.Factories;
 using IntegrationTests.Infrastructure.Composition.Mocks;

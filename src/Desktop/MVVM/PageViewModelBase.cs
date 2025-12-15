@@ -1,10 +1,22 @@
-﻿using Wpf.Ui.Abstractions.Controls;
+﻿using Desktop.Services.Auth0;
+using Wpf.Ui;
+using Wpf.Ui.Abstractions.Controls;
 
 namespace Desktop.MVVM;
 
-public abstract partial class PageViewModelBase : ViewModelBase, INavigationAware
+public abstract class PageViewModelBase(
+    ISnackbarService snackbarService,
+    Auth0Service auth0Service) : ViewModelBase(
+    snackbarService,
+    auth0Service), INavigationAware, IDisposable
 {
-    private bool _isInitialized = false;
+    private bool _isInitialized;
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
     public virtual Task OnNavigatedFromAsync()
     {
@@ -25,5 +37,14 @@ public abstract partial class PageViewModelBase : ViewModelBase, INavigationAwar
     protected virtual Task InitializeViewModel()
     {
         return Task.CompletedTask;
+    }
+
+    protected virtual void Dispose(
+        bool disposing)
+    {
+        if (disposing)
+        {
+            // Dispose managed resources here if any
+        }
     }
 }

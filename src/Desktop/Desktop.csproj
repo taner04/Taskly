@@ -1,19 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows</TargetFramework>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <UseWPF>true</UseWPF>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net10.0-windows</TargetFramework>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <UseWPF>true</UseWPF>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="WPF-UI" />
-    <PackageReference Include="WPF-UI.DependencyInjection" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" />
-    <PackageReference Include="CommunityToolkit.Mvvm" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Auth0.OidcClient.WPF"/>
+        <PackageReference Include="System.Configuration.ConfigurationManager"/>
+        <PackageReference Include="WPF-UI"/>
+        <PackageReference Include="WPF-UI.DependencyInjection"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting"/>
+        <PackageReference Include="CommunityToolkit.Mvvm"/>
+    </ItemGroup>
 
 </Project>

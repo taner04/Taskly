@@ -1,4 +1,4 @@
-﻿using Api;
+﻿using Api.Client;
 using IntegrationTests.Infrastructure.Composition.Mocks;
 using IntegrationTests.Infrastructure.Composition.ServiceExtensions;
 using Microsoft.AspNetCore.Hosting;

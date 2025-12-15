@@ -1,9 +1,12 @@
 ﻿using Api.Features.Attachments.Endpoints;
+using Api.Features.Attachments.Models;
+using Api.Features.Shared;
+using Microsoft.AspNetCore.Mvc;
 using Refit;
 
 // ReSharper disable CheckNamespace
 
-namespace Api;
+namespace Api.Client;
 
 public partial interface IApiClient
 {

@@ -1,4 +1,4 @@
-﻿namespace Api;
+﻿namespace Api.Client;
 
 /// <summary>
 ///     Contract used by integration tests to perform HTTP requests via Refit.

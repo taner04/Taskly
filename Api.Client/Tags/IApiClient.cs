@@ -1,9 +1,11 @@
 ﻿// ReSharper disable CheckNamespace
 
+using Api.Features.Shared;
 using Api.Features.Tags.Endpoints;
+using Api.Features.Tags.Model;
 using Refit;
 
-namespace Api;
+namespace Api.Client;
 
 public partial interface IApiClient
 {

@@ -4,7 +4,6 @@ using Api.Features.Shared.Dtos.Tags;
 using Api.Features.Tags.Endpoints;
 using Api.Features.Tags.Model;
 using FluentAssertions;
-using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Tags;
 

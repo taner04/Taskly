@@ -1,19 +1,21 @@
-﻿using Desktop.Composition.ServiceExtensions;
+﻿using System.IO;
+using System.Reflection;
+using System.Windows.Threading;
+using Desktop.Composition.ServiceExtensions;
 using Desktop.MVVM.Main;
 using Desktop.Services;
+using Desktop.Services.Auth0;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.IO;
-using System.Reflection;
-using System.Windows.Threading;
 using Wpf.Ui;
 using Wpf.Ui.DependencyInjection;
 using MainWindowViewModel = Desktop.MVVM.Main.MainWindowViewModel;
 
 namespace Desktop;
+
 /// <summary>
-/// Interaction logic for App.xaml
+///     Interaction logic for App.xaml
 /// </summary>
 public partial class App
 {
@@ -25,7 +27,9 @@ public partial class App
     private static readonly IHost _host = Host
         .CreateDefaultBuilder()
         .ConfigureAppConfiguration(c => { c.SetBasePath(Path.GetDirectoryName(AppContext.BaseDirectory)!); })
-        .ConfigureServices((context, services) =>
+        .ConfigureServices((
+            context,
+            services) =>
         {
             services.AddNavigationViewPageProvider();
 
@@ -44,29 +48,34 @@ public partial class App
             services.AddSingleton<INavigationWindow, MainWindow>();
             services.AddSingleton<MainWindowViewModel>();
 
+            services.AddSingleton<ISnackbarService, SnackbarService>();
+
+            services.AddSingleton<Auth0Service>();
+
             services.AddPagesFromAssembly(Assembly.GetExecutingAssembly());
         }).Build();
 
     /// <summary>
-    /// Gets services.
+    ///     Gets services.
     /// </summary>
-    public static IServiceProvider Services
-    {
-        get { return _host.Services; }
-    }
+    public static IServiceProvider Services => _host.Services;
 
     /// <summary>
-    /// Occurs when the application is loading.
+    ///     Occurs when the application is loading.
     /// </summary>
-    private async void OnStartup(object sender, StartupEventArgs e)
+    private async void OnStartup(
+        object sender,
+        StartupEventArgs e)
     {
         await _host.StartAsync();
     }
 
     /// <summary>
-    /// Occurs when the application is closing.
+    ///     Occurs when the application is closing.
     /// </summary>
-    private async void OnExit(object sender, ExitEventArgs e)
+    private async void OnExit(
+        object sender,
+        ExitEventArgs e)
     {
         await _host.StopAsync();
 
@@ -74,9 +83,11 @@ public partial class App
     }
 
     /// <summary>
-    /// Occurs when an exception is thrown by an application but not handled.
+    ///     Occurs when an exception is thrown by an application but not handled.
     /// </summary>
-    private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    private void OnDispatcherUnhandledException(
+        object sender,
+        DispatcherUnhandledExceptionEventArgs e)
     {
         // For more info see https://docs.microsoft.com/en-us/dotnet/api/system.windows.application.dispatcherunhandledexception?view=windowsdesktop-6.0
     }

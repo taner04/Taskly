@@ -50,6 +50,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{6A52FD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Desktop", "src\Desktop\Desktop.csproj", "{F7EEE670-9513-4514-9579-C46AF9DACE89}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Client", "Api.Client\Api.Client.csproj", "{43E788FC-66AE-48F3-8117-340D7ED692AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +90,10 @@ Global
 		{F7EEE670-9513-4514-9579-C46AF9DACE89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7EEE670-9513-4514-9579-C46AF9DACE89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7EEE670-9513-4514-9579-C46AF9DACE89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43E788FC-66AE-48F3-8117-340D7ED692AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43E788FC-66AE-48F3-8117-340D7ED692AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43E788FC-66AE-48F3-8117-340D7ED692AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43E788FC-66AE-48F3-8117-340D7ED692AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +109,7 @@ Global
 		{FDA7101B-4AB3-41FB-913E-0DA3ADA9860F} = {84D27F74-D2BA-6C25-2661-968F101900D9}
 		{6A52FDC1-3A64-42F5-8A34-3480936497BE} = {FDA7101B-4AB3-41FB-913E-0DA3ADA9860F}
 		{F7EEE670-9513-4514-9579-C46AF9DACE89} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
+		{43E788FC-66AE-48F3-8117-340D7ED692AB} = {7CEE2988-1F83-4A30-81A4-D43D119F79AA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {66683D4D-1D3D-48BD-B24F-110B84BBCA06}

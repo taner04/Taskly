@@ -23,6 +23,9 @@ src/ReminderService/appsettings.*.json
 tests/IntegrationTests/appsettings.json
 tests/IntegrationTests/appsettings.*.json
 
+# Ignore App.config for Desktop application
+src/Desktop/App.config
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

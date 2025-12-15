@@ -9,3 +9,4 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Api.Features.Users.Model;
 global using Azure.Storage.Blobs;
 global using DotNet.Testcontainers.Builders;
+global using IntegrationTests.Extensions;

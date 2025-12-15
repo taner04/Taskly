@@ -1,0 +1,210 @@
+﻿<UserControl x:Class="Desktop.MVVM.Home.Controls.FeatureCard"
+             x:Name="Root"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             Cursor="Hand">
+
+    <ui:Card x:Name="CardRoot"
+             Margin="6"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             ClipToBounds="True"
+             BorderThickness="0"
+             BorderBrush="{DynamicResource AccentBrush}">
+
+        <!-- ===================== -->
+        <!-- DROP SHADOW GLOW -->
+        <!-- ===================== -->
+        <ui:Card.Effect>
+            <DropShadowEffect x:Name="CardGlow"
+                              Color="{DynamicResource AccentColor}"
+                              BlurRadius="0"
+                              ShadowDepth="0"
+                              Opacity="0" />
+        </ui:Card.Effect>
+
+        <Grid>
+
+            <!-- ===================== -->
+            <!-- FRONT (Icon + Title) -->
+            <!-- ===================== -->
+            <Grid x:Name="FrontLayer"
+                  RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <TranslateTransform x:Name="FrontTranslate" />
+                </Grid.RenderTransform>
+
+                <StackPanel VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                    <TextBlock Text="{Binding Icon, ElementName=Root}"
+                               FontSize="40"
+                               Margin="0,0,0,16"
+                               HorizontalAlignment="Center" />
+
+                    <TextBlock Text="{Binding Title, ElementName=Root}"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               TextAlignment="Center" />
+                </StackPanel>
+            </Grid>
+
+            <!-- ===================== -->
+            <!-- BACK (Description) -->
+            <!-- ===================== -->
+            <Grid x:Name="BackLayer"
+                  Opacity="0"
+                  RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <!-- Starts off-screen RIGHT -->
+                    <TranslateTransform x:Name="BackTranslate"
+                                        X="120" />
+                </Grid.RenderTransform>
+
+                <TextBlock Text="{Binding Description, ElementName=Root}"
+                           FontSize="15"
+                           TextWrapping="Wrap"
+                           LineHeight="22"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"
+                           Margin="20" />
+            </Grid>
+
+        </Grid>
+    </ui:Card>
+
+    <!-- ===================== -->
+    <!-- HOVER ANIMATIONS -->
+    <!-- ===================== -->
+    <UserControl.Triggers>
+
+        <!-- Mouse Enter -->
+        <EventTrigger RoutedEvent="MouseEnter">
+            <BeginStoryboard>
+                <Storyboard>
+
+                    <!-- Accent Border IN -->
+                    <ThicknessAnimation Storyboard.TargetName="CardRoot"
+                                        Storyboard.TargetProperty="BorderThickness"
+                                        To="2"
+                                        Duration="0:0:0.15">
+                        <ThicknessAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut" />
+                        </ThicknessAnimation.EasingFunction>
+                    </ThicknessAnimation>
+
+                    <!-- Glow IN -->
+                    <DoubleAnimation Storyboard.TargetName="CardGlow"
+                                     Storyboard.TargetProperty="BlurRadius"
+                                     To="18"
+                                     Duration="0:0:0.2">
+                        <DoubleAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut" />
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+
+                    <DoubleAnimation Storyboard.TargetName="CardGlow"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="0.55"
+                                     Duration="0:0:0.2" />
+
+                    <!-- Front slides LEFT & fades -->
+                    <DoubleAnimation Storyboard.TargetName="FrontTranslate"
+                                     Storyboard.TargetProperty="X"
+                                     To="-120"
+                                     Duration="0:0:0.25">
+                        <DoubleAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut" />
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+
+                    <DoubleAnimation Storyboard.TargetName="FrontLayer"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="0"
+                                     Duration="0:0:0.2" />
+
+                    <!-- Back slides IN from RIGHT -->
+                    <DoubleAnimation Storyboard.TargetName="BackTranslate"
+                                     Storyboard.TargetProperty="X"
+                                     To="0"
+                                     Duration="0:0:0.25">
+                        <DoubleAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut" />
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+
+                    <DoubleAnimation Storyboard.TargetName="BackLayer"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="1"
+                                     Duration="0:0:0.25" />
+
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+
+        <!-- Mouse Leave -->
+        <EventTrigger RoutedEvent="MouseLeave">
+            <BeginStoryboard>
+                <Storyboard>
+
+                    <!-- Accent Border OUT -->
+                    <ThicknessAnimation Storyboard.TargetName="CardRoot"
+                                        Storyboard.TargetProperty="BorderThickness"
+                                        To="0"
+                                        Duration="0:0:0.15">
+                        <ThicknessAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut" />
+                        </ThicknessAnimation.EasingFunction>
+                    </ThicknessAnimation>
+
+                    <!-- Glow OUT -->
+                    <DoubleAnimation Storyboard.TargetName="CardGlow"
+                                     Storyboard.TargetProperty="BlurRadius"
+                                     To="0"
+                                     Duration="0:0:0.2">
+                        <DoubleAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut" />
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+
+                    <DoubleAnimation Storyboard.TargetName="CardGlow"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="0"
+                                     Duration="0:0:0.15" />
+
+                    <!-- Front returns -->
+                    <DoubleAnimation Storyboard.TargetName="FrontTranslate"
+                                     Storyboard.TargetProperty="X"
+                                     To="0"
+                                     Duration="0:0:0.25">
+                        <DoubleAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut" />
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+
+                    <DoubleAnimation Storyboard.TargetName="FrontLayer"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="1"
+                                     Duration="0:0:0.2" />
+
+                    <!-- Back slides OUT -->
+                    <DoubleAnimation Storyboard.TargetName="BackTranslate"
+                                     Storyboard.TargetProperty="X"
+                                     To="120"
+                                     Duration="0:0:0.25">
+                        <DoubleAnimation.EasingFunction>
+                            <CubicEase EasingMode="EaseOut" />
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+
+                    <DoubleAnimation Storyboard.TargetName="BackLayer"
+                                     Storyboard.TargetProperty="Opacity"
+                                     To="0"
+                                     Duration="0:0:0.2" />
+
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+
+    </UserControl.Triggers>
+</UserControl>

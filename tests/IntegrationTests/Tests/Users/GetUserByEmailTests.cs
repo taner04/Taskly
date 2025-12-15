@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using FluentAssertions;
-using IntegrationTests.Extensions;
 
 namespace IntegrationTests.Tests.Users;
 
