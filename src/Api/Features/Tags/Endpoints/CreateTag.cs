@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 namespace Api.Features.Tags.Endpoints;
 
 [Handler]
-[MapPost(Routes.Tags.Create)]
+[MapPost(ApiRoutes.Tags.Create)]
 [Authorize(Policy = Policies.User)]
 public static partial class CreateTag
 {

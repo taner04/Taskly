@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 namespace Api.Features.Todos.Endpoints;
 
 [Handler]
-[MapGet(Routes.Todos.GetTodos)]
+[MapGet(ApiRoutes.Todos.GetTodos)]
 [Authorize(Policy = Policies.User)]
 public static partial class GetTodos
 {

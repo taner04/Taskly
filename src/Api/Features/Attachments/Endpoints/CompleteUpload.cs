@@ -1,7 +1,7 @@
 ﻿namespace Api.Features.Attachments.Endpoints;
 
 [Handler]
-[MapPost(Routes.Attachments.CompleteUpload)]
+[MapPost(ApiRoutes.Attachments.CompleteUpload)]
 [Authorize(Policy = Policies.User)]
 public static partial class CompleteUpload
 {

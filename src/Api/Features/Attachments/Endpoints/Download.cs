@@ -3,7 +3,7 @@
 namespace Api.Features.Attachments.Endpoints;
 
 [Handler]
-[MapGet(Routes.Attachments.Download)]
+[MapGet(ApiRoutes.Attachments.Download)]
 [Authorize(Policy = Policies.User)]
 public static partial class Download
 {

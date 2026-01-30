@@ -4,7 +4,7 @@ using Ardalis.Specification.EntityFrameworkCore;
 namespace Api.Features.Todos.Endpoints;
 
 [Handler]
-[MapDelete(Routes.Todos.RemoveReminder)]
+[MapDelete(ApiRoutes.Todos.RemoveReminder)]
 [Authorize(Policy = Policies.User)]
 public static partial class RemovReminder
 {

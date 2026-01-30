@@ -3,7 +3,7 @@
 namespace Api.Features.Todos.Endpoints;
 
 [Handler]
-[MapPost(Routes.Todos.Create)]
+[MapPost(ApiRoutes.Todos.Create)]
 [Authorize(Policy = Policies.User)]
 public static partial class CreateTodo
 {

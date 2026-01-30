@@ -1,30 +1,28 @@
-﻿// ReSharper disable CheckNamespace
-
-using Api.Features.Shared;
+﻿using Api.Features.Shared;
 using Api.Features.Tags.Endpoints;
 using Api.Features.Tags.Model;
 using Refit;
 
-namespace Api.Client;
+namespace Api.Client.Tags;
 
-public partial interface IApiClient
+public interface ITagEndpoints
 {
-    [Post(Routes.Tags.Create)]
+    [Post(ApiRoutes.Tags.Create)]
     Task<HttpResponseMessage> CreateTagAsync(
-        CreateTag.Command command,
-        CancellationToken cancellationToken = default);
+    CreateTag.Command command,
+    CancellationToken cancellationToken = default);
 
-    [Delete(Routes.Tags.Remove)]
+    [Delete(ApiRoutes.Tags.Remove)]
     Task<HttpResponseMessage> DeleteTagAsync(
         TagId tagId,
         CancellationToken cancellationToken = default);
 
-    [Get(Routes.Tags.GetTags)]
+    [Get(ApiRoutes.Tags.GetTags)]
     Task<HttpResponseMessage> GetTagsAsync(
         GetTags.Query query,
         CancellationToken cancellationToken = default);
 
-    [Put(Routes.Tags.Update)]
+    [Put(ApiRoutes.Tags.Update)]
     Task<HttpResponseMessage> UpdateTagAsync(
         TagId tagId,
         [Body] UpdateTag.Command.CommandBody body,

@@ -4,7 +4,7 @@ using Ardalis.Specification.EntityFrameworkCore;
 namespace Api.Features.Todos.Endpoints;
 
 [Handler]
-[MapDelete(Routes.Todos.Remove)]
+[MapDelete(ApiRoutes.Todos.Remove)]
 [Authorize(Policy = Policies.User)]
 public static partial class RemoveTodo
 {

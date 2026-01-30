@@ -4,19 +4,17 @@ using Api.Features.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Refit;
 
-// ReSharper disable CheckNamespace
+namespace Api.Client.Attachments;
 
-namespace Api.Client;
-
-public partial interface IApiClient
+public interface IAttachmentEndpoints
 {
-    [Post(Routes.Attachments.CompleteUpload)]
+    [Post(ApiRoutes.Attachments.CompleteUpload)]
     Task<HttpResponseMessage> CompleteAttachmentUploadAsync(
-        [FromRoute] AttachmentId attachmentId,
-        [Body] CompleteUpload.Command.CommandBody body,
-        CancellationToken cancellationToken = default);
+    [FromRoute] AttachmentId attachmentId,
+    [Body] CompleteUpload.Command.CommandBody body,
+    CancellationToken cancellationToken = default);
 
-    [Get(Routes.Attachments.Download)]
+    [Get(ApiRoutes.Attachments.Download)]
     Task<HttpResponseMessage> DownloadAttachmentAsync(
         [FromRoute] AttachmentId attachmentId,
         CancellationToken cancellationToken = default);

@@ -4,7 +4,7 @@ using Ardalis.Specification.EntityFrameworkCore;
 namespace Api.Features.Todos.Endpoints;
 
 [Handler]
-[MapPut(Routes.Todos.Update)]
+[MapPut(ApiRoutes.Todos.Update)]
 [Authorize(Policy = Policies.User)]
 public static partial class UpdateTodo
 {

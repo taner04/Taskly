@@ -4,7 +4,7 @@ using Ardalis.Specification.EntityFrameworkCore;
 namespace Api.Features.Tags.Endpoints;
 
 [Handler]
-[MapDelete(Routes.Tags.Remove)]
+[MapDelete(ApiRoutes.Tags.Remove)]
 [Authorize(Policy = Policies.User)]
 public static partial class RemoveTag
 {

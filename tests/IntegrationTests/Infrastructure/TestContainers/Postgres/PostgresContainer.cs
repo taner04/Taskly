@@ -8,8 +8,7 @@ public sealed class PostgresContainer : ContainerBase<PostgreSqlContainer>
 
     protected override PostgreSqlContainer BuildContainer()
     {
-        return new PostgreSqlBuilder()
-            .WithImage("postgres:latest")
+        return new PostgreSqlBuilder("postgres:latest")
             .WithDatabase("db")
             .WithUsername("postgres")
             .WithPassword("postgres")

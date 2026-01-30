@@ -4,7 +4,7 @@ using Ardalis.Specification.EntityFrameworkCore;
 namespace Api.Features.Tags.Endpoints;
 
 [Handler]
-[MapPut(Routes.Tags.Update)]
+[MapPut(ApiRoutes.Tags.Update)]
 [Authorize(Policy = Policies.User)]
 public static partial class UpdateTag
 {

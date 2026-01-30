@@ -18,7 +18,7 @@ effort to help improve this project.
 
 ### Prerequisites
 
-- .NET 9 SDK
+- .NET 10 SDK
 - Docker (optional, for local database)
 - Python 3 (for automation scripts)
 

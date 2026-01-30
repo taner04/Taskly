@@ -6,7 +6,7 @@ using ValidationResult = Immediate.Validations.Shared.ValidationResult;
 namespace Api.Features.Users.Endpoints;
 
 [Handler]
-[MapGet(Routes.Users.GetByEmail)]
+[MapGet(ApiRoutes.Users.GetByEmail)]
 [Authorize(Policy = Policies.Admin)]
 public static partial class GetUserByEmail
 {

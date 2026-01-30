@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 namespace Api.Features.Todos.Endpoints;
 
 [Handler]
-[MapPost(Routes.Todos.AddAttachment)]
+[MapPost(ApiRoutes.Todos.AddAttachment)]
 [Authorize(Policy = Policies.User)]
 public static partial class AddAttachment
 {

@@ -4,7 +4,7 @@ using Ardalis.Specification.EntityFrameworkCore;
 namespace Api.Features.Todos.Endpoints;
 
 [Handler]
-[MapPost(Routes.Todos.Complete)]
+[MapPost(ApiRoutes.Todos.Complete)]
 [Authorize(Policy = Policies.User)]
 public static partial class CompleteTodo
 {

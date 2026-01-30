@@ -1,4 +1,4 @@
-﻿using Api.Features.Attachments.Services;
+﻿﻿using Api.Features.Attachments.Services;
 using Azure.Storage.Blobs;
 using ServiceDefaults;
 
@@ -16,7 +16,7 @@ public static class ApplicationExtension
 
             services.AddSingleton(_ =>
             {
-                var options = new BlobClientOptions();
+                var options = new BlobClientOptions(BlobClientOptions.ServiceVersion.V2024_11_04);
 
                 return new BlobServiceClient(
                     configuration.GetConnectionString(AppHostConstants.AzureBlobStorage),

@@ -3,7 +3,7 @@
 namespace Api.Features.Users.Endpoints;
 
 [Handler]
-[MapDelete(Routes.Users.RemoveUser)]
+[MapDelete(ApiRoutes.Users.RemoveUser)]
 [Authorize(Policy = Policies.Admin)]
 public static partial class RemoveUser
 {

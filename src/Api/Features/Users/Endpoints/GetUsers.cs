@@ -3,7 +3,7 @@
 namespace Api.Features.Users.Endpoints;
 
 [Handler]
-[MapGet(Routes.Users.GetUsers)]
+[MapGet(ApiRoutes.Users.GetUsers)]
 [Authorize(Policy = Policies.Admin)]
 public static partial class GetUsers
 {

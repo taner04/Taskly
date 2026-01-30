@@ -4,7 +4,7 @@
 
 ### Runtime & Tools
 
-- **.NET 9 SDK** — [Download](https://dotnet.microsoft.com/download/dotnet/9.0)
+- **.NET 10 SDK** — [Download](https://dotnet.microsoft.com/download/dotnet/10.0)
 - **Docker Desktop** — [Download](https://www.docker.com/products/docker-desktop)
 - **Python 3.8+** _(optional)_ — [Download](https://www.python.org/downloads/) (for automation scripts)
 

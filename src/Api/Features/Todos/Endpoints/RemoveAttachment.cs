@@ -6,7 +6,7 @@ using Ardalis.Specification.EntityFrameworkCore;
 namespace Api.Features.Todos.Endpoints;
 
 [Handler]
-[MapDelete(Routes.Todos.RemoveAttachment)]
+[MapDelete(ApiRoutes.Todos.RemoveAttachment)]
 [Authorize(Policy = Policies.User)]
 public static partial class RemoveAttachment
 {

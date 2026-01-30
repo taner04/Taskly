@@ -4,7 +4,7 @@ using Ardalis.Specification.EntityFrameworkCore;
 namespace Api.Features.Todos.Endpoints;
 
 [Handler]
-[MapPut(Routes.Todos.UpdateReminder)]
+[MapPut(ApiRoutes.Todos.UpdateReminder)]
 [Authorize(Policy = Policies.User)]
 public static partial class UpdateReminder
 {

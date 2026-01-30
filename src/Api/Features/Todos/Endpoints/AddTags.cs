@@ -5,7 +5,7 @@ using Ardalis.Specification.EntityFrameworkCore;
 namespace Api.Features.Todos.Endpoints;
 
 [Handler]
-[MapPost(Routes.Todos.AddTags)]
+[MapPost(ApiRoutes.Todos.AddTags)]
 [Authorize(Policy = Policies.User)]
 public static partial class AddTags
 {

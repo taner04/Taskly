@@ -1,72 +1,70 @@
-﻿// ReSharper disable CheckNamespace
-
-using Api.Features.Attachments.Models;
+﻿using Api.Features.Attachments.Models;
 using Api.Features.Shared;
 using Api.Features.Tags.Model;
 using Api.Features.Todos.Endpoints;
 using Api.Features.Todos.Model;
 using Refit;
 
-namespace Api.Client;
+namespace Api.Client.Todos;
 
-public partial interface IApiClient
+public interface ITodoEndpoints
 {
-    [Post(Routes.Todos.AddAttachment)]
+    [Post(ApiRoutes.Todos.AddAttachment)]
     Task<HttpResponseMessage> AddAttachmentAsync(
-        TodoId todoId,
-        [Body] AddAttachment.Command.CommandBody body,
-        CancellationToken cancellationToken = default);
+      TodoId todoId,
+      [Body] AddAttachment.Command.CommandBody body,
+      CancellationToken cancellationToken = default);
 
-    [Post(Routes.Todos.AddTags)]
+    [Post(ApiRoutes.Todos.AddTags)]
     Task<HttpResponseMessage> AddTagsToTodoAsync(
         TodoId todoId,
         [Body] AddTags.Command.CommandBody body,
         CancellationToken cancellationToken = default);
 
-    [Post(Routes.Todos.Complete)]
+    [Post(ApiRoutes.Todos.Complete)]
     Task<HttpResponseMessage> CompleteTodoAsync(
         TodoId todoId,
         [Body] CompleteTodo.Command.CommandBody body,
         CancellationToken cancellationToken = default);
 
-    [Post(Routes.Todos.Create)]
+    [Post(ApiRoutes.Todos.Create)]
     Task<HttpResponseMessage> CreateTodoAsync(
         [Body] CreateTodo.Command command,
         CancellationToken cancellationToken = default);
 
-    [Get(Routes.Todos.GetTodos)]
+    [Get(ApiRoutes.Todos.GetTodos)]
     Task<HttpResponseMessage> GetTodosAsync(
         CancellationToken cancellationToken = default);
 
-    [Delete(Routes.Todos.RemoveAttachment)]
+    [Delete(ApiRoutes.Todos.RemoveAttachment)]
     Task<HttpResponseMessage> RemoveAttachmentFromTodoAsync(
         TodoId todoId,
         AttachmentId attachmentId,
         CancellationToken cancellationToken = default);
 
-    [Delete(Routes.Todos.RemoveTag)]
+    [Delete(ApiRoutes.Todos.RemoveTag)]
     Task<HttpResponseMessage> RemoveTagFromTodoAsync(
         TodoId todoId,
         TagId tagId,
         CancellationToken cancellationToken = default);
 
-    [Delete(Routes.Todos.Remove)]
+    [Delete(ApiRoutes.Todos.Remove)]
     Task<HttpResponseMessage> RemoveTodoAsync(
         TodoId todoId,
         CancellationToken cancellationToken = default);
 
-    [Put(Routes.Todos.Update)]
+    [Put(ApiRoutes.Todos.Update)]
     Task<HttpResponseMessage> UpdateTodoAsync(
         TodoId todoId,
         [Body] UpdateTodo.Command.CommandBody body,
         CancellationToken cancellationToken = default);
 
-    [Delete(Routes.Todos.RemoveReminder)]
+    [Delete(ApiRoutes.Todos.RemoveReminder)]
     Task<HttpResponseMessage> RemoveReminderAsync(
         TodoId todoId,
         CancellationToken cancellationToken = default);
 
-    [Put(Routes.Todos.UpdateReminder)]
+    [Put(ApiRoutes.Todos.UpdateReminder)]
     Task<HttpResponseMessage> UpdateReminderAsync(
         TodoId todoId,
         [Body] UpdateReminder.Command.CommandBody body,

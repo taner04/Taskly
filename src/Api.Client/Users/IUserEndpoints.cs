@@ -1,23 +1,21 @@
-﻿// ReSharper disable CheckNamespace
-
-using Api.Features.Shared;
+﻿using Api.Features.Shared;
 using Api.Features.Users.Model;
 using Refit;
 
-namespace Api.Client;
+namespace Api.Client.Users;
 
-public partial interface IApiClient
+public interface IUserEndpoints
 {
-    [Get(Routes.Users.GetUsers)]
+    [Get(ApiRoutes.Users.GetUsers)]
     Task<HttpResponseMessage> GetUsersAsync(
-        CancellationToken cancellationToken = default);
+  CancellationToken cancellationToken = default);
 
-    [Delete(Routes.Users.RemoveUser)]
+    [Delete(ApiRoutes.Users.RemoveUser)]
     Task<HttpResponseMessage> RemoveUserAsync(
         UserId userId,
         CancellationToken cancellationToken = default);
 
-    [Get(Routes.Users.GetByEmail)]
+    [Get(ApiRoutes.Users.GetByEmail)]
     Task<HttpResponseMessage> GetUserByEmailAsync(
         string email,
         CancellationToken cancellationToken = default);

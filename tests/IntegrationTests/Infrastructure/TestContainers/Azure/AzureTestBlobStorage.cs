@@ -18,7 +18,8 @@ internal sealed class AzureTestBlobStorage : IAsyncDisposable
     {
         await _azureContainer.InitializeAsync();
 
-        var blobServiceClient = new BlobServiceClient(_azureContainer.ConnectionString);
+        var options = new BlobClientOptions(BlobClientOptions.ServiceVersion.V2024_11_04);
+        var blobServiceClient = new BlobServiceClient(_azureContainer.ConnectionString, options);
 
         _blobContainerClient = blobServiceClient.GetBlobContainerClient(Attachment.DefaultContainer);
         if (!await _blobContainerClient.ExistsAsync())

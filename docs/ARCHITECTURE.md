@@ -22,7 +22,7 @@ The request flow follows this architecture:
 
 ### Backend
 
-- **.NET 9** — Modern C# runtime with nullable reference types
+- **.NET 10** — Modern C# runtime with nullable reference types
 - **Entity Framework Core** — ORM with PostgreSQL provider
 - **ASP.NET Core** — Web framework with minimal APIs
 - **Auth0** — JWT-based authentication and authorization

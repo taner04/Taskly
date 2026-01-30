@@ -3,7 +3,7 @@
 namespace Api.Features.Tags.Endpoints;
 
 [Handler]
-[MapGet(Routes.Tags.GetTags)]
+[MapGet(ApiRoutes.Tags.GetTags)]
 [Authorize(Policy = Policies.User)]
 public static partial class GetTags
 {
