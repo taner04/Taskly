@@ -57,7 +57,7 @@ See [Setup Guide](docs/SETUP.md) for detailed setup instructions.
 
 | Layer              | Technology                        |
 |--------------------|-----------------------------------|
-| **Backend**        | .NET 9, ASP.NET Core, C#          |
+| **Backend**        | .NET 10, ASP.NET Core, C#         |
 | **Database**       | PostgreSQL, Entity Framework Core |
 | **Authentication** | Auth0, JWT Bearer                 |
 | **File Storage**   | Azure Blob Storage                |

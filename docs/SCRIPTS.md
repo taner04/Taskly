@@ -88,4 +88,4 @@ build.py --test         # Build .NET projects with tests
 
 - All configuration files must exist
 - Migrations must be applied
-- .NET 9 SDK installed
+- .NET 10 SDK installed
