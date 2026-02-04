@@ -10,7 +10,7 @@ public static class InfrastructureExtension
         IServiceCollection services)
     {
         public IServiceCollection AddInfrastructure(
-            IConfiguration configuration)
+            WebApplicationBuilder builder)
         {
             services.AddScoped<ISaveChangesInterceptor, AuditableInterceptor>();
 
@@ -18,12 +18,15 @@ public static class InfrastructureExtension
                 sp,
                 opt) =>
             {
-                var interceptors = sp.GetServices<ISaveChangesInterceptor>().ToList();
-                interceptors.ForEach(interceptor => { opt.AddInterceptors(interceptor); });
+                opt.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
 
-                opt.EnableSensitiveDataLogging();
-                opt.EnableDetailedErrors();
-                opt.UseNpgsql(configuration.GetConnectionString(AppHostConstants.Database));
+                if(builder.Environment.IsDevelopment())
+                {
+                    opt.EnableSensitiveDataLogging();
+                    opt.EnableDetailedErrors();
+                }
+                
+                opt.UseNpgsql(builder.Configuration.GetConnectionString(AppHostConstants.Database));
             });
 
             return services;
