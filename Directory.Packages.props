@@ -16,7 +16,7 @@
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="FluentAssertions" Version="8.8.0" />
     <PackageVersion Include="Immediate.Apis" Version="4.0.0" />
-    <PackageVersion Include="Immediate.Handlers" Version="3.1.0" />
+    <PackageVersion Include="Immediate.Handlers" Version="3.2.0" />
     <PackageVersion Include="Immediate.Validations" Version="3.2.0" />
     <PackageVersion Include="JetBrains.Annotations" Version="2025.2.4" />
     <PackageVersion Include="MailKit" Version="4.14.1" />
