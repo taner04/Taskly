@@ -11,9 +11,9 @@ public interface ITodoEndpoints
 {
     [Post(ApiRoutes.Todos.AddAttachment)]
     Task<HttpResponseMessage> AddAttachmentAsync(
-      TodoId todoId,
-      [Body] AddAttachment.Command.CommandBody body,
-      CancellationToken cancellationToken = default);
+        TodoId todoId,
+        [Body] AddAttachment.Command.CommandBody body,
+        CancellationToken cancellationToken = default);
 
     [Post(ApiRoutes.Todos.AddTags)]
     Task<HttpResponseMessage> AddTagsToTodoAsync(

@@ -1,7 +1,6 @@
-﻿using Api.Composition.OpenApiDocumentTransformers;
-using Microsoft.AspNetCore.OpenApi;
+﻿using Microsoft.AspNetCore.OpenApi;
 
-namespace Api.Composition.Configs;
+namespace Api.Common.Composition.Configs.OpenApi;
 
 public static class OpenApiConfig
 {

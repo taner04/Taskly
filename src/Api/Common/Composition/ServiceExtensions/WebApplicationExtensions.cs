@@ -1,14 +1,11 @@
-using Api.Composition.Options;
+using Api.Common.Composition.Options;
 using Scalar.AspNetCore;
 
-namespace Api.Composition.ServiceExtensions;
+namespace Api.Common.Composition.ServiceExtensions;
 
-internal static class ScalarExtension
+public static class WebApplicationExtensions
 {
-    extension(
-        WebApplication app)
-    {
-        internal WebApplication MapScalar()
+    internal static WebApplication MapScalar(this WebApplication app)
         {
             var auth0Options = app.Configuration.GetSection("Auth0").Get<Auth0Options>() ??
                                throw new InvalidOperationException("Auth0 configuration is missing.");
@@ -39,6 +36,5 @@ internal static class ScalarExtension
             });
 
             return app;
-        }
     }
 }

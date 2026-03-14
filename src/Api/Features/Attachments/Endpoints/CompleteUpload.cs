@@ -1,4 +1,6 @@
-﻿namespace Api.Features.Attachments.Endpoints;
+﻿using Api.Common.Infrastructure.Persistence;
+
+namespace Api.Features.Attachments.Endpoints;
 
 [Handler]
 [MapPost(ApiRoutes.Attachments.CompleteUpload)]

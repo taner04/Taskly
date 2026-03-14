@@ -1,4 +1,5 @@
 ﻿using Api.Client;
+using Api.Common.Infrastructure.Persistence;
 using Api.Features.Shared;
 
 namespace IntegrationTests.Infrastructure;

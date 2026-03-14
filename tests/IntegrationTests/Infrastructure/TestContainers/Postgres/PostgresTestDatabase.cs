@@ -1,4 +1,5 @@
-﻿using IntegrationTests.Factories;
+﻿using Api.Common.Infrastructure.Persistence;
+using IntegrationTests.Factories;
 using Npgsql;
 
 namespace IntegrationTests.Infrastructure.TestContainers.Postgres;

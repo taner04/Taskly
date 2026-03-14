@@ -1,4 +1,5 @@
-﻿using Api.Features.Tags.Exceptions;
+﻿using Api.Common.Infrastructure.Persistence;
+using Api.Features.Tags.Exceptions;
 using Api.Features.Todos.Specifications;
 using Ardalis.Specification.EntityFrameworkCore;
 

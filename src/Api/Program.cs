@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
-using Api.Composition.Configs;
-using Api.Composition.ServiceExtensions;
+using Api.Common.Composition.Configs;
+using Api.Common.Composition.Configs.OpenApi;
+using Api.Common.Composition.ServiceExtensions;
 using Api.Features.Attachments.Services;
 using ServiceDefaults;
 

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Api.Behaviors.Logger;
+namespace Api.Common.Behaviors.Logger;
 
 public sealed partial class LoggingBehavior<TRequest, TResponse>(
     ILogger<LoggingBehavior<TRequest, TResponse>> logger,

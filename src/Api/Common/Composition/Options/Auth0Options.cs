@@ -1,4 +1,4 @@
-﻿namespace Api.Composition.Options;
+﻿namespace Api.Common.Composition.Options;
 
 public record Auth0Options(
     string Domain,

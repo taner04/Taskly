@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
-using Api.Shared;
 
-namespace Api.Composition.Configs;
+namespace Api.Common.Composition.Configs;
 
 public static class ProblemDetailsConfig
 {

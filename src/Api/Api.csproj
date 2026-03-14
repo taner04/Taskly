@@ -30,4 +30,8 @@
         <ProjectReference Include="..\..\tools\ServiceDefaults\ServiceDefaults.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Folder Include="Common\Infrastructure\Persistence\Migrations\"/>
+    </ItemGroup>
+
 </Project>

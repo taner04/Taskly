@@ -1,4 +1,4 @@
-using Api.Infrastructure.Data;
+using Api.Common.Infrastructure.Persistence;
 using ReminderService;
 using ReminderService.Emails;
 using ReminderService.Processors;

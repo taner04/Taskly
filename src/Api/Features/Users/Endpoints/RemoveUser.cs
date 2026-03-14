@@ -1,4 +1,5 @@
-﻿using Api.Features.Users.Model;
+﻿using Api.Common.Infrastructure.Persistence;
+using Api.Features.Users.Model;
 
 namespace Api.Features.Users.Endpoints;
 

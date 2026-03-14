@@ -1,5 +1,5 @@
-﻿using Api.Behaviors;
-using Api.Behaviors.Logger;
+﻿using Api.Common.Behaviors;
+using Api.Common.Behaviors.Logger;
 
 [assembly: Behaviors(
     typeof(LoggingBehavior<,>),

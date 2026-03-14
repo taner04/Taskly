@@ -1,4 +1,5 @@
-﻿using Api.Features.Todos.Specifications;
+﻿using Api.Common.Infrastructure.Persistence;
+using Api.Features.Todos.Specifications;
 using Ardalis.Specification.EntityFrameworkCore;
 
 namespace Api.Features.Todos.Endpoints;

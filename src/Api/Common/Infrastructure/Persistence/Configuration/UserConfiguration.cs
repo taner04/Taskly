@@ -1,7 +1,7 @@
 ﻿using Api.Features.Users.Model;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Api.Infrastructure.Data.Configuration;
+namespace Api.Common.Infrastructure.Persistence.Configuration;
 
 internal sealed class UserConfiguration : AuditableConfiguration<User>
 {

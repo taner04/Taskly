@@ -416,7 +416,7 @@ healthchecksdb
 MigrationBackup/
 
 # EF Core Migrations (generated)
-src/Api/Infrastructure/Data/Migrations/
+src/Api/Common/Infrastructure/Persistence/Migrations/
 
 # Ionide (cross platform F# VS Code tools) working folder
 **/.ionide/

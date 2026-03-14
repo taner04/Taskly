@@ -8,7 +8,7 @@ public interface IUserEndpoints
 {
     [Get(ApiRoutes.Users.GetUsers)]
     Task<HttpResponseMessage> GetUsersAsync(
-  CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default);
 
     [Delete(ApiRoutes.Users.RemoveUser)]
     Task<HttpResponseMessage> RemoveUserAsync(

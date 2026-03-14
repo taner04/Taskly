@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Text.Json;
 
-namespace Api.Behaviors.Logger;
+namespace Api.Common.Behaviors.Logger;
 
 public sealed class LoggerRequestContext
 {

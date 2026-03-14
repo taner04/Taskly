@@ -1,6 +1,6 @@
-﻿using Api.Features.Todos.Model;
+﻿using Api.Common.Infrastructure.Persistence;
+using Api.Features.Todos.Model;
 using Api.Features.Users.Model;
-using Api.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace ReminderService.Services;

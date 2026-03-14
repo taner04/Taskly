@@ -1,4 +1,4 @@
-﻿namespace Api.Shared;
+﻿namespace Api.Common;
 
 /// <summary>
 ///     Represents detailed information about an API problem, compatible with RFC 7807.

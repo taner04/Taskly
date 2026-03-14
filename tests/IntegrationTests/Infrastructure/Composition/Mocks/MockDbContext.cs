@@ -1,4 +1,5 @@
-﻿using Api.Infrastructure.Data.Interceptors;
+﻿using Api.Common.Infrastructure.Persistence;
+using Api.Common.Infrastructure.Persistence.Interceptors;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace IntegrationTests.Infrastructure.Composition.Mocks;

@@ -1,4 +1,5 @@
-﻿using Api.Features.Tags.Exceptions;
+﻿using Api.Common.Infrastructure.Persistence;
+using Api.Features.Tags.Exceptions;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Tags.Endpoints;

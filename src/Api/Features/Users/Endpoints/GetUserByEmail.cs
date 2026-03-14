@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Api.Common.Infrastructure.Persistence;
 using Api.Features.Users.Exceptions;
 using Api.Features.Users.Model;
 using ValidationResult = Immediate.Validations.Shared.ValidationResult;

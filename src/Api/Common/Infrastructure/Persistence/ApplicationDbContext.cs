@@ -1,7 +1,7 @@
+using Api.Common.Infrastructure.Persistence.Configuration;
 using Api.Features.Users.Model;
-using Api.Infrastructure.Data.Configuration;
 
-namespace Api.Infrastructure.Data;
+namespace Api.Common.Infrastructure.Persistence;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {

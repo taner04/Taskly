@@ -1,6 +1,6 @@
 using Api.Features.Users.Model;
 
-namespace Api.Infrastructure.Data.Configuration;
+namespace Api.Common.Infrastructure.Persistence.Configuration;
 
 [EfCoreConverter<TodoId>]
 [EfCoreConverter<TagId>]

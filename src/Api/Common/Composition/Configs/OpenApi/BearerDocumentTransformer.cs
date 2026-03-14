@@ -1,8 +1,8 @@
-﻿using Api.Composition.Options;
+﻿using Api.Common.Composition.Options;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
-namespace Api.Composition.OpenApiDocumentTransformers;
+namespace Api.Common.Composition.Configs.OpenApi;
 
 internal sealed class BearerDocumentTransformer(IConfiguration configuration) : IOpenApiDocumentTransformer
 {

@@ -1,7 +1,6 @@
 ﻿// Global using directives
 
 global using System.Data.Common;
-global using Api.Infrastructure.Data;
 global using IntegrationTests.Infrastructure;
 global using IntegrationTests.Infrastructure.Fixtures;
 global using Microsoft.EntityFrameworkCore;

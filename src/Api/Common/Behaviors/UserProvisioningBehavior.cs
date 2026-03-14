@@ -1,7 +1,8 @@
 ﻿using System.Security.Claims;
+using Api.Common.Infrastructure.Persistence;
 using Api.Features.Users.Model;
 
-namespace Api.Behaviors;
+namespace Api.Common.Behaviors;
 
 public sealed class UserProvisioningBehavior<TRequest, TResponse>(
     ILogger<UserProvisioningBehavior<TRequest, TResponse>> logger,

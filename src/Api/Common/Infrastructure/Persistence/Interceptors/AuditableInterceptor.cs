@@ -1,7 +1,7 @@
 using Api.Features.Shared.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace Api.Infrastructure.Data.Interceptors;
+namespace Api.Common.Infrastructure.Persistence.Interceptors;
 
 public sealed class AuditableInterceptor(CurrentUserService currentUserService) : SaveChangesInterceptor
 {

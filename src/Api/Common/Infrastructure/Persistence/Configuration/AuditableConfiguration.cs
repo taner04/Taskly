@@ -1,7 +1,7 @@
 ﻿using Api.Features.Shared.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Api.Infrastructure.Data.Configuration;
+namespace Api.Common.Infrastructure.Persistence.Configuration;
 
 internal abstract class AuditableConfiguration<T> : IEntityTypeConfiguration<T>
     where T : Auditable

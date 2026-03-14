@@ -10,9 +10,9 @@ public interface IAttachmentEndpoints
 {
     [Post(ApiRoutes.Attachments.CompleteUpload)]
     Task<HttpResponseMessage> CompleteAttachmentUploadAsync(
-    [FromRoute] AttachmentId attachmentId,
-    [Body] CompleteUpload.Command.CommandBody body,
-    CancellationToken cancellationToken = default);
+        [FromRoute] AttachmentId attachmentId,
+        [Body] CompleteUpload.Command.CommandBody body,
+        CancellationToken cancellationToken = default);
 
     [Get(ApiRoutes.Attachments.Download)]
     Task<HttpResponseMessage> DownloadAttachmentAsync(

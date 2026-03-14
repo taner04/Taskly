@@ -1,4 +1,5 @@
-﻿using Api.Features.Shared.Dtos.Tags;
+﻿using Api.Common.Infrastructure.Persistence;
+using Api.Features.Shared.Dtos.Tags;
 
 namespace Api.Features.Tags.Endpoints;
 

@@ -1,4 +1,5 @@
-﻿using Api.Features.Attachments.Services;
+﻿using Api.Common.Infrastructure.Persistence;
+using Api.Features.Attachments.Services;
 
 namespace Api.Features.Attachments.Endpoints;
 
