@@ -44,7 +44,7 @@ def is_docker_running() -> bool:
 
 
 def does_migration_exist() -> bool:
-    migrations_folder = project_root / "src" / "Api" / "Infrastructure" / "Data" / "Migrations"
+    migrations_folder = project_root / "src" / "Api" / "Common" / "Infrastructure" / "Persistence" / "Migrations"
     return migrations_folder.exists()
 
 def does_appsettings_api_exist() -> bool:

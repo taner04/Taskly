@@ -49,7 +49,7 @@ create_migration.py <migration-name>
 create_migration.py AddTodoTable
 ```
 
-**Output:** Creates migration files in `src/Api/Infrastructure/Data/Migrations/`
+**Output:** Creates migration files in `src/Api/Common/Infrastructure/Persistence/Migrations/`
 
 **Requirements:**
 

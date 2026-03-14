@@ -15,8 +15,8 @@ from shared import console_logger, project_root
 
 PROJECT = project_root / "src" / "Api" / "Api.csproj"
 STARTUP_PROJECT = project_root / "src" / "Api" / "Api.csproj"
-CONTEXT = "Api.Infrastructure.Data.ApplicationDbContext"
-OUTPUT_DIR = project_root / "src" / "Api" / "Infrastructure" / "Data" / "Migrations"
+CONTEXT = "Api.Common.Infrastructure.Persistence.ApplicationDbContext"
+OUTPUT_DIR = project_root / "src" / "Api" / "Common" / "Infrastructure" / "Persistence" / "Migrations"
 CONFIGURATION = "Debug"
 
 
