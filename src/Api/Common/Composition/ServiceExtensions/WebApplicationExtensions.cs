@@ -6,9 +6,9 @@ namespace Api.Common.Composition.ServiceExtensions;
 public static class WebApplicationExtensions
 {
     internal static WebApplication MapScalar(this WebApplication app)
-        {
-            var auth0Options = app.Configuration.GetSection("Auth0").Get<Auth0Options>() ??
-                               throw new InvalidOperationException("Auth0 configuration is missing.");
+    {
+        var auth0Config = app.Configuration.GetSection(nameof(Auth0Config)).Get<Auth0Config>();
+        ArgumentNullException.ThrowIfNull(auth0Config);
 
             app.MapScalarApiReference(opt =>
             {
@@ -19,17 +19,17 @@ public static class WebApplicationExtensions
                     .AddOAuth2Authentication("OAuth2", scheme => scheme
                         .WithFlows(flows => flows
                             .WithAuthorizationCode(flow => flow
-                                .WithAuthorizationUrl($"https://{auth0Options.Domain}/authorize")
-                                .WithTokenUrl($"https://{auth0Options.Domain}/oauth/token")
-                                .WithClientId(auth0Options.ClientId)
-                                .WithClientSecret(auth0Options.ClientSecret)
+                                .WithAuthorizationUrl($"https://{auth0Config.Domain}/authorize")
+                                .WithTokenUrl($"https://{auth0Config.Domain}/oauth/token")
+                                .WithClientId(auth0Config.ClientId)
+                                .WithClientSecret(auth0Config.ClientSecret)
                                 .WithPkce(Pkce.Sha256)
-                                .AddQueryParameter("audience", auth0Options.Audience)
+                                .AddQueryParameter("audience", auth0Config.Audience)
                             ))
                         .WithDefaultScopes("openid", "profile", "email", "email_verified")
                     );
 
-                if (auth0Options.UsePersistentStorage)
+                if (auth0Config.UsePersistentStorage)
                 {
                     opt.EnablePersistentAuthentication();
                 }

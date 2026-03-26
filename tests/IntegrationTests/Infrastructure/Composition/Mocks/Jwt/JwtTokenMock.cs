@@ -1,14 +1,20 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using IntegrationTests.Factories;
 using Microsoft.IdentityModel.Tokens;
 
-namespace IntegrationTests.Infrastructure.Composition.Mocks;
+namespace IntegrationTests.Infrastructure.Mocks.Jwt;
 
-public static class MockJwtTokens
+public enum UserRole
+{
+    User,
+    Admin
+}
+
+public static class JwtTokenMock
 {
     private const string Audience = "https://taskly-api";
-    public const string Issuer = "https://mock-auth0/";
+    public const string Issuer = "https://dev.eu.auth0.com/";
 
     private static readonly JwtSecurityTokenHandler TokenHandler = new();
 
@@ -20,22 +26,17 @@ public static class MockJwtTokens
 
     public static string CreateToken(
         string sub,
-        string role)
+        UserRole role)
     {
         var now = DateTime.UtcNow;
 
-        var iatUnix = ToUnix(now);
-        var expUnix = ToUnix(now.AddHours(1));
-
-        var claims = new[]
+        var claims = new List<Claim>
         {
-            new Claim("email", UserFactory.Email),
-            new Claim("sub", sub),
-            new Claim($"{Audience}/roles", role),
-            new Claim("iat", iatUnix.ToString(), ClaimValueTypes.Integer64),
-            new Claim("exp", expUnix.ToString(), ClaimValueTypes.Integer64),
-            new Claim("aud", Audience),
-            new Claim("aud", $"{Issuer}userinfo")
+            new("email", UserFactory.Email),
+            new("sub", sub),
+            new("aud", Audience),
+            new("permissions", $"{role.ToString().ToLower()}:create"),
+            new("permissions", $"{role.ToString().ToLower()}:read")
         };
 
         var token = new JwtSecurityToken(
@@ -48,11 +49,5 @@ public static class MockJwtTokens
         );
 
         return TokenHandler.WriteToken(token);
-    }
-
-    private static long ToUnix(
-        DateTime time)
-    {
-        return new DateTimeOffset(time).ToUnixTimeSeconds();
     }
 }

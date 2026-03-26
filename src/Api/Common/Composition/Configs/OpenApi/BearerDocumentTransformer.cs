@@ -11,8 +11,8 @@ internal sealed class BearerDocumentTransformer(IConfiguration configuration) : 
         OpenApiDocumentTransformerContext context,
         CancellationToken cancellationToken)
     {
-        var auth0Options = configuration.GetSection("Auth0").Get<Auth0Options>() ??
-                           throw new InvalidOperationException("Auth0 configuration is missing.");
+        var auth0Options = configuration.GetSection("Auth0").Get<Auth0Config>();
+        ArgumentNullException.ThrowIfNull(auth0Options);
 
         document.Components ??= new OpenApiComponents();
 

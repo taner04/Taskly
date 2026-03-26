@@ -1,9 +1,9 @@
-﻿using Api.Features.Shared.Models;
+using Api.Features.Shared.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace IntegrationTests.Infrastructure.Composition.Mocks;
+namespace IntegrationTests.Infrastructure.Mocks.Database;
 
-public sealed class MockAuditableInterceptor : SaveChangesInterceptor
+public class ApplicationDbContextAuditableInterceptorMock : SaveChangesInterceptor
 {
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,

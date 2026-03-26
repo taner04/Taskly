@@ -25,7 +25,7 @@ LOGGING_TEMPLATE = {
 APPSETTINGS_API_TEMPLATE = {
     "Logging": LOGGING_TEMPLATE,
     "AllowedHosts": "*",
-    "Auth0": {
+    "Auth0Config": {
         "Domain": "your-auth0-domain",
         "Audience": "your-auth0-audience",
         "ClientId": "your-auth0-client-id",

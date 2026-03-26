@@ -1,10 +1,10 @@
-﻿using Api.Common.Infrastructure.Persistence;
+using Api.Common.Infrastructure.Persistence;
 using Api.Common.Infrastructure.Persistence.Interceptors;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace IntegrationTests.Infrastructure.Composition.Mocks;
+namespace IntegrationTests.Infrastructure.Mocks.Database;
 
-internal static class MockDbContext
+public static class ApplicationDbContextMock
 {
     internal static IServiceCollection AddMockDbContext(
         this IServiceCollection services,
@@ -26,7 +26,7 @@ internal static class MockDbContext
 
         services.AddDbContext<ApplicationDbContext>(opt =>
         {
-            opt.AddInterceptors(new MockAuditableInterceptor());
+            opt.AddInterceptors(new ApplicationDbContextAuditableInterceptorMock());
             opt.EnableSensitiveDataLogging();
             opt.EnableDetailedErrors();
             opt.UseNpgsql(connection.ConnectionString);

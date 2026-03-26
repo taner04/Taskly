@@ -1,6 +1,6 @@
 ﻿using Api.Client;
-using IntegrationTests.Infrastructure.Composition.Mocks;
-using IntegrationTests.Infrastructure.Composition.ServiceExtensions;
+using IntegrationTests.Infrastructure.Mocks.Database;
+using IntegrationTests.Infrastructure.Mocks.Jwt;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Logging;

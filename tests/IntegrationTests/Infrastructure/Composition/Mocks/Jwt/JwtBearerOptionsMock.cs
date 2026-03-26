@@ -1,10 +1,9 @@
-using IntegrationTests.Infrastructure.Composition.Mocks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
-namespace IntegrationTests.Infrastructure.Composition.ServiceExtensions;
+namespace IntegrationTests.Infrastructure.Mocks.Jwt;
 
-internal static class MockJwtBearerOptions
+public static class JwtBearerOptionsMock
 {
     internal static IServiceCollection AddMockJwtBearerOptions(
         this IServiceCollection services)
@@ -13,10 +12,10 @@ internal static class MockJwtBearerOptions
         {
             var config = new OpenIdConnectConfiguration
             {
-                Issuer = MockJwtTokens.Issuer
+                Issuer = JwtTokenMock.Issuer
             };
 
-            config.SigningKeys.Add(MockJwtTokens.SecurityKey);
+            config.SigningKeys.Add(JwtTokenMock.SecurityKey);
             options.Configuration = config;
         });
 

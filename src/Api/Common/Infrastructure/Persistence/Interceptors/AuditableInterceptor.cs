@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Api.Common.Infrastructure.Persistence.Interceptors;
 
-public sealed class AuditableInterceptor(CurrentUserService currentUserService) : SaveChangesInterceptor
+public sealed class AuditableInterceptor(CurrentUserService currentUserService, ILogger<AuditableInterceptor> logger) : SaveChangesInterceptor
 {
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
@@ -25,7 +25,17 @@ public sealed class AuditableInterceptor(CurrentUserService currentUserService) 
             .Entries<Auditable>()
             .ToList();
 
-        var changeMadeBy = currentUserService.GetAuth0Id();
+        var changeMadeBy = "system";
+        try
+        {
+            changeMadeBy = currentUserService.GetUserId().Value.ToString();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // If the user is not authenticated, we can choose to set a default value or skip setting the properties.
+            // Here, we set it to "system" to indicate that the change was made by an unauthenticated user or a system process.
+            logger.LogWarning("Unable to retrieve user ID for auditing. Setting 'CreatedBy'/'UpdatedBy' to 'system'.");
+        }
 
         foreach (var entry in auditableEntries)
         {
