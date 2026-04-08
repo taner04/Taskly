@@ -46,7 +46,7 @@ python3 .\scripts\setup.py
 #    - appsettings.json (SPA credentials)
 
 # 4. Run the API
-dotnet run --project .\tools\AppHost
+dotnet run --project .\tools\Taskly.AppHost
 ```
 
 See [Setup Guide](docs/SETUP.md) for detailed setup instructions.
@@ -81,18 +81,21 @@ See [Setup Guide](docs/SETUP.md) for detailed setup instructions.
 
 ```
 Taskly/
-├── docs/                 # Documentation
-├── scripts/              # Python automation scripts
+├── docs/                        # Documentation
+├── scripts/                      # Python automation scripts
 ├── src/
-│   └── Api/              # ASP.NET Core API
-│   └── ReminderService/  # Email service
+│   ├── Taskly.Desktop/          # WPF Desktop Client
+│   ├── Taskly.WebApi/           # ASP.NET Core API
+│   ├── Taskly.ReminderService/  # Email service
+│   ├── Taskly.Shared/           # Shared utilities
+│   └── Taskly.WebApi.Client/    # API client library
 ├── tests/
-│   ├── IntegrationTests/ # Integration tests
-│   └── UnitTests/        # Unit tests
+│   ├── Taskly.IntegrationTests/ # Integration tests
+│   └── Taskly.UnitTests/        # Unit tests
 └── tools/
-    ├── AppHost/          # .NET Aspire orchestration
-    ├── MigrationService/ # Database migrations
-    └── ServiceDefaults/  # Shared configuration
+    ├── Taskly.AppHost/          # .NET Aspire orchestration
+    ├── Taskly.MigrationService/ # Database migrations
+    └── Taskly.ServiceDefaults/  # Shared configuration
 ```
 
 ---

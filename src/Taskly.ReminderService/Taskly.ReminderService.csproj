@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <UserSecretsId>dotnet-ReminderService-437e2b4c-f2df-496c-b146-468fbe8ea734</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL"/>
+        <PackageReference Include="MailKit"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\tools\Taskly.ServiceDefaults\Taskly.ServiceDefaults.csproj"/>
+        <ProjectReference Include="..\Taskly.WebApi\Taskly.WebApi.csproj"/>
+    </ItemGroup>
+</Project>

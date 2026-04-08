@@ -63,14 +63,14 @@ def create_appsettings(file_path: Path, content: dict) -> None:
 def create_appsettings_api() -> None:
     """Create appsettings.json for the API project."""
     create_appsettings(
-        project_root / "src" / "Api" / "appsettings.json", APPSETTINGS_API_TEMPLATE
+        project_root / "src" / "Taskly.WebApi" / "appsettings.json", APPSETTINGS_API_TEMPLATE
     )
 
 
 def create_appsettings_reminder_service() -> None:
     """Create appsettings.json for the ReminderService project."""
     create_appsettings(
-        project_root / "src" / "ReminderService" / "appsettings.json",
+        project_root / "src" / "Taskly.ReminderService" / "appsettings.json",
         APPSETTINGS_REMINDER_SERVICE_TEMPLATE,
     )
 

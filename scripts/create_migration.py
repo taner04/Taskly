@@ -13,10 +13,10 @@ from shared import console_logger, project_root
 # Configuration
 # =========================================================================
 
-PROJECT = project_root / "src" / "Api" / "Api.csproj"
-STARTUP_PROJECT = project_root / "src" / "Api" / "Api.csproj"
-CONTEXT = "Api.Common.Infrastructure.Persistence.ApplicationDbContext"
-OUTPUT_DIR = project_root / "src" / "Api" / "Common" / "Infrastructure" / "Persistence" / "Migrations"
+PROJECT = project_root / "src" / "Taskly.WebApi" / "Taskly.WebApi.csproj"
+STARTUP_PROJECT = project_root / "src" / "Taskly.WebApi" / "Taskly.WebApi.csproj"
+CONTEXT = "Taskly.WebApi.Common.Infrastructure.Persistence.TasklyDbContext"
+OUTPUT_DIR = project_root / "src" / "Taskly.WebApi" / "Common" / "Infrastructure" / "Persistence" / "Migrations"
 CONFIGURATION = "Debug"
 
 

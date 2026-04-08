@@ -45,7 +45,7 @@ For detailed setup instructions, refer to the [Setup Guide](SETUP.md).
     - 🔒 Authorization failures (unauthorized/forbidden)
     - 🔍 Not found errors (missing resources)
     - ⚠️ Edge cases and boundary conditions
-    - Place tests in `tests/IntegrationTests/Tests/` following feature organization
+    - Place tests in `tests/Taskly.IntegrationTests/Tests/` following feature organization
 
 ## Making a Contribution
 

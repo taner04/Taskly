@@ -25,8 +25,8 @@ setup.py
 
 **Output:**
 
-- Creates `appsettings.json` in `src/Api/`
-- Creates `appsettings.integration.json` in `tests/IntegrationTests/`
+- Creates `appsettings.json` in `src/Taskly.WebApi/`
+- Creates `appsettings.integration.json` in `tests/Taskly.IntegrationTests/`
 - Automatically creates the initial database migration
 
 **Requirements:** None (first-time setup)
@@ -49,7 +49,7 @@ create_migration.py <migration-name>
 create_migration.py AddTodoTable
 ```
 
-**Output:** Creates migration files in `src/Api/Common/Infrastructure/Persistence/Migrations/`
+**Output:** Creates migration files in `src/Taskly.WebApi/Common/Infrastructure/Persistence/Migrations/`
 
 **Requirements:**
 

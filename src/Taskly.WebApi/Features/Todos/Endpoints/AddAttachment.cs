@@ -1,0 +1,81 @@
+using Taskly.WebApi.Common.Infrastructure.Persistence;
+using Taskly.WebApi.Features.Attachments.Services;
+using Taskly.WebApi.Features.Todos.Specifications;
+using Ardalis.Specification.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace Taskly.WebApi.Features.Todos.Endpoints;
+
+[Handler]
+[MapPost(ApiRoutes.Todos.AddAttachment)]
+[Authorize(Policy = Policies.User)]
+public static partial class AddAttachment
+{
+    internal static void CustomizeEndpoint(
+        IEndpointConventionBuilder endpoint)
+    {
+        endpoint.WithTags(nameof(Todo));
+    }
+
+    internal static Ok<Response> TransformResult(
+        Response response) =>
+        TypedResults.Ok(response);
+
+
+    private static async ValueTask<Response> HandleAsync(
+        [AsParameters] Command command,
+        TasklyDbContext context,
+        CurrentUserService currentUserService,
+        AttachmentService attachments,
+        CancellationToken ct)
+    {
+        var spec = new TodoByUserIdSpecificationWithAttachmentsSpec(command.TodoId, currentUserService.GetUserId());
+        var todo = await context.Todos
+            .WithSpecification(spec)
+            .SingleOrDefaultAsync(ct);
+
+        if (todo is null)
+        {
+            throw new ModelNotFoundException<Todo>(command.TodoId.Value);
+        }
+
+        var attachment = Attachment.CreatePending(
+            todo.Id,
+            command.Body.FileName,
+            command.Body.ContentType
+        );
+
+        var sas = attachments.GenerateUploadSas(attachment);
+
+        todo.Attachments.Add(attachment);
+
+        context.Update(todo);
+        await context.SaveChangesAsync(ct);
+
+        return new Response(
+            attachment.Id.Value,
+            sas.UploadUrl,
+            sas.BlobPath
+        );
+    }
+
+    [Validate]
+    public sealed partial record Command : IValidationTarget<Command>
+    {
+        [NotEmpty] [FromRoute] public required TodoId TodoId { get; init; }
+        [NotNull] public required CommandBody Body { get; init; }
+
+        [Validate]
+        public sealed partial record CommandBody : IValidationTarget<CommandBody>
+        {
+            [NotEmpty] public required string FileName { get; init; }
+
+            [NotEmpty] public required string ContentType { get; init; }
+        }
+    }
+
+    public sealed record Response(
+        Guid AttachmentId,
+        string UploadUrl,
+        string BlobPath);
+}

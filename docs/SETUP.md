@@ -33,7 +33,7 @@ This creates the required `appsettings.json` file.
 
 **Without Python (Manual Setup):**
 
-Create `appsettings.json` in `.\src\Api` with the configuration values shown in the next step.
+Create `appsettings.json` in `src/Taskly.WebApi/` with the configuration values shown in the next step.
 
 ### 3. Configure Auth0 credentials
 
@@ -53,7 +53,7 @@ Update the generated or manually created `appsettings.json` file with your Auth0
 
 #### Update Configuration File
 
-Update `appsettings.json` in `.\src\Api` with your SPA credentials:
+Update `appsettings.json` in `src/Taskly.WebApi/` with your SPA credentials:
 
 ```json
 {
@@ -82,7 +82,7 @@ Update `appsettings.json` in `.\src\Api` with your SPA credentials:
 Execute the AppHost project to run the API and managed services:
 
 ```bash
-dotnet run --project .\tools\AppHost
+dotnet run --project .\tools\Taskly.AppHost
 ```
 
 > [!NOTE]

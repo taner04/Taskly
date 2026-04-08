@@ -120,12 +120,12 @@ def dotnet_build_project(project_path: str) -> None:
 def build_dotnet_projects() -> None:
     console_logger.info("Building .NET projects...")
 
-    dotnet_build_project("src/Api/Api.csproj")
-    dotnet_build_project("tests/IntegrationTests/IntegrationTests.csproj")
-    dotnet_build_project("tests/UnitTests/UnitTests.csproj")
-    dotnet_build_project("tools/AppHost/AppHost.csproj")
-    dotnet_build_project("tools/MigrationService/MigrationService.csproj")
-    dotnet_build_project("tools/ServiceDefaults/ServiceDefaults.csproj")
+    dotnet_build_project("src/Taskly.WebApi/Taskly.WebApi.csproj")
+    dotnet_build_project("tests/Taskly.IntegrationTests/Taskly.IntegrationTests.csproj")
+    dotnet_build_project("tests/Taskly.UnitTests/Taskly.UnitTests.csproj")
+    dotnet_build_project("tools/Taskly.AppHost/Taskly.AppHost.csproj")
+    dotnet_build_project("tools/Taskly.MigrationService/Taskly.MigrationService.csproj")
+    dotnet_build_project("tools/Taskly.ServiceDefaults/Taskly.ServiceDefaults.csproj")
 
     console_logger.success("All .NET projects built successfully.")
 
