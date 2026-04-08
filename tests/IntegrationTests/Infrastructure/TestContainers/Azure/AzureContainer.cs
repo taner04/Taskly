@@ -6,9 +6,8 @@ public sealed class AzureContainer : ContainerBase<AzuriteContainer>
 {
     public string ConnectionString => Container.GetConnectionString();
 
-    protected override AzuriteContainer BuildContainer()
-    {
-        return new AzuriteBuilder("mcr.microsoft.com/azure-storage/azurite:latest")
+    protected override AzuriteContainer BuildContainer() =>
+        new AzuriteBuilder("mcr.microsoft.com/azure-storage/azurite:latest")
             .WithNetwork(new NetworkBuilder().Build())
             .WithNetworkAliases("azurite")
             .WithCommand(
@@ -21,5 +20,4 @@ public sealed class AzureContainer : ContainerBase<AzuriteContainer>
                     .UntilMessageIsLogged("Azurite Blob service is starting at http://0.0.0.0:10000")
             )
             .Build();
-    }
 }

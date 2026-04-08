@@ -18,10 +18,8 @@ public static partial class AddAttachment
     }
 
     internal static Ok<Response> TransformResult(
-        Response response)
-    {
-        return TypedResults.Ok(response);
-    }
+        Response response) =>
+        TypedResults.Ok(response);
 
 
     private static async ValueTask<Response> HandleAsync(

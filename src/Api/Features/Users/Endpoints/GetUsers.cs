@@ -17,10 +17,8 @@ public static partial class GetUsers
     private static async ValueTask<List<User>> HandleAsync(
         Query _,
         ApplicationDbContext context,
-        CancellationToken ct)
-    {
-        return await context.Users.ToListAsync(ct);
-    }
+        CancellationToken ct) =>
+        await context.Users.ToListAsync(ct);
 
     public sealed record Query;
 }

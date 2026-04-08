@@ -10,10 +10,7 @@ public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
 
     private ClaimsPrincipal User => HttpContext.User;
 
-    public string GetAuth0Id()
-    {
-        return GetClaimValue<string>(ClaimTypes.NameIdentifier);
-    }
+    public string GetAuth0Id() => GetClaimValue<string>(ClaimTypes.NameIdentifier);
 
     public UserId GetUserId()
     {

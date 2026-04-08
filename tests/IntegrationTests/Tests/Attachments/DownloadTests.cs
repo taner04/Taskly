@@ -9,15 +9,13 @@ namespace IntegrationTests.Tests.Attachments;
 public sealed class DownloadTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private static Todo CreateTodo(
-        UserId userId)
-    {
-        return Todo.Create(
+        UserId userId) =>
+        Todo.Create(
             "Test Todo",
             "Test Description",
             TodoPriority.Medium,
             userId
         );
-    }
 
     private static Attachment CreateUploadedAttachment(
         Todo todo)
@@ -101,9 +99,7 @@ public sealed class DownloadTests(TestingFixture fixture) : TestingBase(fixture)
     }
 
     private static bool IsValidUrl(
-        string url)
-    {
-        return Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
-               && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
-    }
+        string url) =>
+        Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
+        && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
 }

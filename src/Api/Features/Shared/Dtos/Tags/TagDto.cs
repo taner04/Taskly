@@ -7,12 +7,10 @@ public sealed record TagDto(
 )
 {
     public static TagDto FromDomain(
-        Tag tag)
-    {
-        return new TagDto(
+        Tag tag) =>
+        new(
             tag.Id.Value,
             tag.Name,
             tag.UserId.Value
         );
-    }
 }

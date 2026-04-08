@@ -7,15 +7,13 @@ namespace IntegrationTests.Tests.Todos;
 
 public sealed class CreateTodoTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static CreateTodo.Command CreateValidCommand()
-    {
-        return new CreateTodo.Command
+    private static CreateTodo.Command CreateValidCommand() =>
+        new()
         {
             Title = "Valid Title",
             Description = "Valid Description",
             Priority = TodoPriority.Medium
         };
-    }
 
     [Fact]
     public async Task CreateTodo_Should_Return401_When_Unauthenticated()

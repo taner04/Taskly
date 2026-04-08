@@ -8,14 +8,12 @@ namespace IntegrationTests.Tests.Todos;
 public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private static Todo CreateTodo(
-        UserId userId)
-    {
-        return Todo.Create(
+        UserId userId) =>
+        Todo.Create(
             "Original Title",
             "Original Description",
             TodoPriority.Medium,
             userId);
-    }
 
     [Fact]
     public async Task UpdateTodo_Should_Return401_When_Unauthenticated()

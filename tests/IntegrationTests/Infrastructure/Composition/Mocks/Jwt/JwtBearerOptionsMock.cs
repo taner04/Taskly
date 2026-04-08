@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace IntegrationTests.Infrastructure.Mocks.Jwt;
 
@@ -10,13 +9,9 @@ public static class JwtBearerOptionsMock
     {
         services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
         {
-            var config = new OpenIdConnectConfiguration
-            {
-                Issuer = JwtTokenMock.Issuer
-            };
-
-            config.SigningKeys.Add(JwtTokenMock.SecurityKey);
-            options.Configuration = config;
+            options.TokenValidationParameters.ValidIssuer = JwtTokenMock.Issuer;
+            options.TokenValidationParameters.ValidAudience = JwtTokenMock.Audience;
+            options.TokenValidationParameters.IssuerSigningKey = JwtTokenMock.SecurityKey;
         });
 
         return services;

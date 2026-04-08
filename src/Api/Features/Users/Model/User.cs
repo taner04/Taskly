@@ -29,10 +29,8 @@ public sealed class User : Entity<UserId>
 
     public static User Create(
         string email,
-        string auth0Id)
-    {
-        return !new EmailAddressAttribute().IsValid(email)
+        string auth0Id) =>
+        !new EmailAddressAttribute().IsValid(email)
             ? throw new UserInvalidEmailException(email)
             : new User(email, auth0Id);
-    }
 }

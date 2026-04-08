@@ -15,14 +15,12 @@ public sealed class TodoTests
     private static readonly string TooLongDescription = new('x', Todo.MaxDescriptionLength + 1);
     private readonly UserId _validUserId = UserId.From(Guid.Parse("00000000-0000-0000-0000-000000000001"));
 
-    private Todo CreateTodo()
-    {
-        return Todo.Create(
+    private Todo CreateTodo() =>
+        Todo.Create(
             ValidTitle,
             ValidDescription,
             TodoPriority.Medium,
             _validUserId);
-    }
 
     [Fact]
     public void Create_WithValidData_ShouldCreateTodo()

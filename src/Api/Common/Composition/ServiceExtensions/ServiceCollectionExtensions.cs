@@ -1,4 +1,5 @@
 using Api.Common.Composition.Options;
+using Api.Common.Composition.Serialization;
 using Api.Common.Infrastructure.Persistence;
 using Api.Common.Infrastructure.Persistence.Interceptors;
 using Api.Features.Attachments.Services;
@@ -46,14 +47,14 @@ public static class ServiceCollectionExtensions
             {
                 options.Authority = $"https://{auth0Config.Domain}";
                 options.Audience = auth0Config.Audience;
-            
+
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidAudience = auth0Config.Audience,
-                    ValidIssuer = $"https://{auth0Config.Domain}/",
+                    ValidIssuer = $"https://{auth0Config.Domain}/"
                 };
             });
-            
+
             services.AddAuthorizationBuilder()
                 .AddPolicy(Policies.Admin, policy => policy.RequireClaim("permissions", "admin:create", "admin:read"))
                 .AddPolicy(Policies.User, policy => policy.RequireClaim("permissions", "user:create", "user:read"));
@@ -87,6 +88,16 @@ public static class ServiceCollectionExtensions
                 }
 
                 opt.UseNpgsql(builder.Configuration.GetConnectionString(AppHostConstants.Database));
+            });
+
+            return services;
+        }
+
+        public IServiceCollection AddCustomJsonConverter()
+        {
+            services.ConfigureHttpJsonOptions(options =>
+            {
+                options.SerializerOptions.Converters.Add(new FlexibleEnumConverter<TodoPriority>());
             });
 
             return services;

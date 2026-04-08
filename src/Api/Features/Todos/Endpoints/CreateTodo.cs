@@ -15,10 +15,8 @@ public static partial class CreateTodo
     }
 
     internal static Created<Response> TransformResult(
-        Response response)
-    {
-        return TypedResults.Created($"api/todos/{response.TodoId}", response);
-    }
+        Response response) =>
+        TypedResults.Created($"api/todos/{response.TodoId}", response);
 
     private static async ValueTask<Response> HandleAsync(
         Command command,

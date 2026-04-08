@@ -1,6 +1,6 @@
 ﻿using Api.Client;
 using Api.Common.Infrastructure.Persistence;
-using Api.Features.Shared;
+using IntegrationTests.Infrastructure.Mocks.Jwt;
 
 namespace IntegrationTests.Infrastructure;
 
@@ -32,33 +32,15 @@ public abstract class TestingBase(TestingFixture fixture) : IAsyncLifetime
         return ValueTask.CompletedTask;
     }
 
-    protected ApplicationDbContext GetDbContext()
-    {
-        return _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    }
+    protected ApplicationDbContext GetDbContext() => _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    protected IApiClient CreateAuthenticatedUserClient()
-    {
-        return fixture.CreateAuthenticatedClient(Policies.User);
-    }
+    protected IApiClient CreateAuthenticatedUserClient() => fixture.CreateAuthenticatedClient(UserRole.User);
 
-    protected IApiClient CreateAuthenticatedAdminClient()
-    {
-        return fixture.CreateAuthenticatedClient(Policies.Admin);
-    }
+    protected IApiClient CreateAuthenticatedAdminClient() => fixture.CreateAuthenticatedClient(UserRole.Admin);
 
-    protected IApiClient CreateUnauthenticatedClient()
-    {
-        return fixture.CreateUnauthenticatedClient();
-    }
+    protected IApiClient CreateUnauthenticatedClient() => fixture.CreateUnauthenticatedClient();
 
-    protected async Task<UserId> CreateForeignUserAsync()
-    {
-        return await fixture.CreateForeignUserAsync();
-    }
+    protected async Task<UserId> CreateForeignUserAsync() => await fixture.CreateForeignUserAsync();
 
-    protected T GetService<T>() where T : class
-    {
-        return _scope.ServiceProvider.GetRequiredService<T>();
-    }
+    protected T GetService<T>() where T : class => _scope.ServiceProvider.GetRequiredService<T>();
 }

@@ -13,7 +13,7 @@ public enum UserRole
 
 public static class JwtTokenMock
 {
-    private const string Audience = "https://taskly-api";
+    public const string Audience = "https://taskly-api";
     public const string Issuer = "https://dev.eu.auth0.com/";
 
     private static readonly JwtSecurityTokenHandler TokenHandler = new();

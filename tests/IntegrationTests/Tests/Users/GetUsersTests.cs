@@ -7,12 +7,10 @@ namespace IntegrationTests.Tests.Users;
 public sealed class GetUsersTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private static User CreateUser(
-        string email)
-    {
-        return User.Create(
+        string email) =>
+        User.Create(
             email,
             "auth|123");
-    }
 
     [Fact]
     public async Task GetUsers_Should_Return401_When_Unauthenticated()

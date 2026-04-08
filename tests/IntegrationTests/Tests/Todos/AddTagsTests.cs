@@ -9,22 +9,15 @@ namespace IntegrationTests.Tests.Todos;
 public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private static Todo CreateTodo(
-        UserId userId)
-    {
-        return Todo.Create(
+        UserId userId) =>
+        Todo.Create(
             "Test Todo",
             "Test Description",
             TodoPriority.Medium,
             userId
         );
-    }
 
-    private static Tag CreateTag(
-        string name,
-        UserId userId)
-    {
-        return new Tag(name, userId);
-    }
+    private static Tag CreateTag(string name, UserId userId) => new(name, userId);
 
     [Fact]
     public async Task AddTags_Should_Return401_When_Unauthenticated()

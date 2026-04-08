@@ -2,13 +2,13 @@ using System.Diagnostics.CodeAnalysis;
 using Api.Common.Composition.Configs;
 using Api.Common.Composition.Configs.OpenApi;
 using Api.Common.Composition.ServiceExtensions;
-using Api.Features.Attachments.Services;
 using ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
+builder.Services.AddCustomJsonConverter();
 builder.Services.AddOpenApi(OpenApiConfig.Config);
 
 builder.Services.AddProblemDetails(ProblemDetailsConfig.Config);
@@ -36,11 +36,7 @@ app.UseAuthorization();
 app.UseHttpsRedirection();
 app.MapApiEndpoints();
 
-using (var scope = app.Services.CreateScope())
-{
-    var attachmentService = scope.ServiceProvider.GetRequiredService<AttachmentService>();
-    await attachmentService.InitializeAsync();
-}
+await app.InitializeBlobStorage();
 
 app.Run();
 

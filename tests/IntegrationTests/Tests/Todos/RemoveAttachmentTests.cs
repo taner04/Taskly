@@ -8,25 +8,21 @@ namespace IntegrationTests.Tests.Todos;
 public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private static Todo CreateTodo(
-        UserId userId)
-    {
-        return Todo.Create(
+        UserId userId) =>
+        Todo.Create(
             "Test Todo",
             "Test Description",
             TodoPriority.Medium,
             userId);
-    }
 
     private static Attachment CreateAttachment(
         Todo todo,
         string fileName = "file.txt",
-        string contentType = "text/plain")
-    {
-        return Attachment.CreatePending(
+        string contentType = "text/plain") =>
+        Attachment.CreatePending(
             todo.Id,
             fileName,
             contentType);
-    }
 
     [Fact]
     public async Task RemoveAttachment_Should_Return401_When_Unauthenticated()

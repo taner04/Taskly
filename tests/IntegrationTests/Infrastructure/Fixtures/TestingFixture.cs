@@ -1,13 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using Api.Client;
-using Api.Features.Shared;
 using IntegrationTests.Factories;
 using IntegrationTests.Infrastructure.Mocks.Jwt;
 using IntegrationTests.Infrastructure.TestContainers.Azure;
 using IntegrationTests.Infrastructure.TestContainers.Postgres;
-using Refit;
 
 namespace IntegrationTests.Infrastructure.Fixtures;
 
@@ -16,23 +12,13 @@ public sealed class TestingFixture : IAsyncLifetime
 {
     private readonly AzureTestBlobStorage _azureTestBlobStorage = new();
 
-    private readonly JsonSerializerOptions _jsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-
     private readonly PostgresTestDatabase _postgresTestDatabase = new();
-    private readonly RefitSettings _refitSettings;
 
     private string _adminJwtToken = null!;
+    private ApiHttpClient _apiHttpClient = null!;
     private IServiceScopeFactory _serviceScopeFactory = null!;
     private string _userJwtToken = null!;
     private WebApiFactory _webApiFactory = null!;
-
-    public TestingFixture()
-    {
-        _refitSettings = new RefitSettings(new SystemTextJsonContentSerializer(_jsonOptions));
-    }
 
     public async ValueTask InitializeAsync()
     {
@@ -44,6 +30,8 @@ public sealed class TestingFixture : IAsyncLifetime
 
         _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection, _azureTestBlobStorage.ConnectionString);
         _serviceScopeFactory = _webApiFactory.Services.GetRequiredService<IServiceScopeFactory>();
+
+        _apiHttpClient = new ApiHttpClient(_webApiFactory.CreateClient());
     }
 
     public async ValueTask DisposeAsync()
@@ -54,42 +42,30 @@ public sealed class TestingFixture : IAsyncLifetime
 
     public async Task SetUpAsync()
     {
+        _apiHttpClient?.ClearAccessToken();
+
         await _postgresTestDatabase.ResetContainerAsync();
         await _azureTestBlobStorage.ResetContainerAsync();
     }
 
-    public async Task<UserId> CreateForeignUserAsync()
-    {
-        return await _postgresTestDatabase.CreateForeignUserAsync();
-    }
+    public async Task<UserId> CreateForeignUserAsync() => await _postgresTestDatabase.CreateForeignUserAsync();
 
-    public IServiceScope CreateScope()
-    {
-        return _serviceScopeFactory.CreateScope();
-    }
+    public IServiceScope CreateScope() => _serviceScopeFactory.CreateScope();
 
     public IApiClient CreateAuthenticatedClient(
-        string role)
+        UserRole userRole)
     {
-        var client = _webApiFactory.CreateClient();
-
-        var token = role switch
+        _apiHttpClient.SetAccessToken(userRole switch
         {
-            Policies.User => _userJwtToken,
-            Policies.Admin => _adminJwtToken,
-            _ => throw new ArgumentOutOfRangeException(nameof(role), "Invalid role specified.")
-        };
+            UserRole.User => _userJwtToken,
+            UserRole.Admin => _adminJwtToken,
+            _ => throw new ArgumentOutOfRangeException(nameof(userRole), "Invalid role specified.")
+        });
 
-        client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Bearer", token);
-
-        return RestService.For<IApiClient>(client, _refitSettings);
+        return _apiHttpClient.Client;
     }
 
-    public IApiClient CreateUnauthenticatedClient()
-    {
-        return RestService.For<IApiClient>(_webApiFactory.CreateClient(), _refitSettings);
-    }
+    public IApiClient CreateUnauthenticatedClient() => _apiHttpClient.Client;
 
     private void InitilizeTokens()
     {

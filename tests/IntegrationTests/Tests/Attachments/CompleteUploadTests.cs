@@ -9,25 +9,21 @@ namespace IntegrationTests.Tests.Attachments;
 public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private static Todo CreateTodo(
-        UserId userId)
-    {
-        return Todo.Create(
+        UserId userId) =>
+        Todo.Create(
             "Test Todo",
             "Test Description",
             TodoPriority.Medium,
             userId
         );
-    }
 
     private static Attachment CreatePendingAttachment(
-        Todo todo)
-    {
-        return Attachment.CreatePending(
+        Todo todo) =>
+        Attachment.CreatePending(
             todo.Id,
             "testfile.txt",
             "text/plain"
         );
-    }
 
     [Fact]
     public async Task CompleteUpload_Should_Return401_When_Unauthenticated()

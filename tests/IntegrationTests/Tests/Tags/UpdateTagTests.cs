@@ -7,12 +7,7 @@ namespace IntegrationTests.Tests.Tags;
 
 public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Tag CreateTag(
-        string name,
-        UserId userId)
-    {
-        return new Tag(name, userId);
-    }
+    private static Tag CreateTag(string name, UserId userId) => new(name, userId);
 
     [Fact]
     public async Task UpdateTag_Should_Return401_When_Unauthenticated()

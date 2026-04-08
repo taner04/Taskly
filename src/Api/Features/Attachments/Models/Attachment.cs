@@ -84,8 +84,5 @@ public sealed class Attachment : Entity<AttachmentId>
         Status = AttachmentStatus.Uploaded;
     }
 
-    public string GetDownloadUrl()
-    {
-        return $"/attachments/{Id.Value}/download";
-    }
+    public string GetDownloadUrl() => $"/attachments/{Id.Value}/download";
 }

@@ -5,8 +5,5 @@ internal static class UserFactory
     public const string Email = "userfactory@mail.com";
     public const string Sub = "auth0|userfactory123";
 
-    internal static User Create()
-    {
-        return User.Create(Email, Sub);
-    }
+    internal static User Create() => User.Create(Email, Sub);
 }

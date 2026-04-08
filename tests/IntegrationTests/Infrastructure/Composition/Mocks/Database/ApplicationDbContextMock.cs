@@ -1,8 +1,9 @@
 using Api.Common.Infrastructure.Persistence;
 using Api.Common.Infrastructure.Persistence.Interceptors;
+using IntegrationTests.Infrastructure.Mocks.Database;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace IntegrationTests.Infrastructure.Mocks.Database;
+namespace IntegrationTests.Infrastructure.Composition.Mocks.Database;
 
 public static class ApplicationDbContextMock
 {

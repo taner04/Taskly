@@ -1,14 +1,17 @@
 using Api.Common.Composition.Options;
+using Api.Features.Attachments.Services;
 using Scalar.AspNetCore;
 
 namespace Api.Common.Composition.ServiceExtensions;
 
 public static class WebApplicationExtensions
 {
-    internal static WebApplication MapScalar(this WebApplication app)
+    extension(WebApplication app)
     {
-        var auth0Config = app.Configuration.GetSection(nameof(Auth0Config)).Get<Auth0Config>();
-        ArgumentNullException.ThrowIfNull(auth0Config);
+        public WebApplication MapScalar()
+        {
+            var auth0Config = app.Configuration.GetSection(nameof(Auth0Config)).Get<Auth0Config>();
+            ArgumentNullException.ThrowIfNull(auth0Config);
 
             app.MapScalarApiReference(opt =>
             {
@@ -36,5 +39,16 @@ public static class WebApplicationExtensions
             });
 
             return app;
+        }
+
+        public async Task<WebApplication> InitializeBlobStorage()
+        {
+            using var scope = app.Services.CreateScope();
+            var attachmentService = scope.ServiceProvider.GetRequiredService<AttachmentService>();
+
+            await attachmentService.InitializeAsync();
+
+            return app;
+        }
     }
 }

@@ -8,14 +8,12 @@ namespace IntegrationTests.Tests.Todos;
 public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fixture)
 {
     private static Todo CreateTodo(
-        UserId userId)
-    {
-        return Todo.Create(
+        UserId userId) =>
+        Todo.Create(
             "Test Todo",
             "Description",
             TodoPriority.Medium,
             userId);
-    }
 
     [Fact]
     public async Task UpdateReminder_Should_Return401_When_Unauthenticated()

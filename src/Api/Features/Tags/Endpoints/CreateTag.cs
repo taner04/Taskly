@@ -16,10 +16,8 @@ public static partial class CreateTag
     }
 
     internal static Created<Response> TransformResult(
-        Response response)
-    {
-        return TypedResults.Created($"api/todos/{response.TagId}", response);
-    }
+        Response response) =>
+        TypedResults.Created($"api/todos/{response.TagId}", response);
 
     private static async ValueTask<Response> HandleAsync(
         Command command,

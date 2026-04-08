@@ -16,10 +16,8 @@ public static partial class GetTodos
     }
 
     internal static Ok<List<Response>> TransformResult(
-        List<Response> result)
-    {
-        return TypedResults.Ok(result);
-    }
+        List<Response> result) =>
+        TypedResults.Ok(result);
 
     private static async ValueTask<List<Response>> HandleAsync(
         Query _,
@@ -47,16 +45,14 @@ public static partial class GetTodos
     )
     {
         public static AttachmentDto FromDomain(
-            Attachment attachment)
-        {
-            return new AttachmentDto(
+            Attachment attachment) =>
+            new(
                 attachment.Id.Value,
                 attachment.FileName,
                 attachment.FileSize,
                 attachment.ContentType,
                 attachment.GetDownloadUrl()
             );
-        }
     }
 
     public sealed record Response(
@@ -71,9 +67,8 @@ public static partial class GetTodos
     )
     {
         public static Response FromDomain(
-            Todo todo)
-        {
-            return new Response(
+            Todo todo) =>
+            new(
                 todo.Id.Value,
                 todo.Title,
                 todo.Description,
@@ -83,6 +78,5 @@ public static partial class GetTodos
                 todo.Attachments.Select(AttachmentDto.FromDomain).ToList(),
                 todo.UserId.Value
             );
-        }
     }
 }

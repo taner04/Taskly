@@ -25,7 +25,8 @@ public sealed class PostgresTestDatabase : IAsyncDisposable
             .Options;
 
         await using var context = new ApplicationDbContext(_dbContextOptions);
-        await context.Database.MigrateAsync(TestsContext.CurrentCancellationToken);
+
+        await context.Database.MigrateAsync(TestContext.Current.CancellationToken);
 
         await InitUserAsync(context);
     }
