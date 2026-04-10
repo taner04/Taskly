@@ -1,7 +1,7 @@
-using Taskly.WebApi.Features.Shared;
-using Taskly.WebApi.Features.Tags.Endpoints;
-using Taskly.WebApi.Features.Tags.Model;
 using Refit;
+using Taskly.WebApi.Common.Shared;
+using Taskly.WebApi.Features.Tags.Endpoints;
+using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
 
 namespace Taskly.WebApi.Client.Abstractions.Endpoints;
 

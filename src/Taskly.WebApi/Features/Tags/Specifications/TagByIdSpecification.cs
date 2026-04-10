@@ -1,5 +1,7 @@
-using Taskly.WebApi.Features.Users.Model;
 using Ardalis.Specification;
+using Taskly.WebApi.Features.Tags.Models;
+using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
+using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.WebApi.Features.Tags.Specifications;
 

@@ -1,8 +1,6 @@
 global using Taskly.WebApi.Features.Attachments.Models;
-global using Taskly.WebApi.Features.Shared;
-global using Taskly.WebApi.Features.Tags.Model;
-global using Taskly.WebApi.Features.Todos.Model;
 global using Taskly.WebApi.Features.Users.Services;
+global using Taskly.WebApi.Common.Shared.Dtos;
 global using Immediate.Handlers.Shared;
 global using Immediate.Validations.Shared;
 global using Immediate.Apis.Shared;
@@ -11,4 +9,3 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Vogen;
 global using System.Net;
-global using Taskly.WebApi.Features.Shared.Exceptions;

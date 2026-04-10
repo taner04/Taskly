@@ -1,7 +1,8 @@
-using Taskly.WebApi.Common.Composition.Options;
-using Taskly.WebApi.Features.Attachments.Services;
+using Hangfire;
 using Scalar.AspNetCore;
 using Taskly.Shared.Extensions;
+using Taskly.WebApi.Common.Composition.Options;
+using Taskly.WebApi.Features.Attachments.Services;
 
 namespace Taskly.WebApi.Common.Composition.Extensions;
 
@@ -41,14 +42,20 @@ internal static class WebApplicationExtensions
             return app;
         }
 
-        internal async Task<WebApplication> InitializeBlobStorage()
+        internal async Task InitializeBlobStorage()
         {
             using var scope = app.Services.CreateScope();
             var attachmentService = scope.ServiceProvider.GetRequiredService<AttachmentService>();
 
             await attachmentService.InitializeAsync();
+        }
 
-            return app;
+        internal void AddHangfireDashboard()
+        {
+            app.UseHangfireDashboard(options: new DashboardOptions
+            {
+                DarkModeEnabled = true
+            });
         }
     }
 }

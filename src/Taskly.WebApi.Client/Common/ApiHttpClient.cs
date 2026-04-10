@@ -8,37 +8,32 @@ namespace Taskly.WebApi.Client.Common;
 
 internal sealed class ApiHttpClient : IApiHttpClient
 {
+    private static readonly RefitSettings RefitSettings = new(new SystemTextJsonContentSerializer(
+        new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+        }));
+
     private readonly HttpClient _httpClient;
 
-    private readonly JsonSerializerOptions _jsonOptions = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        PropertyNameCaseInsensitive = true,
-        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
-    };
-
-    internal ApiHttpClient(ApiHttpClientOptions options)
-    {
-        ArgumentNullException.ThrowIfNull(options);
-
-        _httpClient = new HttpClient
-        {
-            BaseAddress = options.BaseAddress,
-            Timeout = options.Timeout,
-        };
-
-        Client = RestService.For<IApiClient>(_httpClient,
-            new RefitSettings(new SystemTextJsonContentSerializer(_jsonOptions)));
-    }
-
-    internal
-        ApiHttpClient( //For integration testing, allows for more control over the HttpClient configuration
-            HttpClient httpClient) //TODO: Find a better way
+    private ApiHttpClient(HttpClient httpClient, RefitSettings refitSettings)
     {
         ArgumentNullException.ThrowIfNull(httpClient);
         _httpClient = httpClient;
 
-        Client = RestService.For<IApiClient>(_httpClient);
+        Client = RestService.For<IApiClient>(_httpClient, refitSettings);
+    }
+
+    internal ApiHttpClient(ApiHttpClientOptions options) :
+        this(new HttpClient { BaseAddress = options.BaseAddress, Timeout = options.Timeout }, RefitSettings)
+    {
+    }
+
+    // For integration tests
+    internal ApiHttpClient(HttpClient httpClient) : this(httpClient, RefitSettings)
+    {
     }
 
     public IApiClient Client { get; }

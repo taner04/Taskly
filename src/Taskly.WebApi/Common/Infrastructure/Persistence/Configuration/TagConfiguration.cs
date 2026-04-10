@@ -1,16 +1,13 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Taskly.WebApi.Features.Tags.Models;
 
 namespace Taskly.WebApi.Common.Infrastructure.Persistence.Configuration;
 
-internal sealed class TagConfiguration : AuditableConfiguration<Tag>
+internal sealed class TagConfiguration : EntityConfiguration<Tag, TagId>
 {
     protected override void PostConfigure(
         EntityTypeBuilder<Tag> builder)
     {
-        builder.ToTable("Tags");
-
-        builder.HasKey(t => t.Id);
-
         builder.Property(t => t.Name)
             .IsRequired()
             .HasMaxLength(Tag.MaxNameLength);

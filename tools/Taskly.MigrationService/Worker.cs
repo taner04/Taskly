@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Taskly.WebApi.Common.Infrastructure.Persistence;
 
 namespace Taskly.MigrationService;
 

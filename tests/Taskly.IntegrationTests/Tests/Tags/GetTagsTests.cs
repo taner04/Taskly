@@ -1,12 +1,13 @@
 using System.Net;
-using System.Net.Http.Json;
-using Taskly.WebApi.Features.Shared.Dtos.Tags;
-using Taskly.WebApi.Features.Tags.Endpoints;
-using Taskly.WebApi.Features.Tags.Model;
 using FluentAssertions;
 using Taskly.IntegrationTests.Extensions;
 using Taskly.IntegrationTests.Infrastructure;
 using Taskly.IntegrationTests.Infrastructure.Fixtures;
+using Taskly.WebApi.Common.Shared.Dtos;
+using Taskly.WebApi.Common.Shared.Pagination;
+using Taskly.WebApi.Features.Tags.Endpoints;
+using Taskly.WebApi.Features.Tags.Models;
+using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Tests.Tags;
 
@@ -22,7 +23,7 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 
         // Act
         var response = await unauthenticatedClient.GetTagsAsync(
-            new GetTags.Query(),
+            new GetTags.Query(0, 10),
             CurrentCancellationToken);
 
         // Assert
@@ -46,17 +47,16 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 
         // Act
         var response = await client.GetTagsAsync(
-            new GetTags.Query(),
+            new GetTags.Query(0, 10),
             CurrentCancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var result = await response.Content.ReadFromJsonAsync<List<TagDto>>(
-            CurrentCancellationToken);
+        var result = await response.MapTo<PaginationResult<TagDto>>(CurrentCancellationToken);
 
         result.Should().NotBeNull();
-        result!.Should().BeEmpty();
+        result.Items.Should().BeEmpty();
     }
 
     [Fact]
@@ -79,18 +79,18 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 
         // Act
         var response = await client.GetTagsAsync(
-            new GetTags.Query(),
+            new GetTags.Query(0, 10),
             CurrentCancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var result = await response.MapTo<List<TagDto>>(CurrentCancellationToken);
+        var result = await response.MapTo<PaginationResult<TagDto>>(CurrentCancellationToken);
 
         result.Should().NotBeNull();
-        result.Should().HaveCount(2);
+        result.Items.Should().HaveCount(2);
 
-        result.Select<TagDto, string>(t => t.Name).Should().BeEquivalentTo("Work", "Personal");
-        result.Should().OnlyContain(t => t.Name != "OtherUserTag");
+        result.Items.Select(t => t.Name).Should().BeEquivalentTo("Work", "Personal");
+        result.Items.Should().OnlyContain(t => t.Name != "OtherUserTag");
     }
 }

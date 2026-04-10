@@ -1,6 +1,6 @@
-using Taskly.WebApi.Common.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Taskly.WebApi.Common.Infrastructure.Persistence;
 
 namespace Taskly.IntegrationTests.Infrastructure.Composition.Mocks.Database;
 

@@ -1,7 +1,8 @@
-using Taskly.WebApi.Common.Infrastructure.Persistence;
 using Taskly.IntegrationTests.Infrastructure.Composition.Mocks.Jwt;
 using Taskly.IntegrationTests.Infrastructure.Fixtures;
 using Taskly.WebApi.Client.Abstractions;
+using Taskly.WebApi.Common.Infrastructure.Persistence;
+using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Infrastructure;
 
@@ -12,7 +13,7 @@ public abstract class TestingBase(TestingFixture fixture) : IAsyncLifetime
 
     protected UserId CurrentUserId { get; private set; }
 
-    protected static CancellationToken CurrentCancellationToken => TestsContext.CurrentCancellationToken;
+    protected static CancellationToken CurrentCancellationToken => TestContext.Current.CancellationToken;
 
     public async ValueTask InitializeAsync()
     {

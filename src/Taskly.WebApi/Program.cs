@@ -14,6 +14,8 @@ builder.Services.AddOpenApi(OpenApiConfig.Config);
 builder.Services.AddProblemDetails(ProblemDetailsConfig.Config);
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddRateLimiting();
+
 builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
 
 builder.Services.AddApplication(builder.Configuration);
@@ -28,10 +30,13 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalar();
+    app.AddHangfireDashboard();
 }
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRateLimiter();
 
 app.UseHttpsRedirection();
 app.MapTasklyWebApiEndpoints();
@@ -39,7 +44,6 @@ app.MapTasklyWebApiEndpoints();
 await app.InitializeBlobStorage();
 
 app.Run();
-
 
 namespace Taskly.WebApi
 {

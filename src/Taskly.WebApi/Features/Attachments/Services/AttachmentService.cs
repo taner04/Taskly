@@ -1,8 +1,10 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
+using Taskly.Shared.Attributes;
 
 namespace Taskly.WebApi.Features.Attachments.Services;
 
+[ServiceInjection(ServiceLifetime.Singleton)]
 public sealed partial class AttachmentService(
     ILogger<AttachmentService> logger,
     BlobServiceClient blobServiceClient)

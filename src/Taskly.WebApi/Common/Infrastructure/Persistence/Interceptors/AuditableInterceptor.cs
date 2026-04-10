@@ -1,5 +1,5 @@
-using Taskly.WebApi.Features.Shared.Models;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Taskly.WebApi.Common.Shared.Models;
 
 namespace Taskly.WebApi.Common.Infrastructure.Persistence.Interceptors;
 

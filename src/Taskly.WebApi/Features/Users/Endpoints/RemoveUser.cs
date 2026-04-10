@@ -1,17 +1,21 @@
 using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Features.Users.Model;
+using Taskly.WebApi.Common.Shared;
+using Taskly.WebApi.Common.Shared.Exceptions;
+using Taskly.WebApi.Features.Users.Models;
+using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.WebApi.Features.Users.Endpoints;
 
 [Handler]
 [MapDelete(ApiRoutes.Users.RemoveUser)]
-[Authorize(Policy = Policies.Admin)]
+[Authorize(Policy = Policies.Roles.Admin)]
 public static partial class RemoveUser
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(User));
+        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
     }
 
     private static async ValueTask HandleAsync(
@@ -19,12 +23,8 @@ public static partial class RemoveUser
         TasklyDbContext context,
         CancellationToken ct)
     {
-        var user = await context.Users.SingleOrDefaultAsync(u => u.Id == command.UserId, ct);
-
-        if (user is null)
-        {
-            throw new ModelNotFoundException<User>(command.UserId.Value);
-        }
+        var user = await context.Users.SingleOrDefaultAsync(u => u.Id == command.UserId, ct) ??
+                   throw new ModelNotFoundException<User>(command.UserId.Value);
 
         context.Users.Remove(user);
         await context.SaveChangesAsync(ct);

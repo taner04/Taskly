@@ -4,6 +4,9 @@ using Taskly.IntegrationTests.Extensions;
 using Taskly.IntegrationTests.Factories;
 using Taskly.IntegrationTests.Infrastructure;
 using Taskly.IntegrationTests.Infrastructure.Fixtures;
+using Taskly.WebApi.Common.Shared.Pagination;
+using Taskly.WebApi.Features.Users.Endpoints;
+using Taskly.WebApi.Features.Users.Models;
 
 namespace Taskly.IntegrationTests.Tests.Users;
 
@@ -22,7 +25,9 @@ public sealed class GetUsersTests(TestingFixture fixture) : TestingBase(fixture)
         var client = CreateUnauthenticatedClient();
 
         // Act
-        var response = await client.GetUsersAsync(CurrentCancellationToken);
+        var response = await client.GetUsersAsync(
+            new GetUsers.Query(0, 10),
+            CurrentCancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -35,7 +40,9 @@ public sealed class GetUsersTests(TestingFixture fixture) : TestingBase(fixture)
         var client = CreateAuthenticatedUserClient();
 
         // Act
-        var response = await client.GetUsersAsync(CurrentCancellationToken);
+        var response = await client.GetUsersAsync(
+            new GetUsers.Query(0, 10),
+            CurrentCancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
@@ -56,15 +63,18 @@ public sealed class GetUsersTests(TestingFixture fixture) : TestingBase(fixture)
         await db.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
-        var response = await admin.GetUsersAsync(CurrentCancellationToken);
+        var response = await admin.GetUsersAsync(
+            new GetUsers.Query(0, 10),
+            CurrentCancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var list = await response.MapTo<List<User>>(CurrentCancellationToken);
+        var result = await response.MapTo<PaginationResult<User>>(CurrentCancellationToken);
 
-        list.Should().HaveCount(3); // Including +1 for the seeded user from TestingBase
-        list.Select<User, string>(u => u.Email).Should()
+        result.Should().NotBeNull();
+        result.Items.Should().HaveCount(3); // Including +1 for the seeded user from TestingBase
+        result.Items.Select(u => u.Email).Should()
             .BeEquivalentTo("a@test.com", "b@test.com",
                 UserFactory.Email); // UserFactory.Email is the seeded user email
     }

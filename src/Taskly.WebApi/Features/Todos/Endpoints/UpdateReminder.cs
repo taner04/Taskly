@@ -1,38 +1,47 @@
+using Hangfire;
 using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Features.Todos.Specifications;
-using Ardalis.Specification.EntityFrameworkCore;
+using Taskly.WebApi.Common.Infrastructure.Services.Emails;
+using Taskly.WebApi.Common.Shared;
+using Taskly.WebApi.Common.Shared.Exceptions;
+using Taskly.WebApi.Features.Todos.EmailTemplates;
+using Taskly.WebApi.Features.Todos.Models;
+using Taskly.WebApi.Features.Users.Models;
+using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
 [Handler]
 [MapPut(ApiRoutes.Todos.UpdateReminder)]
-[Authorize(Policy = Policies.User)]
+[Authorize(Policy = Policies.Roles.User)]
 public static partial class UpdateReminder
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
+        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
     }
 
     private static async ValueTask HandleAsync(
         Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
+        IBackgroundJobClient jobClient,
+        EmailService emailService,
         CancellationToken ct)
     {
         var userId = currentUserService.GetUserId();
-        var spec = new TodoByUserIdSpecification(command.TodoId, userId);
-        var todo = await context.Todos
-            .WithSpecification(spec)
-            .SingleOrDefaultAsync(ct);
 
-        if (todo is null)
-        {
-            throw new ModelNotFoundException<Todo>(command.TodoId.Value);
-        }
+        var user = await context.Users.Include(u => u.Todos)
+            .FirstOrDefaultAsync(u => u.Id == userId, ct) ?? throw new ModelNotFoundException<User>(userId.Value);
 
-        todo.SetReminder(command.Body.Date, command.Body.ReminderOffsetInMinutes);
+        var todo = user.Todos.FirstOrDefault(t => t.Id == command.TodoId) ??
+                   throw new ModelNotFoundException<Todo>(command.TodoId.Value);
+
+        var hangFireJobId =
+            jobClient.Schedule(() => emailService.SendEmailAsync(new ReminderEmailTemplate(user.Email, todo), ct),
+                TimeSpan.FromMinutes(todo.ReminderOffsetInMinutes!.Value));
+        todo.SetReminder(command.Body.Date, command.Body.ReminderOffsetInMinutes, hangFireJobId);
 
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);
@@ -49,23 +58,6 @@ public static partial class UpdateReminder
         {
             public required DateTime Date { get; init; }
             public required int ReminderOffsetInMinutes { get; init; }
-
-            private static void AdditionalValidations(
-                ValidationResult errors,
-                Command command
-            )
-            {
-                if (command.Body.Date.Kind != DateTimeKind.Utc)
-                {
-                    errors.Add(
-                        new ValidationError
-                        {
-                            PropertyName = "Date",
-                            ErrorMessage = $"The date '{command.Body.Date}' is not a valid utc date."
-                        }
-                    );
-                }
-            }
         }
     }
 }

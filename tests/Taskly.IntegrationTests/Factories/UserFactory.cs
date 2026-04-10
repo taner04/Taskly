@@ -1,3 +1,5 @@
+using Taskly.WebApi.Features.Users.Models;
+
 namespace Taskly.IntegrationTests.Factories;
 
 internal static class UserFactory

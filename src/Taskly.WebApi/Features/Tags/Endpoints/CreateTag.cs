@@ -1,18 +1,21 @@
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Features.Tags.Exceptions;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Taskly.WebApi.Common.Infrastructure.Persistence;
+using Taskly.WebApi.Common.Shared;
+using Taskly.WebApi.Features.Tags.Exceptions;
+using Taskly.WebApi.Features.Tags.Models;
 
 namespace Taskly.WebApi.Features.Tags.Endpoints;
 
 [Handler]
 [MapPost(ApiRoutes.Tags.Create)]
-[Authorize(Policy = Policies.User)]
+[Authorize(Policy = Policies.Roles.User)]
 public static partial class CreateTag
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Tag));
+        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
     }
 
     internal static Created<Response> TransformResult(

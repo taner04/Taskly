@@ -1,18 +1,25 @@
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Features.Todos.Specifications;
 using Ardalis.Specification.EntityFrameworkCore;
+using Taskly.WebApi.Common.Infrastructure.Persistence;
+using Taskly.WebApi.Common.Shared;
+using Taskly.WebApi.Common.Shared.Exceptions;
+using Taskly.WebApi.Features.Tags.Models;
+using Taskly.WebApi.Features.Todos.Models;
+using Taskly.WebApi.Features.Todos.Specifications;
+using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
+using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
 [Handler]
 [MapDelete(ApiRoutes.Todos.RemoveTag)]
-[Authorize(Policy = Policies.User)]
+[Authorize(Policy = Policies.Roles.User)]
 public static partial class RemoveTag
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
+        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
     }
 
     private static async ValueTask HandleAsync(
@@ -26,12 +33,7 @@ public static partial class RemoveTag
         var spec = new TodoByUserIdWithTagsSpecification(command.TodoId, userId);
         var todo = await context.Todos
             .WithSpecification(spec)
-            .SingleOrDefaultAsync(ct);
-
-        if (todo is null)
-        {
-            throw new ModelNotFoundException<Todo>(command.TodoId.Value);
-        }
+            .SingleOrDefaultAsync(ct) ?? throw new ModelNotFoundException<Todo>(command.TodoId.Value);
 
         var tagToRemove = todo.Tags.SingleOrDefault(t => t.Id == command.TagId);
 

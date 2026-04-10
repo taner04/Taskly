@@ -1,11 +1,12 @@
 using System.Net;
-using Taskly.WebApi.Features.Attachments.Endpoints;
-using Taskly.WebApi.Features.Attachments.Models;
-using Taskly.WebApi.Features.Todos.Model;
 using FluentAssertions;
 using Taskly.IntegrationTests.Extensions;
 using Taskly.IntegrationTests.Infrastructure;
 using Taskly.IntegrationTests.Infrastructure.Fixtures;
+using Taskly.WebApi.Features.Attachments.Endpoints;
+using Taskly.WebApi.Features.Attachments.Models;
+using Taskly.WebApi.Features.Todos.Models;
+using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Tests.Attachments;
 

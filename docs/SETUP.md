@@ -64,7 +64,7 @@ Update `appsettings.json` in `src/Taskly.WebApi/` with your SPA credentials:
     }
   },
   "AllowedHosts": "*",
-  "Auth0": {
+  "Auth0Config": {
     "Domain": "your-auth0-domain",
     "Audience": "your-api-audience",
     "ClientId": "your-client-id",
@@ -73,6 +73,10 @@ Update `appsettings.json` in `src/Taskly.WebApi/` with your SPA credentials:
   },
   "ConnectionStrings": {
     "AzureBlobStorage": "your-azure-blob-storage-connection-string"
+  },
+  "Papercut": {
+    "Host": "localhost",
+    "Port": 25
   }
 }
 ```
@@ -86,8 +90,8 @@ dotnet run --project .\tools\Taskly.AppHost
 ```
 
 > [!NOTE]
-> The **ReminderService** is automatically configured with Aspire and requires no additional setup. The Papercut SMTP
-> configuration (Host: localhost, Port: 25) is pre-configured and will work out of the box when running through Aspire.
+> **Email Reminders** are handled by Hangfire jobs scheduled directly in the API. No separate service required.
+> Papercut SMTP server (Host: localhost, Port: 25) is configured and will work out of the box when running through Aspire.
 
 ---
 
@@ -118,3 +122,12 @@ Example claim:
 ```
 
 Ensure your Auth0 application is configured to include role claims in the JWT token for proper authorization.
+
+---
+
+## Desktop Application
+
+> [!WARNING]
+> **Taskly.Desktop** (WPF) is currently **IN PROGRESS** and not fully functional. 
+> Use the API for testing.
+

@@ -1,16 +1,27 @@
 using System.Security.Claims;
-using Taskly.WebApi.Features.Users.Model;
+using Taskly.Shared.Attributes;
+using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.WebApi.Features.Users.Services;
 
+[ServiceInjection(ServiceLifetime.Scoped)]
 public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
 {
+    public const string SubClaim = "sub";
+    public const string RoleClaim = "permissions";
+
     private HttpContext HttpContext => httpContextAccessor.HttpContext
                                        ?? throw new InvalidOperationException("HTTP context is not available.");
 
     private ClaimsPrincipal User => HttpContext.User;
 
-    internal string GetAuth0Id() => GetClaimValue<string>(ClaimTypes.NameIdentifier);
+    internal string GetAuth0Id()
+    {
+        var auth0Id = GetClaimValue<string>(SubClaim);
+        return string.IsNullOrEmpty(auth0Id)
+            ? throw new UnauthorizedAccessException("Auth0 ID claim is missing or empty.")
+            : auth0Id;
+    }
 
     internal UserId GetUserId()
     {

@@ -1,10 +1,12 @@
 using System.Net;
-using Taskly.WebApi.Features.Tags.Model;
-using Taskly.WebApi.Features.Todos.Model;
 using FluentAssertions;
 using Taskly.IntegrationTests.Extensions;
 using Taskly.IntegrationTests.Infrastructure;
 using Taskly.IntegrationTests.Infrastructure.Fixtures;
+using Taskly.WebApi.Features.Tags.Models;
+using Taskly.WebApi.Features.Todos.Models;
+using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
+using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Tests.Tags;
 

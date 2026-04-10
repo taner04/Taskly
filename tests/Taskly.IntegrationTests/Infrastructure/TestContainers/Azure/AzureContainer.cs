@@ -1,12 +1,13 @@
+using DotNet.Testcontainers.Containers;
 using Testcontainers.Azurite;
 
 namespace Taskly.IntegrationTests.Infrastructure.TestContainers.Azure;
 
-public sealed class AzureContainer : ContainerBase<AzuriteContainer>
+public sealed class AzureContainer : Container
 {
-    public string ConnectionString => Container.GetConnectionString();
+    public string ConnectionString => DockerContainer.GetConnectionString();
 
-    protected override AzuriteContainer BuildContainer() =>
+    protected override DockerContainer BuildContainer() =>
         new AzuriteBuilder("mcr.microsoft.com/azure-storage/azurite:latest")
             .WithNetwork(new NetworkBuilder().Build())
             .WithNetworkAliases("azurite")

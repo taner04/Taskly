@@ -1,17 +1,20 @@
-using Taskly.WebApi.Common.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Taskly.WebApi.Common.Infrastructure.Persistence;
+using Taskly.WebApi.Common.Shared;
+using Taskly.WebApi.Features.Todos.Models;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
 [Handler]
 [MapPost(ApiRoutes.Todos.Create)]
-[Authorize(Policy = Policies.User)]
+[Authorize(Policy = Policies.Roles.User)]
 public static partial class CreateTodo
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
+        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
     }
 
     internal static Created<Response> TransformResult(

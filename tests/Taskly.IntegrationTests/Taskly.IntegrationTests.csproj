@@ -28,7 +28,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Taskly.WebApi.Client\Taskly.WebApi.Client.csproj"/>
-        <ProjectReference Include="..\..\src\Taskly.ReminderService\Taskly.ReminderService.csproj"/>
         <ProjectReference Include="..\..\tools\Taskly.MigrationService\Taskly.MigrationService.csproj"/>
     </ItemGroup>
 

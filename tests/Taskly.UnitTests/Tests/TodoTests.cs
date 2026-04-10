@@ -1,7 +1,7 @@
-using Taskly.WebApi.Features.Shared.Exceptions;
+using Taskly.WebApi.Common.Shared.Exceptions;
 using Taskly.WebApi.Features.Todos.Exceptions;
-using Taskly.WebApi.Features.Todos.Model;
-using Taskly.WebApi.Features.Users.Model;
+using Taskly.WebApi.Features.Todos.Models;
+using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.UnitTests.Tests;
 
@@ -169,7 +169,7 @@ public sealed class TodoTests
         var todo = CreateTodo();
         var deadline = DateTime.UtcNow.AddHours(3);
 
-        todo.SetReminder(deadline, 30);
+        todo.SetReminder(deadline, 30, "hangfireId");
 
         Assert.Equal(deadline, todo.Deadline);
         Assert.Equal(30, todo.ReminderOffsetInMinutes);
@@ -183,7 +183,7 @@ public sealed class TodoTests
         var past = DateTime.UtcNow.AddHours(-1);
 
         Assert.Throws<TodoInvalidDeadlineException>(() =>
-            todo.SetReminder(past, 30));
+            todo.SetReminder(past, 30, "hangfireId"));
     }
 
     [Fact]
@@ -193,7 +193,7 @@ public sealed class TodoTests
         var deadline = DateTime.UtcNow.AddHours(2);
 
         Assert.Throws<TodoInvalidDeadlineException>(() =>
-            todo.SetReminder(deadline, -5));
+            todo.SetReminder(deadline, -5, "hangfireId"));
     }
 
     [Fact]
@@ -203,7 +203,7 @@ public sealed class TodoTests
         var deadline = DateTime.UtcNow.AddMinutes(20);
 
         Assert.Throws<TodoInvalidDeadlineException>(() =>
-            todo.SetReminder(deadline, 999));
+            todo.SetReminder(deadline, 999, "hangfireId"));
     }
 
     [Fact]
@@ -212,7 +212,7 @@ public sealed class TodoTests
         var todo = CreateTodo();
         var deadline = DateTime.UtcNow.AddHours(3);
 
-        todo.SetReminder(deadline, 30);
+        todo.SetReminder(deadline, 30, "hangfireId");
         todo.ClearReminder();
 
         Assert.Null(todo.Deadline);

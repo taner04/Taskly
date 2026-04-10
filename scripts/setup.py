@@ -34,11 +34,7 @@ APPSETTINGS_API_TEMPLATE = {
     },
     "ConnectionStrings": {
         "AzureBlobStorage": "your-azure-blob-storage-connection-string"
-    }
-}
-
-APPSETTINGS_REMINDER_SERVICE_TEMPLATE = {
-    "Logging": LOGGING_TEMPLATE,
+    },
     "Papercut": {
         "Host": "localhost",
         "Port": 25
@@ -67,14 +63,6 @@ def create_appsettings_api() -> None:
     )
 
 
-def create_appsettings_reminder_service() -> None:
-    """Create appsettings.json for the ReminderService project."""
-    create_appsettings(
-        project_root / "src" / "Taskly.ReminderService" / "appsettings.json",
-        APPSETTINGS_REMINDER_SERVICE_TEMPLATE,
-    )
-
-
 # =========================================================================
 # Main Entry Point
 # =========================================================================
@@ -84,7 +72,6 @@ def main() -> None:
     """Initialize all required configuration files."""
     console_logger.info("Initializing Taskly configuration files...")
     create_appsettings_api()
-    create_appsettings_reminder_service()
     console_logger.success("Initialization completed! You can now configure your values.")
 
     console_logger.info("Creating initial database migration...")

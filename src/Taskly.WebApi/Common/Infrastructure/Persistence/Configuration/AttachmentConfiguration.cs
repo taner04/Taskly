@@ -2,15 +2,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Taskly.WebApi.Common.Infrastructure.Persistence.Configuration;
 
-internal sealed class AttachmentConfiguration : AuditableConfiguration<Attachment>
+internal sealed class AttachmentConfiguration : EntityConfiguration<Attachment, AttachmentId>
 {
     protected override void PostConfigure(
         EntityTypeBuilder<Attachment> builder)
     {
-        builder.ToTable("Attachments");
-
-        builder.HasKey(t => t.Id);
-
         builder.Property(t => t.FileName)
             .IsRequired()
             .HasMaxLength(Attachment.MaxFileNameLength);

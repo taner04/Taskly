@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Logging;
-using Taskly.ServiceDefaults;
 using Taskly.IntegrationTests.Infrastructure.Composition.Mocks.Database;
 using Taskly.IntegrationTests.Infrastructure.Composition.Mocks.Jwt;
-using Taskly.WebApi.Client.Common.Extensions;
+using Taskly.ServiceDefaults;
 
 namespace Taskly.IntegrationTests.Infrastructure;
 

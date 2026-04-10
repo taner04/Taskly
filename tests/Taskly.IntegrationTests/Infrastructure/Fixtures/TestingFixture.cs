@@ -5,15 +5,16 @@ using Taskly.IntegrationTests.Infrastructure.TestContainers.Azure;
 using Taskly.IntegrationTests.Infrastructure.TestContainers.Postgres;
 using Taskly.WebApi.Client.Abstractions;
 using Taskly.WebApi.Client.Common;
+using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Infrastructure.Fixtures;
 
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 public sealed class TestingFixture : IAsyncLifetime
 {
-    private readonly AzureTestBlobStorage _azureTestBlobStorage = new();
+    private readonly AzureContainerHub _azureContainerHub = new();
 
-    private readonly PostgresTestDatabase _postgresTestDatabase = new();
+    private readonly PostgresContainerHub _postgresContainerHub = new();
 
     private string _adminJwtToken = null!;
     private ApiHttpClient _apiHttpClient = null!;
@@ -24,12 +25,9 @@ public sealed class TestingFixture : IAsyncLifetime
     public async ValueTask InitializeAsync()
     {
         InitilizeTokens();
+        await InitilizeContainersAsync();
 
-        await _postgresTestDatabase.InitializeContainerAsync();
-
-        await _azureTestBlobStorage.InitializeContainerAsync();
-
-        _webApiFactory = new WebApiFactory(_postgresTestDatabase.DbConnection, _azureTestBlobStorage.ConnectionString);
+        _webApiFactory = new WebApiFactory(_postgresContainerHub.DbConnection, _azureContainerHub.ConnectionString);
         _serviceScopeFactory = _webApiFactory.Services.GetRequiredService<IServiceScopeFactory>();
 
         _apiHttpClient = new ApiHttpClient(_webApiFactory.CreateClient());
@@ -38,18 +36,19 @@ public sealed class TestingFixture : IAsyncLifetime
     public async ValueTask DisposeAsync()
     {
         await _webApiFactory.DisposeAsync();
-        await _postgresTestDatabase.DisposeAsync();
+        await _postgresContainerHub.DisposeAsync();
+        await _azureContainerHub.DisposeAsync();
     }
 
     public async Task SetUpAsync()
     {
-        _apiHttpClient?.ClearAccessToken();
+        _apiHttpClient.ClearAccessToken();
 
-        await _postgresTestDatabase.ResetContainerAsync();
-        await _azureTestBlobStorage.ResetContainerAsync();
+        await _postgresContainerHub.ResetContainerAsync();
+        await _azureContainerHub.ResetContainerAsync();
     }
 
-    public async Task<UserId> CreateForeignUserAsync() => await _postgresTestDatabase.CreateForeignUserAsync();
+    public async Task<UserId> CreateForeignUserAsync() => await _postgresContainerHub.CreateForeignUserAsync();
 
     public IServiceScope CreateScope() => _serviceScopeFactory.CreateScope();
 
@@ -72,5 +71,11 @@ public sealed class TestingFixture : IAsyncLifetime
     {
         _userJwtToken = JwtTokenMock.CreateToken(UserFactory.Sub, UserRole.User);
         _adminJwtToken = JwtTokenMock.CreateToken(UserFactory.Sub, UserRole.Admin);
+    }
+
+    private async ValueTask InitilizeContainersAsync()
+    {
+        await _postgresContainerHub.InitializeContainerAsync();
+        await _azureContainerHub.InitializeContainerAsync();
     }
 }

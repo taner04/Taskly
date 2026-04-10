@@ -7,7 +7,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Taskly.WebApi\Taskly.WebApi.csproj"/>
-        <ProjectReference Include="..\..\src\Taskly.ReminderService\Taskly.ReminderService.csproj"/>
         <ProjectReference Include="..\Taskly.MigrationService\Taskly.MigrationService.csproj"/>
         <ProjectReference Include="..\Taskly.ServiceDefaults\Taskly.ServiceDefaults.csproj" IsAspireProjectResource="false"/>
     </ItemGroup>

@@ -1,21 +1,22 @@
 using System.ComponentModel.DataAnnotations;
 using Taskly.WebApi.Common.Infrastructure.Persistence;
+using Taskly.WebApi.Common.Shared;
 using Taskly.WebApi.Features.Users.Exceptions;
-using Taskly.WebApi.Features.Users.Model;
-using Taskly.WebApi.Features.Users.Exceptions;
+using Taskly.WebApi.Features.Users.Models;
 using ValidationResult = Immediate.Validations.Shared.ValidationResult;
 
 namespace Taskly.WebApi.Features.Users.Endpoints;
 
 [Handler]
 [MapGet(ApiRoutes.Users.GetByEmail)]
-[Authorize(Policy = Policies.Admin)]
+[Authorize(Policy = Policies.Roles.Admin)]
 public static partial class GetUserByEmail
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(User));
+        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
     }
 
     private static async ValueTask<User> HandleAsync(
@@ -24,9 +25,9 @@ public static partial class GetUserByEmail
         CancellationToken ct)
     {
         var user = await context.Users
-            .SingleOrDefaultAsync(u => u.Email == query.Email, ct);
+            .SingleOrDefaultAsync(u => u.Email == query.Email, ct) ?? throw new UserEmailNotFoundException(query.Email);
 
-        return user ?? throw new UserEmailNotFoundException(query.Email);
+        return user;
     }
 
     [Validate]

@@ -1,8 +1,8 @@
-using Taskly.WebApi.Features.Attachments.Endpoints;
-using Taskly.WebApi.Features.Attachments.Models;
-using Taskly.WebApi.Features.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Refit;
+using Taskly.WebApi.Common.Shared;
+using Taskly.WebApi.Features.Attachments.Endpoints;
+using Taskly.WebApi.Features.Attachments.Models;
 
 namespace Taskly.WebApi.Client.Abstractions.Endpoints;
 

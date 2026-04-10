@@ -1,12 +1,14 @@
 using System.Net;
-using Taskly.WebApi.Features.Attachments.Models;
-using Taskly.WebApi.Features.Tags.Model;
-using Taskly.WebApi.Features.Todos.Endpoints;
-using Taskly.WebApi.Features.Todos.Model;
 using FluentAssertions;
 using Taskly.IntegrationTests.Extensions;
 using Taskly.IntegrationTests.Infrastructure;
 using Taskly.IntegrationTests.Infrastructure.Fixtures;
+using Taskly.WebApi.Common.Shared.Pagination;
+using Taskly.WebApi.Features.Attachments.Models;
+using Taskly.WebApi.Features.Tags.Models;
+using Taskly.WebApi.Features.Todos.Endpoints;
+using Taskly.WebApi.Features.Todos.Models;
+using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Tests.Todos;
 
@@ -41,7 +43,9 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         var client = CreateUnauthenticatedClient();
 
         // Act
-        var response = await client.GetTodosAsync(CurrentCancellationToken);
+        var response = await client.GetTodosAsync(
+            new GetTodos.Query(0, 10),
+            CurrentCancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -54,13 +58,15 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         var client = CreateAuthenticatedUserClient();
 
         // Act
-        var response = await client.GetTodosAsync(CurrentCancellationToken);
+        var response = await client.GetTodosAsync(
+            new GetTodos.Query(0, 10),
+            CurrentCancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var list = await response.MapTo<List<GetTodos.Response>>(CurrentCancellationToken);
-        list.Should().BeEmpty();
+        var result = await response.MapTo<PaginationResult<GetTodos.Response>>(CurrentCancellationToken);
+        result.Items.Should().BeEmpty();
     }
 
     [Fact]
@@ -84,16 +90,18 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
-        var response = await client.GetTodosAsync(CurrentCancellationToken);
+        var response = await client.GetTodosAsync(
+            new GetTodos.Query(0, 10),
+            CurrentCancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var list = await response.MapTo<List<GetTodos.Response>>(CurrentCancellationToken);
+        var result = await response.MapTo<PaginationResult<GetTodos.Response>>(CurrentCancellationToken);
 
-        list.Should().HaveCount(2);
-        list.Select(t => t.Title).Should().BeEquivalentTo("Todo A", "Todo B");
-        list.Should().OnlyContain(t => t.UserId == userId);
+        result.Items.Should().HaveCount(2);
+        result.Items.Select(t => t.Title).Should().BeEquivalentTo("Todo A", "Todo B");
+        result.Items.Should().OnlyContain(t => t.UserId == userId);
     }
 
     [Fact]
@@ -123,16 +131,18 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
-        var response = await client.GetTodosAsync(CurrentCancellationToken);
+        var response = await client.GetTodosAsync(
+            new GetTodos.Query(0, 10),
+            CurrentCancellationToken);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var list = await response.MapTo<List<GetTodos.Response>>(CurrentCancellationToken);
+        var result = await response.MapTo<PaginationResult<GetTodos.Response>>(CurrentCancellationToken);
 
-        list.Should().HaveCount(1);
+        result.Items.Should().HaveCount(1);
 
-        var item = Enumerable.First(list);
+        var item = result.Items.First();
 
         item.Id.Should().Be(item.Id);
         item.Title.Should().Be(todo.Title);

@@ -23,22 +23,14 @@ var blobStorage = builder.AddContainer(AppHostConstants.Azure, "mcr.microsoft.co
     .WithHttpEndpoint(10001, 10001, "queue") // Queue service
     .WithHttpEndpoint(10002, 10002, "table"); // Table service
 
+var papercut = builder.AddPapercutSmtp("papercut", 80, 25);
 
-var api = builder.AddProject<Taskly_WebApi>(AppHostConstants.Api)
+builder.AddProject<Taskly_WebApi>(AppHostConstants.Api)
     .WithReference(tasklyDb)
     .WaitFor(tasklyDb)
     .WaitFor(blobStorage)
-    .WaitForCompletion(migration);
-
-
-var papercut = builder.AddPapercutSmtp("papercut", 80, 25);
-
-builder.AddProject<Taskly_ReminderService>(AppHostConstants.ReminderService)
-    .WithReference(tasklyDb)
-    .WaitFor(tasklyDb)
     .WithReference(papercut)
     .WaitFor(papercut)
-    .WaitForCompletion(migration)
-    .WaitFor(api);
+    .WaitForCompletion(migration);
 
 builder.Build().Run();

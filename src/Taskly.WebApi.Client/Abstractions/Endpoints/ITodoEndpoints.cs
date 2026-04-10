@@ -1,9 +1,9 @@
-using Taskly.WebApi.Features.Attachments.Models;
-using Taskly.WebApi.Features.Shared;
-using Taskly.WebApi.Features.Tags.Model;
-using Taskly.WebApi.Features.Todos.Endpoints;
-using Taskly.WebApi.Features.Todos.Model;
 using Refit;
+using Taskly.WebApi.Common.Shared;
+using Taskly.WebApi.Features.Attachments.Models;
+using Taskly.WebApi.Features.Todos.Endpoints;
+using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
+using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Client.Abstractions.Endpoints;
 
@@ -34,6 +34,7 @@ public interface ITodoEndpoints
 
     [Get(ApiRoutes.Todos.GetTodos)]
     Task<HttpResponseMessage> GetTodosAsync(
+        GetTodos.Query query,
         CancellationToken cancellationToken = default);
 
     [Delete(ApiRoutes.Todos.RemoveAttachment)]

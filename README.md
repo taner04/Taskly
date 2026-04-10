@@ -17,7 +17,7 @@ authentication with **Auth0** and cloud-native architecture with **.NET Aspire**
 - **📦 RESTful API** — Clean, feature-driven architecture with CQRS patterns
 - **💾 Data Persistence** — PostgreSQL database with Entity Framework Core
 - **📂 File Storage** — Azure Blob Storage with secure SAS URLs for attachments
-- **📧 Email Reminders** — Background reminder service for todo notifications
+- **📧 Email Reminders** — Hangfire-scheduled reminder emails via SMTP
 - **🧪 Comprehensive Testing** — Integration and unit tests with mock infrastructure
 - **☁️ Cloud-Native** — Built with .NET Aspire for easy cloud deployment
 - **📖 Interactive API Docs** — Scalar UI for API exploration
@@ -61,7 +61,7 @@ See [Setup Guide](docs/SETUP.md) for detailed setup instructions.
 | **Database**       | PostgreSQL, Entity Framework Core |
 | **Authentication** | Auth0, JWT Bearer                 |
 | **File Storage**   | Azure Blob Storage                |
-| **Email Service**  | MailKit                           |
+| **Email Service**  | MailKit, Hangfire                 |
 | **Infrastructure** | Docker, .NET Aspire               |
 | **Testing**        | xUnit, Refit, Integration Tests   |
 
@@ -84,9 +84,8 @@ Taskly/
 ├── docs/                        # Documentation
 ├── scripts/                      # Python automation scripts
 ├── src/
-│   ├── Taskly.Desktop/          # WPF Desktop Client
+│   ├── Taskly.Desktop/          # WPF Desktop Client (IN PROGRESS)
 │   ├── Taskly.WebApi/           # ASP.NET Core API
-│   ├── Taskly.ReminderService/  # Email service
 │   ├── Taskly.Shared/           # Shared utilities
 │   └── Taskly.WebApi.Client/    # API client library
 ├── tests/

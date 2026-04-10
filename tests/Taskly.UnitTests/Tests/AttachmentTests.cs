@@ -1,6 +1,6 @@
 using Taskly.WebApi.Features.Attachments.Exceptions;
 using Taskly.WebApi.Features.Attachments.Models;
-using Taskly.WebApi.Features.Todos.Model;
+using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.UnitTests.Tests;
 

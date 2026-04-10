@@ -1,12 +1,15 @@
-using Taskly.WebApi.Common.Composition.Options;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Taskly.Shared.Extensions;
+using Taskly.WebApi.Common.Composition.Options;
 
 namespace Taskly.WebApi.Common.Composition.Configs.OpenApi;
 
-internal sealed class BearerDocumentTransformer(IConfiguration configuration) : IOpenApiDocumentTransformer
+internal sealed class BearerDocumentTransformer(IOptions<Auth0Config> options) : IOpenApiDocumentTransformer
 {
+    private readonly Auth0Config _auth0Config = options.Value;
+    
     public Task TransformAsync(
         OpenApiDocument document,
         OpenApiDocumentTransformerContext context,
@@ -24,8 +27,6 @@ internal sealed class BearerDocumentTransformer(IConfiguration configuration) : 
             Description = "JWT Bearer Token"
         };
 
-        var auth0Config = configuration.GetOptions<Auth0Config>();
-
         document.Components.SecuritySchemes["OAuth2"] = new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.OAuth2,
@@ -34,8 +35,8 @@ internal sealed class BearerDocumentTransformer(IConfiguration configuration) : 
             {
                 AuthorizationCode = new OpenApiOAuthFlow
                 {
-                    AuthorizationUrl = new Uri($"https://{auth0Config.Domain}/authorize"),
-                    TokenUrl = new Uri($"https://{auth0Config.Domain}/oauth/token"),
+                    AuthorizationUrl = new Uri($"https://{_auth0Config.Domain}/authorize"),
+                    TokenUrl = new Uri($"https://{_auth0Config.Domain}/oauth/token"),
                     Scopes = new Dictionary<string, string>()
                 }
             }

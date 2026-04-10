@@ -1,9 +1,11 @@
 using System.Net;
-using Taskly.WebApi.Features.Todos.Model;
 using FluentAssertions;
 using Taskly.IntegrationTests.Extensions;
 using Taskly.IntegrationTests.Infrastructure;
 using Taskly.IntegrationTests.Infrastructure.Fixtures;
+using Taskly.WebApi.Features.Todos.Models;
+using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
+using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Tests.Todos;
 
@@ -19,7 +21,7 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
             userId);
 
         var deadline = DateTime.UtcNow.AddHours(2);
-        todo.SetReminder(deadline, 30);
+        todo.SetReminder(deadline, 30, "hangfireId");
 
         return todo;
     }
@@ -101,7 +103,7 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
             foreignUserId);
 
         var deadline = DateTime.UtcNow.AddHours(5);
-        foreignTodo.SetReminder(deadline, 60);
+        foreignTodo.SetReminder(deadline, 60, "hangfireId");
 
         await using var dbContext = GetDbContext();
         dbContext.Add(foreignTodo);

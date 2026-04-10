@@ -1,14 +1,18 @@
-using Taskly.WebApi.Common.Composition.Options;
-using Taskly.WebApi.Common.Composition.Serialization;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Infrastructure.Persistence.Interceptors;
-using Taskly.WebApi.Features.Attachments.Services;
+using System.Threading.RateLimiting;
 using Azure.Storage.Blobs;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Taskly.ServiceDefaults;
 using Taskly.Shared.Extensions;
+using Taskly.WebApi.Common.Composition.Options;
+using Taskly.WebApi.Common.Composition.Serialization;
+using Taskly.WebApi.Common.Infrastructure.Persistence;
+using Taskly.WebApi.Common.Infrastructure.Persistence.Interceptors;
+using Taskly.WebApi.Common.Shared;
+using Taskly.WebApi.Features.Todos.Models;
 
 namespace Taskly.WebApi.Common.Composition.Extensions;
 
@@ -19,8 +23,6 @@ internal static class ServiceCollectionExtensions
         internal IServiceCollection AddApplication(
             IConfiguration configuration)
         {
-            services.AddScoped<CurrentUserService>();
-
             services.AddSingleton(_ =>
             {
                 var options = new BlobClientOptions(BlobClientOptions.ServiceVersion.V2024_11_04);
@@ -30,7 +32,6 @@ internal static class ServiceCollectionExtensions
                     options);
             });
 
-            services.AddSingleton<AttachmentService>();
             return services;
         }
 
@@ -47,17 +48,47 @@ internal static class ServiceCollectionExtensions
             {
                 options.Authority = $"https://{auth0Config.Domain}";
                 options.Audience = auth0Config.Audience;
+                options.MapInboundClaims =
+                    false; // Prevents mapping of standard JWT claims to Microsoft-specific claim types
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidAudience = auth0Config.Audience,
-                    ValidIssuer = $"https://{auth0Config.Domain}/"
+                    ValidIssuer = $"https://{auth0Config.Domain}/",
+                    RoleClaimType = CurrentUserService.RoleClaim,
+                    NameClaimType = CurrentUserService.SubClaim
                 };
             });
 
             services.AddAuthorizationBuilder()
-                .AddPolicy(Policies.Admin, policy => policy.RequireClaim("permissions", "admin:create", "admin:read"))
-                .AddPolicy(Policies.User, policy => policy.RequireClaim("permissions", "user:create", "user:read"));
+                .AddPolicy(Policies.Roles.Admin,
+                    policy => policy.RequireClaim("permissions", "admin:create", "admin:read"))
+                .AddPolicy(Policies.Roles.User,
+                    policy => policy.RequireClaim("permissions", "user:create", "user:read"));
+
+            return services;
+        }
+
+        internal IServiceCollection AddRateLimiting()
+        {
+            services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                options.AddPolicy(Policies.RateLimiting.Global, context =>
+                {
+                    var userSub = context.User.FindFirst(CurrentUserService.SubClaim)?.Value;
+
+                    return RateLimitPartition.GetTokenBucketLimiter(userSub, _ => new TokenBucketRateLimiterOptions
+                    {
+                        TokenLimit = 100,
+                        TokensPerPeriod = 100,
+                        ReplenishmentPeriod = TimeSpan.FromMinutes(1)
+                    });
+                });
+
+                //TODO: Ratelimit for webhook
+            });
 
             return services;
         }
@@ -75,6 +106,9 @@ internal static class ServiceCollectionExtensions
         {
             services.AddScoped<ISaveChangesInterceptor, AuditableInterceptor>();
 
+            var connectionString = builder.Configuration.GetConnectionString(AppHostConstants.Database);
+            ArgumentNullException.ThrowIfNull(connectionString);
+
             services.AddDbContext<TasklyDbContext>((
                 sp,
                 opt) =>
@@ -87,8 +121,22 @@ internal static class ServiceCollectionExtensions
                     opt.EnableDetailedErrors();
                 }
 
-                opt.UseNpgsql(builder.Configuration.GetConnectionString(AppHostConstants.Database));
+                opt.UseNpgsql(connectionString);
             });
+
+            services.RegisterAutoServices(typeof(Program).Assembly);
+
+            services.AddHangfire(options =>
+            {
+                options.UseSimpleAssemblyNameTypeSerializer();
+                options.UseRecommendedSerializerSettings();
+                options.UsePostgreSqlStorage(option =>
+                {
+                    //TODO: configure properly
+                });
+            });
+
+            services.AddHangfireServer(options => { options.SchedulePollingInterval = TimeSpan.FromSeconds(1); });
 
             return services;
         }
@@ -98,6 +146,7 @@ internal static class ServiceCollectionExtensions
             services.ConfigureHttpJsonOptions(options =>
             {
                 options.SerializerOptions.Converters.Add(new FlexibleEnumConverter<TodoPriority>());
+                options.SerializerOptions.Converters.Add(new FlexibleDateTimeConverter());
             });
 
             return services;

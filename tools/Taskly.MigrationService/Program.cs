@@ -1,6 +1,6 @@
-using Taskly.WebApi.Common.Infrastructure.Persistence;
 using Taskly.MigrationService;
 using Taskly.ServiceDefaults;
+using Taskly.WebApi.Common.Infrastructure.Persistence;
 
 var builder = Host.CreateApplicationBuilder(args);
 

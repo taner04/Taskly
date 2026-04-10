@@ -1,0 +1,8 @@
+﻿namespace Taskly.WebApi.Common.Infrastructure.Services.Emails;
+
+internal interface IEmailTemplate
+{
+    string To { get; }
+    string Subject { get; }
+    string Body { get; }
+}

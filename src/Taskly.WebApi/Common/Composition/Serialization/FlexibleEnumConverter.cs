@@ -17,7 +17,6 @@ internal sealed class FlexibleEnumConverter<T> : JsonConverter<T> where T : stru
                     throw new JsonException($"{typeof(T).Name} value cannot be null or empty");
                 }
 
-                // Try case-insensitive match
                 return Enum.TryParse<T>(stringValue, true, out var parsedEnum)
                     ? parsedEnum
                     : throw new JsonException(

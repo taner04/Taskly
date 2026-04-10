@@ -1,10 +1,13 @@
 using Taskly.WebApi.Common.Infrastructure.Persistence;
+using Taskly.WebApi.Common.Shared;
+using Taskly.WebApi.Common.Shared.Exceptions;
 
 namespace Taskly.WebApi.Features.Attachments.Endpoints;
 
+//TODO: migrate to event grid
 [Handler]
 [MapPost(ApiRoutes.Attachments.CompleteUpload)]
-[Authorize(Policy = Policies.User)]
+[Authorize(Policy = Policies.Roles.User)]
 public static partial class CompleteUpload
 {
     internal static void CustomizeEndpoint(

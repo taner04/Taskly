@@ -1,8 +1,5 @@
-
-
-
 using System.Diagnostics;
-using Taskly.WebApi.Common;
+using Taskly.WebApi.Common.Shared.Exceptions;
 
 namespace Taskly.WebApi.Common.Composition.Configs;
 
@@ -31,7 +28,7 @@ internal static class ProblemDetailsConfig
                         )
                 },
 
-                ModelBaseException modelsException => new ApiProblemDetails
+                TasklyException modelsException => new ApiProblemDetails
                 {
                     Status = (int)modelsException.StatusCode,
                     Title = modelsException.Title,

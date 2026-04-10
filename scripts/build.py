@@ -44,15 +44,15 @@ def is_docker_running() -> bool:
 
 
 def does_migration_exist() -> bool:
-    migrations_folder = project_root / "src" / "Api" / "Common" / "Infrastructure" / "Persistence" / "Migrations"
+    migrations_folder = project_root / "src" / "Taskly.WebApi" / "Common" / "Infrastructure" / "Persistence" / "Migrations"
     return migrations_folder.exists()
 
 def does_appsettings_api_exist() -> bool:
-    appsettings_file = project_root / "src" / "Api" / "appsettings.json"
+    appsettings_file = project_root / "src" / "Taskly.WebApi" / "appsettings.json"
     return appsettings_file.exists()
 
 def does_appsettings_integration_exist() -> bool:
-    appsettings_file = project_root / "tests" / "IntegrationTests" / "appsettings.integration.json"
+    appsettings_file = project_root / "tests" / "Taskly.IntegrationTests" / "appsettings.integration.json"
     return appsettings_file.exists()
 
 

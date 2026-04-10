@@ -1,6 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
+using Taskly.WebApi.Common.Shared.Models;
 using Taskly.WebApi.Features.Attachments.Exceptions;
-using Taskly.WebApi.Features.Shared.Models;
+using Taskly.WebApi.Features.Todos.Models;
+using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Features.Attachments.Models;
 

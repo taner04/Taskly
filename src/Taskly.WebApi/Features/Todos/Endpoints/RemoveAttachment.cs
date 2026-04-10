@@ -1,20 +1,25 @@
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Features.Attachments.Services;
-using Taskly.WebApi.Features.Todos.Exceptions;
-using Taskly.WebApi.Features.Todos.Specifications;
 using Ardalis.Specification.EntityFrameworkCore;
+using Taskly.WebApi.Common.Infrastructure.Persistence;
+using Taskly.WebApi.Common.Shared;
+using Taskly.WebApi.Common.Shared.Exceptions;
+using Taskly.WebApi.Features.Attachments.Exceptions;
+using Taskly.WebApi.Features.Attachments.Services;
+using Taskly.WebApi.Features.Todos.Models;
+using Taskly.WebApi.Features.Todos.Specifications;
+using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
 [Handler]
 [MapDelete(ApiRoutes.Todos.RemoveAttachment)]
-[Authorize(Policy = Policies.User)]
+[Authorize(Policy = Policies.Roles.User)]
 public static partial class RemoveAttachment
 {
     internal static void CustomizeEndpoint(
         IEndpointConventionBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
+        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
     }
 
     private static async ValueTask HandleAsync(
@@ -29,12 +34,7 @@ public static partial class RemoveAttachment
         var spec = new TodoByUserIdSpecificationWithAttachmentsSpec(command.TodoId, userId);
         var todo = await context.Todos
             .WithSpecification(spec)
-            .SingleOrDefaultAsync(ct);
-
-        if (todo is null)
-        {
-            throw new ModelNotFoundException<Todo>(command.TodoId.Value);
-        }
+            .SingleOrDefaultAsync(ct) ?? throw new ModelNotFoundException<Todo>(command.TodoId.Value);
 
         var attachment = todo.Attachments.SingleOrDefault(a => a.Id == command.AttachmentId);
 
@@ -47,7 +47,7 @@ public static partial class RemoveAttachment
 
         if (!await attachments.DeleteAsync(attachment, ct))
         {
-            throw new TodoDeleteAttachmentException(command.AttachmentId);
+            throw new AttachmentDeletionFailedException(command.AttachmentId);
         }
 
         await context.SaveChangesAsync(ct);

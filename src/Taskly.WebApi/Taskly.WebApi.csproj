@@ -4,9 +4,12 @@
         <PackageReference Include="Ardalis.Specification.EntityFrameworkCore"/>
         <PackageReference Include="Auth0.AspNetCore.Authentication.Api"/>
         <PackageReference Include="Azure.Storage.Blobs"/>
+        <PackageReference Include="Hangfire.AspNetCore"/>
+        <PackageReference Include="Hangfire.PostgreSql"/>
         <PackageReference Include="Immediate.Apis"/>
         <PackageReference Include="Immediate.Handlers"/>
         <PackageReference Include="Immediate.Validations"/>
+        <PackageReference Include="MailKit"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore"/>
@@ -19,6 +22,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="MimeKit"/>
         <PackageReference Include="Newtonsoft.Json"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
         <PackageReference Include="Refit"/>

@@ -1,6 +1,6 @@
-using Taskly.WebApi.Features.Shared.Exceptions;
-using Taskly.WebApi.Features.Tags.Model;
-using Taskly.WebApi.Features.Users.Model;
+using Taskly.WebApi.Common.Shared.Exceptions;
+using Taskly.WebApi.Features.Tags.Models;
+using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.UnitTests.Tests;
 

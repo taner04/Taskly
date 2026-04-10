@@ -1,16 +1,13 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Taskly.WebApi.Features.Todos.Models;
 
 namespace Taskly.WebApi.Common.Infrastructure.Persistence.Configuration;
 
-internal sealed class TodoConfiguration : AuditableConfiguration<Todo>
+internal sealed class TodoConfiguration : EntityConfiguration<Todo, TodoId>
 {
     protected override void PostConfigure(
         EntityTypeBuilder<Todo> builder)
     {
-        builder.ToTable("Todos");
-
-        builder.HasKey(t => t.Id);
-
         builder.Property(t => t.Title)
             .IsRequired()
             .HasMaxLength(Todo.MaxTitleLength);
@@ -42,6 +39,9 @@ internal sealed class TodoConfiguration : AuditableConfiguration<Todo>
             .IsRequired(false);
 
         builder.Property(t => t.ReminderOffsetInMinutes)
+            .IsRequired(false);
+        
+        builder.Property(t => t.HangfireJobId)
             .IsRequired(false);
 
         builder.Ignore(t => t.ReminderAt);
