@@ -1,0 +1,5 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <ItemGroup>
+        <ProjectReference Include="..\Taskly.WebApi\Taskly.WebApi.csproj"/>
+    </ItemGroup>
+</Project>
