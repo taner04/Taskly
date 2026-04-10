@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using Hangfire;
 using Taskly.ServiceDefaults;
 using Taskly.WebApi.Common.Composition.Configs;
 using Taskly.WebApi.Common.Composition.Configs.OpenApi;

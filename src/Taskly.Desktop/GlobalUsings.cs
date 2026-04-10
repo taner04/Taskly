@@ -1,4 +1,13 @@
 global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
 global using System;
+global using System.IO;
 global using System.Windows;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using Taskly.Desktop.Common.Attributes;
+global using Taskly.Shared.Attributes;
+global using Wpf.Ui;
+global using Wpf.Ui.Abstractions.Controls;
+global using Wpf.Ui.Appearance;
+global using Wpf.Ui.Controls;

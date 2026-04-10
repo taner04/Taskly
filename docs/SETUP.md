@@ -91,7 +91,8 @@ dotnet run --project .\tools\Taskly.AppHost
 
 > [!NOTE]
 > **Email Reminders** are handled by Hangfire jobs scheduled directly in the API. No separate service required.
-> Papercut SMTP server (Host: localhost, Port: 25) is configured and will work out of the box when running through Aspire.
+> Papercut SMTP server (Host: localhost, Port: 25) is configured and will work out of the box when running through
+> Aspire.
 
 ---
 
@@ -128,6 +129,6 @@ Ensure your Auth0 application is configured to include role claims in the JWT to
 ## Desktop Application
 
 > [!WARNING]
-> **Taskly.Desktop** (WPF) is currently **IN PROGRESS** and not fully functional. 
+> **Taskly.Desktop** (WPF) is currently **IN PROGRESS** and not fully functional.
 > Use the API for testing.
 

@@ -1,6 +1,3 @@
-using Wpf.Ui.Appearance;
-using Wpf.Ui.Controls;
-
 namespace Taskly.Desktop.MVVM.Settings.Models;
 
 public sealed class AppTheme(WindowBackdropType backdropType, ApplicationTheme theme)

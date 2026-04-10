@@ -1,6 +1,3 @@
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Common.Shared.Exceptions;
 using Taskly.WebApi.Features.Attachments.Services;
 
 namespace Taskly.WebApi.Features.Attachments.Endpoints;

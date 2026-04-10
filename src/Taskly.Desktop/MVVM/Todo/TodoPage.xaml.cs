@@ -1,6 +1,3 @@
-using Taskly.Desktop.Common.Attributes;
-using Wpf.Ui.Abstractions.Controls;
-
 namespace Taskly.Desktop.MVVM.Todo;
 
 [PageInjection(typeof(TodoPageViewModel))]

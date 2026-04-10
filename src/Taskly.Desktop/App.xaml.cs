@@ -1,16 +1,12 @@
-using System.IO;
 using System.Windows.Threading;
 using Auth0.OidcClient;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Taskly.Desktop.Common.Composition.Extensions;
 using Taskly.Desktop.Common.Composition.Options;
 using Taskly.Desktop.Common.Infrastructure.Authentication;
 using Taskly.Shared.Extensions;
 using Taskly.WebApi.Client.Abstractions;
 using Taskly.WebApi.Client.Common.Extensions;
-using Wpf.Ui;
 using Wpf.Ui.DependencyInjection;
 
 namespace Taskly.Desktop;

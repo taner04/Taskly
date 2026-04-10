@@ -1,9 +1,4 @@
-using Ardalis.Specification.EntityFrameworkCore;
 using Hangfire;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Common.Shared.Exceptions;
-using Taskly.WebApi.Features.Todos.Models;
 using Taskly.WebApi.Features.Todos.Specifications;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
@@ -34,18 +29,23 @@ public static partial class RemovReminder
         var todo = await context.Todos
             .WithSpecification(spec)
             .SingleOrDefaultAsync(ct) ?? throw new ModelNotFoundException<Todo>(command.TodoId.Value);
-        
-        var jobId = todo.ClearReminder();
-        if(!string.IsNullOrEmpty(jobId))
+
+        var jobId = todo.HangfireJobId;
+        if (!string.IsNullOrEmpty(jobId))
         {
+            todo.Deadline = null;
+            todo.ReminderOffsetInMinutes = null;
+            todo.HangfireJobId = null;
+
             _ = jobClient.Delete(jobId);
         }
         else
         {
             loggerFactory.CreateLogger(nameof(RemovReminder))
-                .LogWarning("Todo with id {TodoId} did not have a reminder set, so no Hangfire job was deleted.", command.TodoId.Value);
+                .LogWarning("Todo with id {TodoId} did not have a reminder set, so no Hangfire job was deleted.",
+                    command.TodoId.Value);
         }
-        
+
         context.Update(todo);
         await context.SaveChangesAsync(ct);
     }

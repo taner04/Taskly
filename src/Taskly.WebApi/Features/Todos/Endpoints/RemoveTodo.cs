@@ -1,10 +1,4 @@
-using Ardalis.Specification.EntityFrameworkCore;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Common.Shared.Exceptions;
-using Taskly.WebApi.Features.Todos.Models;
 using Taskly.WebApi.Features.Todos.Specifications;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 

@@ -1,18 +1,10 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
 using Taskly.WebApi.Features.Tags.Endpoints;
-using Taskly.WebApi.Features.Tags.Models;
-using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Tests.Tags;
 
 public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Tag CreateTag(string name, UserId userId) => new(name, userId);
+    private static Tag CreateTag(string name, UserId userId) => Tag.Create(name, userId);
 
     [Fact]
     public async Task UpdateTag_Should_Return401_When_Unauthenticated()

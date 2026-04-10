@@ -1,31 +1,7 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
-using Taskly.WebApi.Features.Todos.Endpoints;
-using Taskly.WebApi.Features.Todos.Models;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
-
 namespace Taskly.IntegrationTests.Tests.Todos;
 
 public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodo(
-        UserId userId,
-        bool completed = false)
-    {
-        var todo = Todo.Create(
-            "Test Todo",
-            "Test Description",
-            TodoPriority.Medium,
-            userId);
-
-        todo.SetCompletionStatus(completed);
-        return todo;
-    }
-
     [Fact]
     public async Task CompleteTodo_Should_Return401_When_Unauthenticated()
     {
@@ -73,7 +49,7 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
         // Arrange
         var client = CreateAuthenticatedUserClient();
         var userId = CurrentUserId;
-        var todo = CreateTodo(userId);
+        var todo = TodoFactory.Create(userId);
 
         await using var dbContext = GetDbContext();
         dbContext.Add(todo);
@@ -104,7 +80,7 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
         // Arrange
         var client = CreateAuthenticatedUserClient();
         var userId = CurrentUserId;
-        var todo = CreateTodo(userId, true);
+        var todo = TodoFactory.Create(userId, isCompleted: true);
 
         await using var dbContext = GetDbContext();
         dbContext.Add(todo);
@@ -135,7 +111,7 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
         // Arrange
         var client = CreateAuthenticatedUserClient();
         var foreignUserId = await CreateForeignUserAsync();
-        var foreignTodo = CreateTodo(foreignUserId);
+        var foreignTodo = TodoFactory.Create(foreignUserId);
 
         await using var dbContext = GetDbContext();
         dbContext.Add(foreignTodo);

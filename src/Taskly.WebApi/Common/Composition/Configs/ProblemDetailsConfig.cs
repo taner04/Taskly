@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using Taskly.WebApi.Common.Shared.Exceptions;
 
 namespace Taskly.WebApi.Common.Composition.Configs;
 

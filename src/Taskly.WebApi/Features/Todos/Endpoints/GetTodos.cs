@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Taskly.Shared.Attributes;
-using Taskly.WebApi.Common.Shared;
 using Taskly.WebApi.Common.Shared.Pagination;
-using Taskly.WebApi.Features.Todos.Models;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
@@ -81,7 +79,7 @@ public sealed class GetTodosMapper : IPaginationMapper<Todo, GetTodos.Response>
                 attachment.FileName,
                 attachment.FileSize,
                 attachment.ContentType,
-                attachment.GetDownloadUrl()
+                $"/attachments/{attachment.Id.Value}/download"
             )).ToList(),
             todo.UserId.Value
         )).ToList();

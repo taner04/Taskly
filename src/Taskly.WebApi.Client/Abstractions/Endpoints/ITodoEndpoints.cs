@@ -1,8 +1,4 @@
-using Refit;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Features.Attachments.Models;
 using Taskly.WebApi.Features.Todos.Endpoints;
-using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
 using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Client.Abstractions.Endpoints;

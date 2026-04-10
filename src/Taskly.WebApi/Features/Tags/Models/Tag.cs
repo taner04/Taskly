@@ -1,47 +1,34 @@
-using System.Diagnostics.CodeAnalysis;
-using Taskly.WebApi.Common.Shared.Extensions;
 using Taskly.WebApi.Common.Shared.Models;
-using Taskly.WebApi.Features.Todos.Models;
-using Taskly.WebApi.Features.Users.Models;
+using Taskly.WebApi.Features.Tags.Exceptions;
 
 namespace Taskly.WebApi.Features.Tags.Models;
 
 [ValueObject<Guid>]
 public readonly partial struct TagId;
 
-[SuppressMessage("ReSharper", "EntityFramework.ModelValidation.UnlimitedStringLength")]
 public class Tag : Entity<TagId>
 {
     public const int MaxNameLength = 50;
     public const int MinNameLength = 3;
 
-    public Tag(
+    private Tag(
         string name,
         UserId userId)
     {
-        Validate(name);
-
         Id = TagId.From(Guid.CreateVersion7());
         Name = name;
         UserId = userId;
     }
 
-    public string Name { get; private set; }
+    public string Name { get; set; }
     public UserId UserId { get; init; }
 
     public ICollection<Todo> Todos { get; init; } = [];
 
-    private static void Validate(
-        string name)
+    public static Tag Create(string name, UserId userId)
     {
-        name.EnsureLengthInRange<Tag>(MinNameLength, MaxNameLength, nameof(Name));
-    }
+        InvalidTagNameException.ThrowIfInvalid(name);
 
-    public void Rename(
-        string newName)
-    {
-        Validate(newName);
-
-        Name = newName;
+        return new Tag(name, userId);
     }
 }

@@ -1,11 +1,9 @@
-using Taskly.WebApi.Features.Users.Models;
-
 namespace Taskly.IntegrationTests.Factories;
 
 internal static class UserFactory
 {
-    public const string Email = "userfactory@mail.com";
-    public const string Sub = "auth0|userfactory123";
+    internal const string Email = "userfactory@mail.com";
+    internal const string Sub = "auth0|userfactory123";
 
     internal static User Create() => User.Create(Email, Sub);
 }

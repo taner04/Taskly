@@ -1,10 +1,5 @@
-using Ardalis.Specification.EntityFrameworkCore;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Common.Shared.Exceptions;
-using Taskly.WebApi.Features.Todos.Models;
+using Taskly.WebApi.Features.Todos.Exceptions;
 using Taskly.WebApi.Features.Todos.Specifications;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
@@ -26,6 +21,9 @@ public static partial class UpdateTodo
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
+        InvalidTodoTitleException.ThrowIfInvalid(command.Body.Title);
+        InvalidTodoDescriptionException.ThrowIfInvalid(command.Body.Description);
+
         var userId = currentUserService.GetUserId();
 
         var spec = new TodoByUserIdSpecification(command.TodoId, userId);
@@ -33,7 +31,9 @@ public static partial class UpdateTodo
             .WithSpecification(spec)
             .SingleOrDefaultAsync(ct) ?? throw new ModelNotFoundException<Todo>(command.TodoId.Value);
 
-        todo.Update(command.Body.Title, command.Body.Description, command.Body.Priority);
+        todo.Title = command.Body.Title;
+        todo.Description = command.Body.Description;
+        todo.Priority = command.Body.Priority;
 
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);

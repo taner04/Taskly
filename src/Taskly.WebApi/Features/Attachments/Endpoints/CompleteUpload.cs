@@ -1,6 +1,4 @@
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Common.Shared.Exceptions;
+using Taskly.WebApi.Features.Attachments.Exceptions;
 
 namespace Taskly.WebApi.Features.Attachments.Endpoints;
 
@@ -22,18 +20,15 @@ public static partial class CompleteUpload
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
+        InvalidAttachmentFileSizeException.ThrowInvalid(command.Body.FileSize);
+
         var userId = currentUserService.GetUserId();
 
         var attachment = await context.Attachments
-            .Include(a => a.Todo)
-            .SingleOrDefaultAsync(a => a.Id == command.AttachmentId
-                                       && a.Todo.UserId == userId, ct);
-
-
-        if (attachment is null)
-        {
-            throw new ModelNotFoundException<Attachment>(command.AttachmentId.Value);
-        }
+                             .Include(a => a.Todo)
+                             .SingleOrDefaultAsync(a => a.Id == command.AttachmentId
+                                                        && a.Todo.UserId == userId, ct) ??
+                         throw new ModelNotFoundException<Attachment>(command.AttachmentId.Value);
 
         if (!command.Body.IsUploaded)
         {
@@ -41,7 +36,8 @@ public static partial class CompleteUpload
         }
         else
         {
-            attachment.MarkUploaded(command.Body.FileSize);
+            attachment.FileSize = command.Body.FileSize;
+            attachment.Status = AttachmentStatus.Uploaded;
             context.Update(attachment);
         }
 

@@ -1,4 +1,3 @@
-using System.IO;
 using Taskly.Desktop.Common.Composition.Extensions;
 
 namespace Taskly.Desktop.MVVM.Settings.Models;

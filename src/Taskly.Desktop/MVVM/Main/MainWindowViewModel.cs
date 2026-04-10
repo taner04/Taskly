@@ -1,9 +1,6 @@
 using System.Collections.ObjectModel;
-using Microsoft.Extensions.DependencyInjection;
 using Taskly.Desktop.MVVM.Home;
 using Taskly.Desktop.MVVM.Settings;
-using Taskly.Shared.Attributes;
-using Wpf.Ui.Controls;
 
 namespace Taskly.Desktop.MVVM.Main;
 

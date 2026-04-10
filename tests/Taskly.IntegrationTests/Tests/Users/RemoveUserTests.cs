@@ -1,11 +1,3 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
-using Taskly.WebApi.Features.Users.Models;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
-
 namespace Taskly.IntegrationTests.Tests.Users;
 
 public sealed class RemoveUserTests(TestingFixture fixture) : TestingBase(fixture)

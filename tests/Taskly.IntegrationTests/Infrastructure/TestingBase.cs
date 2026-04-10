@@ -1,8 +1,6 @@
 using Taskly.IntegrationTests.Infrastructure.Composition.Mocks.Jwt;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
 using Taskly.WebApi.Client.Abstractions;
 using Taskly.WebApi.Common.Infrastructure.Persistence;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Infrastructure;
 

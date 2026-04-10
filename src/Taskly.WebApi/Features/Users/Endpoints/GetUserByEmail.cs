@@ -1,8 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
 using Taskly.WebApi.Features.Users.Exceptions;
-using Taskly.WebApi.Features.Users.Models;
 using ValidationResult = Immediate.Validations.Shared.ValidationResult;
 
 namespace Taskly.WebApi.Features.Users.Endpoints;
@@ -25,7 +22,7 @@ public static partial class GetUserByEmail
         CancellationToken ct)
     {
         var user = await context.Users
-            .SingleOrDefaultAsync(u => u.Email == query.Email, ct) ?? throw new UserEmailNotFoundException(query.Email);
+            .SingleOrDefaultAsync(u => u.Email == query.Email, ct) ?? throw new UserNotFoundException(query.Email);
 
         return user;
     }

@@ -1,5 +1,4 @@
 ﻿using Taskly.Shared.Attributes;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
 using Taskly.WebApi.Common.Shared.Pagination.Exceptions;
 
 namespace Taskly.WebApi.Common.Shared.Pagination;
@@ -32,7 +31,7 @@ public sealed class PaginationService(TasklyDbContext context)
         PaginationQuery paginationQuery,
         CancellationToken cancellationToken) where T : class
     {
-        PaginationQueryException.ThrowIfInvalidPaginationQuery(paginationQuery);
+        InvalidPaginationQueryException.ThrowIfInvalidPaginationQuery(paginationQuery);
 
         var pageIndex = Math.Max(1, paginationQuery.PageIndex);
         var pageSize = Math.Clamp(paginationQuery.PageSize, 1, MaxPageSize);

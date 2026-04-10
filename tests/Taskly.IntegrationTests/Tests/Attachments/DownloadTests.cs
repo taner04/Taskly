@@ -1,40 +1,9 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
 using Taskly.WebApi.Features.Attachments.Endpoints;
-using Taskly.WebApi.Features.Attachments.Models;
-using Taskly.WebApi.Features.Todos.Models;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Tests.Attachments;
 
 public sealed class DownloadTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodo(
-        UserId userId) =>
-        Todo.Create(
-            "Test Todo",
-            "Test Description",
-            TodoPriority.Medium,
-            userId
-        );
-
-    private static Attachment CreateUploadedAttachment(
-        Todo todo)
-    {
-        var attachment = Attachment.CreatePending(
-            todo.Id,
-            "testfile.txt",
-            "text/plain"
-        );
-
-        attachment.MarkUploaded(1014);
-
-        return attachment;
-    }
-
     [Fact]
     public async Task DownloadAttachment_Should_Return401_When_Unauthenticated()
     {
@@ -77,8 +46,8 @@ public sealed class DownloadTests(TestingFixture fixture) : TestingBase(fixture)
         var client = CreateAuthenticatedUserClient();
 
         var userId = CurrentUserId;
-        var todo = CreateTodo(userId);
-        var attachment = CreateUploadedAttachment(todo);
+        var todo = TodoFactory.Create(userId);
+        var attachment = AttachmentFactory.CreateUploaded(todo);
 
         await using var dbContext = GetDbContext();
         dbContext.Add(todo);
@@ -96,10 +65,10 @@ public sealed class DownloadTests(TestingFixture fixture) : TestingBase(fixture)
         var result = await response.MapTo<Download.Response>(CurrentCancellationToken);
 
         result.Should().NotBeNull();
-        ((string)result.DownloadUrl).Should().NotBeNullOrWhiteSpace();
+        result.DownloadUrl.Should().NotBeNullOrWhiteSpace();
         IsValidUrl(result.DownloadUrl).Should().BeTrue();
-        ((string)result.FileName).Should().Be(attachment.FileName);
-        ((string)result.ContentType).Should().Be(attachment.ContentType);
+        result.FileName.Should().Be(attachment.FileName);
+        result.ContentType.Should().Be(attachment.ContentType);
     }
 
     private static bool IsValidUrl(

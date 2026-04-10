@@ -1,4 +1,3 @@
-using FluentAssertions;
 using Newtonsoft.Json.Linq;
 
 namespace Taskly.IntegrationTests.Extensions;

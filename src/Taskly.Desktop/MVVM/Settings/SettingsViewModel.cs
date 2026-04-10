@@ -1,10 +1,6 @@
 using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
 using Taskly.Desktop.MVVM.Main;
 using Taskly.Desktop.MVVM.Settings.Models;
-using Wpf.Ui;
-using Wpf.Ui.Appearance;
-using Wpf.Ui.Controls;
 
 namespace Taskly.Desktop.MVVM.Settings;
 

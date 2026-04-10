@@ -1,8 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
 using Taskly.WebApi.Common.Shared.Models;
 using Taskly.WebApi.Features.Attachments.Exceptions;
-using Taskly.WebApi.Features.Todos.Models;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Features.Attachments.Models;
 
@@ -15,15 +12,13 @@ public enum AttachmentStatus
     Uploaded = 1
 }
 
-[SuppressMessage("ReSharper", "EntityFramework.ModelValidation.UnlimitedStringLength")]
-public sealed class Attachment : Entity<AttachmentId>
+[Validate]
+public sealed partial class Attachment : Entity<AttachmentId>, IValidationTarget<Attachment>
 {
     public const long MaxFileSizeInBytes = 10 * 1024 * 1024; // 10MB
     public const int MaxFileNameLength = 255;
     public const string DefaultContainer = "attachments";
 
-    private static readonly HashSet<string> AllowedFileTypes =
-        ["json", "txt", "pdf", "png", "jpg", "jpeg", "docx", "pptx", "xlsx"];
 
     private Attachment(
         TodoId todoId,
@@ -43,14 +38,14 @@ public sealed class Attachment : Entity<AttachmentId>
     public TodoId TodoId { get; init; }
     public Todo Todo { get; init; } = null!;
 
-    public string FileName { get; private set; }
-    public string BlobName { get; private set; }
-    public string ContentType { get; private set; }
-    public long FileSize { get; private set; }
-    public string Container { get; private set; }
-    public AttachmentStatus Status { get; private set; }
+    public string FileName { get; init; }
+    public string BlobName { get; init; }
+    public string ContentType { get; init; }
+    public long FileSize { get; set; }
+    public string Container { get; init; }
+    public AttachmentStatus Status { get; set; }
 
-    public static Attachment CreatePending(
+    public static Attachment Create(
         TodoId todoId,
         string fileName,
         string contentType)
@@ -59,10 +54,8 @@ public sealed class Attachment : Entity<AttachmentId>
             .TrimStart('.')
             .ToLowerInvariant();
 
-        if (!AllowedFileTypes.Contains(extension))
-        {
-            throw new AttachmentInvalidExtensionException(extension);
-        }
+        InvalidAttachmentExtensionException.ThrowIfInvalidExtension(extension);
+
 
         var blobName = $"todo/{todoId.Value}/{Guid.NewGuid()}.{extension}";
 
@@ -73,18 +66,4 @@ public sealed class Attachment : Entity<AttachmentId>
             contentType
         );
     }
-
-    public void MarkUploaded(
-        long fileSize)
-    {
-        if (fileSize is <= 0 or > MaxFileSizeInBytes)
-        {
-            throw new AttachmentInvalidFileSizeException(fileSize);
-        }
-
-        FileSize = fileSize;
-        Status = AttachmentStatus.Uploaded;
-    }
-
-    public string GetDownloadUrl() => $"/attachments/{Id.Value}/download";
 }

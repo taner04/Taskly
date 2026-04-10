@@ -1,5 +1,3 @@
-using Refit;
-using Taskly.WebApi.Common.Shared;
 using Taskly.WebApi.Features.Users.Endpoints;
 using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 

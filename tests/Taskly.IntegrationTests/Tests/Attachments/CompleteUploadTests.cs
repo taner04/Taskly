@@ -1,34 +1,9 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
 using Taskly.WebApi.Features.Attachments.Endpoints;
-using Taskly.WebApi.Features.Attachments.Models;
-using Taskly.WebApi.Features.Todos.Models;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Tests.Attachments;
 
 public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodo(
-        UserId userId) =>
-        Todo.Create(
-            "Test Todo",
-            "Test Description",
-            TodoPriority.Medium,
-            userId
-        );
-
-    private static Attachment CreatePendingAttachment(
-        Todo todo) =>
-        Attachment.CreatePending(
-            todo.Id,
-            "testfile.txt",
-            "text/plain"
-        );
-
     [Fact]
     public async Task CompleteUpload_Should_Return401_When_Unauthenticated()
     {
@@ -81,8 +56,8 @@ public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fi
         var client = CreateAuthenticatedUserClient();
 
         var userId = CurrentUserId;
-        var todo = CreateTodo(userId);
-        var attachment = CreatePendingAttachment(todo);
+        var todo = TodoFactory.Create(userId);
+        var attachment = AttachmentFactory.CreatePending(todo);
 
         await using var dbContext = GetDbContext();
         dbContext.Add(todo);
@@ -114,8 +89,8 @@ public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fi
         var client = CreateAuthenticatedUserClient();
 
         var userId = CurrentUserId;
-        var todo = CreateTodo(userId);
-        var attachment = CreatePendingAttachment(todo);
+        var todo = TodoFactory.Create(userId);
+        var attachment = AttachmentFactory.CreatePending(todo);
 
         await using var dbContext = GetDbContext();
         dbContext.Add(todo);
@@ -150,8 +125,8 @@ public sealed class CompleteUploadTests(TestingFixture fixture) : TestingBase(fi
         var client = CreateAuthenticatedUserClient();
 
         var userId = CurrentUserId;
-        var todo = CreateTodo(userId);
-        var attachment = CreatePendingAttachment(todo);
+        var todo = TodoFactory.Create(userId);
+        var attachment = AttachmentFactory.CreatePending(todo);
 
         await using var dbContext = GetDbContext();
         dbContext.Add(todo);

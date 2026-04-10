@@ -1,12 +1,6 @@
-using Ardalis.Specification.EntityFrameworkCore;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Common.Shared.Exceptions;
 using Taskly.WebApi.Features.Tags.Exceptions;
-using Taskly.WebApi.Features.Todos.Models;
 using Taskly.WebApi.Features.Todos.Specifications;
 using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
@@ -41,7 +35,7 @@ public static partial class AddTags
 
         if (tags.Count == 0)
         {
-            throw new TagsNotFoundException(command.Body.TagIds);
+            throw new TagNotFoundException(command.Body.TagIds);
         }
 
         var existingTagIds = todo.Tags.Select(t => t.Id).ToList();

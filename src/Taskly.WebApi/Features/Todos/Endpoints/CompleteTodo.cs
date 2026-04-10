@@ -1,10 +1,4 @@
-using Ardalis.Specification.EntityFrameworkCore;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Common.Shared.Exceptions;
-using Taskly.WebApi.Features.Todos.Models;
 using Taskly.WebApi.Features.Todos.Specifications;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
@@ -33,7 +27,10 @@ public static partial class CompleteTodo
             .WithSpecification(spec)
             .SingleOrDefaultAsync(ct) ?? throw new ModelNotFoundException<Todo>(command.TodoId.Value);
 
-        todo.SetCompletionStatus(command.Body.Completed);
+        if (command.Body.Completed != todo.IsCompleted)
+        {
+            todo.IsCompleted = command.Body.Completed;
+        }
 
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);

@@ -1,12 +1,6 @@
-using Ardalis.Specification.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Common.Shared.Exceptions;
 using Taskly.WebApi.Features.Attachments.Services;
-using Taskly.WebApi.Features.Todos.Models;
 using Taskly.WebApi.Features.Todos.Specifications;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
@@ -42,7 +36,7 @@ public static partial class AddAttachment
             .WithSpecification(spec)
             .SingleOrDefaultAsync(ct) ?? throw new ModelNotFoundException<Todo>(command.TodoId.Value);
 
-        var attachment = Attachment.CreatePending(
+        var attachment = Attachment.Create(
             todo.Id,
             command.Body.FileName,
             command.Body.ContentType
@@ -72,7 +66,6 @@ public static partial class AddAttachment
         public sealed partial record CommandBody : IValidationTarget<CommandBody>
         {
             [NotEmpty] public required string FileName { get; init; }
-
             [NotEmpty] public required string ContentType { get; init; }
         }
     }

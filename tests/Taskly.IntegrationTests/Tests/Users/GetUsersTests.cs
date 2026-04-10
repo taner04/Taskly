@@ -1,12 +1,5 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Factories;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
 using Taskly.WebApi.Common.Shared.Pagination;
 using Taskly.WebApi.Features.Users.Endpoints;
-using Taskly.WebApi.Features.Users.Models;
 
 namespace Taskly.IntegrationTests.Tests.Users;
 

@@ -1,8 +1,4 @@
-using Ardalis.Specification.EntityFrameworkCore;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Common.Shared.Exceptions;
-using Taskly.WebApi.Features.Tags.Models;
+using Taskly.WebApi.Features.Tags.Exceptions;
 using Taskly.WebApi.Features.Tags.Specifications;
 using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
 
@@ -26,6 +22,8 @@ public static partial class UpdateTag
         CurrentUserService currentUserService,
         CancellationToken ct)
     {
+        InvalidTagNameException.ThrowIfInvalid(command.Body.NewName);
+
         var userId = currentUserService.GetUserId();
 
         var spec = new TagByIdSpecification(command.TagId, userId);
@@ -33,7 +31,8 @@ public static partial class UpdateTag
             .WithSpecification(spec)
             .SingleOrDefaultAsync(ct) ?? throw new ModelNotFoundException<Tag>(command.TagId.Value);
 
-        tag.Rename(command.Body.NewName);
+
+        tag.Name = command.Body.NewName;
 
         context.Tags.Update(tag);
         await context.SaveChangesAsync(ct);

@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Auth0.OidcClient;
 using Duende.IdentityModel.OidcClient;
-using Microsoft.Extensions.Hosting;
 using Taskly.WebApi.Client.Abstractions;
 
 namespace Taskly.Desktop.Common.Infrastructure.Authentication;

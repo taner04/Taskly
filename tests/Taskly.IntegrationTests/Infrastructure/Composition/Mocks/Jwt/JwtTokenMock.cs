@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
-using Taskly.IntegrationTests.Factories;
 
 namespace Taskly.IntegrationTests.Infrastructure.Composition.Mocks.Jwt;
 

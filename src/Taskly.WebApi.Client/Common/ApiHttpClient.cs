@@ -1,8 +1,6 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Refit;
-using Taskly.WebApi.Client.Abstractions;
 
 namespace Taskly.WebApi.Client.Common;
 

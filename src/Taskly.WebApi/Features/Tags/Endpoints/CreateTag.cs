@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Http.HttpResults;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
 using Taskly.WebApi.Features.Tags.Exceptions;
-using Taskly.WebApi.Features.Tags.Models;
 
 namespace Taskly.WebApi.Features.Tags.Endpoints;
 
@@ -29,13 +26,13 @@ public static partial class CreateTag
         CancellationToken ct)
     {
         var userId = currentUserService.GetUserId();
-        var newTag = new Tag(command.TagName, userId);
 
-        if (await context.Tags.AnyAsync(t => t.Name == newTag.Name && t.UserId == userId, ct))
+        if (await context.Tags.AnyAsync(t => t.Name == command.TagName && t.UserId == userId, ct))
         {
-            throw new TagAlreadyExistsException(newTag.Name);
+            throw new DuplicateTagException(command.TagName);
         }
 
+        var newTag = Tag.Create(command.TagName, userId);
         context.Tags.Add(newTag);
         await context.SaveChangesAsync(ct);
 

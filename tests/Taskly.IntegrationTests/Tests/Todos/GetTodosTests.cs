@@ -1,14 +1,4 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
 using Taskly.WebApi.Common.Shared.Pagination;
-using Taskly.WebApi.Features.Attachments.Models;
-using Taskly.WebApi.Features.Tags.Models;
-using Taskly.WebApi.Features.Todos.Endpoints;
-using Taskly.WebApi.Features.Todos.Models;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Tests.Todos;
 
@@ -22,15 +12,16 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
         bool completed = false)
     {
         var todo = Todo.Create(title, description, priority, userId);
-        todo.SetCompletionStatus(completed);
+        todo.IsCompleted = completed;
+
         return todo;
     }
 
-    private static Tag CreateTag(string name, UserId userId) => new(name, userId);
+    private static Tag CreateTag(string name, UserId userId) => Tag.Create(name, userId);
 
     private static Attachment CreateAttachment(
         Todo todo) =>
-        Attachment.CreatePending(
+        Attachment.Create(
             todo.Id,
             "file.txt",
             "text/plain"

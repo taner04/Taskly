@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
-using Taskly.Shared.Extensions;
 using Taskly.WebApi.Common.Composition.Options;
 
 namespace Taskly.WebApi.Common.Composition.Configs.OpenApi;
@@ -9,7 +8,7 @@ namespace Taskly.WebApi.Common.Composition.Configs.OpenApi;
 internal sealed class BearerDocumentTransformer(IOptions<Auth0Config> options) : IOpenApiDocumentTransformer
 {
     private readonly Auth0Config _auth0Config = options.Value;
-    
+
     public Task TransformAsync(
         OpenApiDocument document,
         OpenApiDocumentTransformerContext context,

@@ -1,12 +1,7 @@
 using Hangfire;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
 using Taskly.WebApi.Common.Infrastructure.Services.Emails;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Common.Shared.Exceptions;
 using Taskly.WebApi.Features.Todos.EmailTemplates;
-using Taskly.WebApi.Features.Todos.Models;
-using Taskly.WebApi.Features.Users.Models;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
+using Taskly.WebApi.Features.Todos.Exceptions;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
@@ -30,6 +25,8 @@ public static partial class UpdateReminder
         EmailService emailService,
         CancellationToken ct)
     {
+        InvalidTodoDeadlineException.ThrowIfInvalid(command.Body.Deadline, command.Body.ReminderOffsetInMinutes);
+
         var userId = currentUserService.GetUserId();
 
         var user = await context.Users.Include(u => u.Todos)
@@ -38,10 +35,14 @@ public static partial class UpdateReminder
         var todo = user.Todos.FirstOrDefault(t => t.Id == command.TodoId) ??
                    throw new ModelNotFoundException<Todo>(command.TodoId.Value);
 
-        todo.SetReminder(command.Body.Date, command.Body.ReminderOffsetInMinutes);
-        
-        todo.HangfireJobId = jobClient.Schedule(() => emailService.SendEmailAsync(new ReminderEmailTemplate(user.Email, todo), ct), TimeSpan.FromMinutes(todo.ReminderOffsetInMinutes!.Value));
-        
+        var hangfireJobId = jobClient.Schedule(
+            () => emailService.SendEmailAsync(new ReminderEmailTemplate(user.Email, todo), ct),
+            TimeSpan.FromMinutes(todo.ReminderOffsetInMinutes!.Value));
+
+        todo.HangfireJobId = hangfireJobId;
+        todo.Deadline = command.Body.Deadline;
+        todo.ReminderOffsetInMinutes = command.Body.ReminderOffsetInMinutes;
+
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);
     }
@@ -55,7 +56,7 @@ public static partial class UpdateReminder
         [Validate]
         public sealed partial record CommandBody : IValidationTarget<CommandBody>
         {
-            public required DateTime Date { get; init; }
+            public required DateTime Deadline { get; init; }
             public required int ReminderOffsetInMinutes { get; init; }
         }
     }

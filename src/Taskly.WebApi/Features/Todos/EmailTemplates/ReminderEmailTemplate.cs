@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using Taskly.WebApi.Common.Infrastructure.Services.Emails;
-using Taskly.WebApi.Features.Todos.Models;
 
 namespace Taskly.WebApi.Features.Todos.EmailTemplates;
 

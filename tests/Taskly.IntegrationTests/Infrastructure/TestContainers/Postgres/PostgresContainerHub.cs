@@ -1,8 +1,5 @@
 using Npgsql;
-using Taskly.IntegrationTests.Factories;
 using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Features.Users.Models;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Infrastructure.TestContainers.Postgres;
 

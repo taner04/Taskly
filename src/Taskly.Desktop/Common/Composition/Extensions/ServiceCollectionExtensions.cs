@@ -1,7 +1,4 @@
 using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
-using Taskly.Desktop.Common.Attributes;
-using Wpf.Ui.Abstractions.Controls;
 
 namespace Taskly.Desktop.Common.Composition.Extensions;
 

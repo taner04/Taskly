@@ -1,13 +1,3 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
-using Taskly.WebApi.Features.Todos.Endpoints;
-using Taskly.WebApi.Features.Todos.Models;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
-
 namespace Taskly.IntegrationTests.Tests.Todos;
 
 public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixture)

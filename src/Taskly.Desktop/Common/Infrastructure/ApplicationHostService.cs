@@ -1,9 +1,5 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Taskly.Desktop.MVVM.Home;
 using Taskly.Desktop.MVVM.Main;
-using Taskly.Shared.Attributes;
-using Wpf.Ui;
 
 namespace Taskly.Desktop.Common.Infrastructure;
 

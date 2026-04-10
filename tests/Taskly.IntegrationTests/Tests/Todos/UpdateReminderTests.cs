@@ -1,13 +1,3 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
-using Taskly.WebApi.Features.Todos.Endpoints;
-using Taskly.WebApi.Features.Todos.Models;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
-
 namespace Taskly.IntegrationTests.Tests.Todos;
 
 public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fixture)
@@ -32,7 +22,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
             todoId,
             new UpdateReminder.Command.CommandBody
             {
-                Date = DateTime.Parse("2025-01-01T10:00:00Z"),
+                Deadline = DateTime.Parse("2025-01-01T10:00:00Z"),
                 ReminderOffsetInMinutes = 30
             },
             CurrentCancellationToken);
@@ -53,7 +43,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
             todoId,
             new UpdateReminder.Command.CommandBody
             {
-                Date = DateTime.Parse("2025-01-01T10:00:00Z"),
+                Deadline = DateTime.Now.AddYears(1),
                 ReminderOffsetInMinutes = 30
             },
             CurrentCancellationToken);
@@ -81,7 +71,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
             new UpdateReminder.Command.CommandBody
             {
                 // DateTime.MinValue (UTC) is treated as invalid input by your domain
-                Date = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc),
+                Deadline = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc),
                 ReminderOffsetInMinutes = 10
             },
             CurrentCancellationToken);
@@ -111,7 +101,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
             todo.Id,
             new UpdateReminder.Command.CommandBody
             {
-                Date = pastDate,
+                Deadline = pastDate,
                 ReminderOffsetInMinutes = 5
             },
             CurrentCancellationToken);
@@ -140,7 +130,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
             todo.Id,
             new UpdateReminder.Command.CommandBody
             {
-                Date = futureDate,
+                Deadline = futureDate,
                 ReminderOffsetInMinutes = -5
             },
             CurrentCancellationToken);
@@ -172,7 +162,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
             todo.Id,
             new UpdateReminder.Command.CommandBody
             {
-                Date = futureDate,
+                Deadline = futureDate,
                 ReminderOffsetInMinutes = offset
             },
             CurrentCancellationToken);
@@ -198,7 +188,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
 
         var body = new UpdateReminder.Command.CommandBody
         {
-            Date = deadline,
+            Deadline = deadline,
             ReminderOffsetInMinutes = 60
         };
 

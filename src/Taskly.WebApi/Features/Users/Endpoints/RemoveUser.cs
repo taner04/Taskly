@@ -1,7 +1,3 @@
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Common.Shared.Exceptions;
-using Taskly.WebApi.Features.Users.Models;
 using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.WebApi.Features.Users.Endpoints;

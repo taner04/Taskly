@@ -1,10 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
-using Taskly.WebApi.Common.Shared.Extensions;
 using Taskly.WebApi.Common.Shared.Models;
-using Taskly.WebApi.Features.Tags.Models;
 using Taskly.WebApi.Features.Todos.Exceptions;
-using Taskly.WebApi.Features.Users.Models;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.WebApi.Features.Todos.Models;
 
@@ -34,13 +30,13 @@ public sealed class Todo : Entity<TodoId>
         UserId = userId;
     }
 
-    public string Title { get; private set; }
-    public string? Description { get; private set; }
-    public TodoPriority Priority { get; private set; }
-    public bool IsCompleted { get; private set; }
-    public UserId UserId { get; private set; }
-    public DateTime? Deadline { get; private set; }
-    public int? ReminderOffsetInMinutes { get; private set; }
+    public string Title { get; set; }
+    public string? Description { get; set; }
+    public TodoPriority Priority { get; set; }
+    public bool IsCompleted { get; set; }
+    public UserId UserId { get; init; }
+    public DateTime? Deadline { get; set; }
+    public int? ReminderOffsetInMinutes { get; set; }
     public string? HangfireJobId { get; set; }
 
     public DateTime? ReminderAt
@@ -53,106 +49,11 @@ public sealed class Todo : Entity<TodoId>
     public List<Attachment> Attachments { get; private set; } = [];
     public User User { get; private set; } = null!;
 
-    public static Todo Create(
-        string title,
-        string? description,
-        TodoPriority priority,
-        UserId userId)
+    public static Todo Create(string title, string? description, TodoPriority priority, UserId userId)
     {
-        Validate(title, description);
+        InvalidTodoTitleException.ThrowIfInvalid(title);
+        InvalidTodoDescriptionException.ThrowIfInvalid(description);
 
         return new Todo(title, description, priority, userId);
-    }
-
-    public void Update(
-        string title,
-        string? description,
-        TodoPriority priority)
-    {
-        Validate(title, description);
-
-        Title = title;
-        Description = description;
-        Priority = priority;
-    }
-
-    private static void Validate(
-        string title,
-        string? description)
-    {
-        title.EnsureLengthInRange<Todo>(MinTitleLength, MaxTitleLength, nameof(Title));
-        description?.EnsureLengthInRange<Todo>(MinDescriptionLength, MaxDescriptionLength, nameof(Description));
-    }
-
-    public void SetCompletionStatus(
-        bool isCompleted)
-    {
-        if (isCompleted != IsCompleted)
-        {
-            IsCompleted = isCompleted;
-        }
-    }
-
-    public void ChangePriority(
-        TodoPriority priority)
-    {
-        if (priority != Priority)
-        {
-            Priority = priority;
-        }
-    }
-
-    public string? ClearReminder()
-    {
-        Deadline = null;
-        ReminderOffsetInMinutes = null;
-        
-        var jobId = HangfireJobId;
-        HangfireJobId = null;
-    
-        return jobId; 
-    }
-
-    public void SetReminder(
-        DateTime deadline,
-        int reminder)
-    {
-        var now = DateTime.UtcNow;
-
-        if (deadline <= now)
-        {
-            throw new TodoInvalidDeadlineException(
-                deadline,
-                reminder,
-                "Deadline must be set to a future date and time.");
-        }
-
-        if (reminder < 0)
-        {
-            throw new TodoInvalidDeadlineException(
-                deadline,
-                reminder,
-                "Reminder minutes cannot be negative.");
-        }
-
-        var reminderAt = deadline.AddMinutes(-reminder);
-        if (reminderAt > deadline)
-        {
-            throw new TodoInvalidDeadlineException(
-                deadline,
-                reminder,
-                "Reminder cannot occur after the deadline.");
-        }
-
-        if (reminder > (deadline - now).TotalMinutes)
-        {
-            throw new TodoInvalidDeadlineException(
-                deadline,
-                reminder,
-                "Reminder cannot be further in the past than the time until deadline.");
-        }
-
-        Deadline = deadline;
-        ReminderOffsetInMinutes = reminder;
     }
 }

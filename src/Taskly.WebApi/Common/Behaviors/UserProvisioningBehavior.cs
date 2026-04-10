@@ -1,6 +1,4 @@
 using System.Security.Claims;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Features.Users.Models;
 
 namespace Taskly.WebApi.Common.Behaviors;
 

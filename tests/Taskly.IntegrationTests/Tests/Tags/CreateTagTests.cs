@@ -1,11 +1,4 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
 using Taskly.WebApi.Features.Tags.Endpoints;
-using Taskly.WebApi.Features.Tags.Models;
-using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
 
 namespace Taskly.IntegrationTests.Tests.Tags;
 
@@ -70,7 +63,7 @@ public sealed class CreateTagTests(TestingFixture fixture) : TestingBase(fixture
         var client = CreateAuthenticatedUserClient();
         var userId = CurrentUserId;
 
-        var existingTag = new Tag("ExistingName", userId);
+        var existingTag = Tag.Create("ExistingName", userId);
 
         await using var dbContext = GetDbContext();
         dbContext.Tags.Add(existingTag);

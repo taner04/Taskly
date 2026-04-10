@@ -1,33 +1,7 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
-using Taskly.WebApi.Features.Todos.Models;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
-
 namespace Taskly.IntegrationTests.Tests.Todos;
 
 public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Todo CreateTodoWithReminder(
-        UserId userId)
-    {
-        var todo = Todo.Create(
-            "Test Todo",
-            "Test Description",
-            TodoPriority.Medium,
-            userId);
-
-        var deadline = DateTime.UtcNow.AddHours(2);
-        
-        todo.SetReminder(deadline, 30);
-        todo.HangfireJobId = "1";
-
-        return todo;
-    }
-
     [Fact]
     public async Task RemoveReminder_Should_Return401_When_Unauthenticated()
     {
@@ -68,7 +42,7 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
         var client = CreateAuthenticatedUserClient();
         var userId = CurrentUserId;
 
-        var todo = CreateTodoWithReminder(userId);
+        var todo = TodoFactory.CreateWithReminder(userId);
 
         await using var dbContext = GetDbContext();
         dbContext.Add(todo);
@@ -98,16 +72,7 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
         var client = CreateAuthenticatedUserClient();
 
         var foreignUserId = await CreateForeignUserAsync();
-        var foreignTodo = Todo.Create(
-            "Test",
-            "Desc",
-            TodoPriority.Low,
-            foreignUserId);
-
-        var deadline = DateTime.UtcNow.AddHours(5);
-        foreignTodo.SetReminder(deadline, 60);
-        
-        foreignTodo.HangfireJobId = "1";
+        var foreignTodo = TodoFactory.CreateWithReminder(foreignUserId);
 
         await using var dbContext = GetDbContext();
         dbContext.Add(foreignTodo);

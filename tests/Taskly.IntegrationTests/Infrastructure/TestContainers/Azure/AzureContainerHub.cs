@@ -1,5 +1,3 @@
-using Taskly.WebApi.Features.Attachments.Models;
-
 namespace Taskly.IntegrationTests.Infrastructure.TestContainers.Azure;
 
 internal sealed class AzureContainerHub : IAsyncDisposable

@@ -1,7 +1,5 @@
 using Taskly.Shared.Attributes;
-using Taskly.WebApi.Common.Shared;
 using Taskly.WebApi.Common.Shared.Pagination;
-using Taskly.WebApi.Features.Tags.Models;
 
 namespace Taskly.WebApi.Features.Tags.Endpoints;
 

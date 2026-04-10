@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Taskly.WebApi.Client.Abstractions;
 
 namespace Taskly.WebApi.Client.Common.Extensions;
 

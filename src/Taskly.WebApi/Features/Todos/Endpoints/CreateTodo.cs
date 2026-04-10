@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Http.HttpResults;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Features.Todos.Models;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 

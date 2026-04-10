@@ -25,10 +25,10 @@ internal abstract class EntityConfiguration<TEntity, TId> : IEntityTypeConfigura
 
         builder.Property(t => t.UpdatedBy)
             .HasMaxLength(Auditable.MaxUpdatedByLength);
-        
+
         PostConfigure(builder);
     }
-    
+
     protected abstract void PostConfigure(
         EntityTypeBuilder<TEntity> builder);
 }

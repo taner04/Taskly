@@ -1,12 +1,6 @@
-using Ardalis.Specification.EntityFrameworkCore;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Common.Shared.Exceptions;
 using Taskly.WebApi.Features.Attachments.Exceptions;
 using Taskly.WebApi.Features.Attachments.Services;
-using Taskly.WebApi.Features.Todos.Models;
 using Taskly.WebApi.Features.Todos.Specifications;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
@@ -26,7 +20,7 @@ public static partial class RemoveAttachment
         Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
-        AttachmentService attachments,
+        AttachmentService attachmentService,
         CancellationToken ct)
     {
         var userId = currentUserService.GetUserId();
@@ -36,21 +30,28 @@ public static partial class RemoveAttachment
             .WithSpecification(spec)
             .SingleOrDefaultAsync(ct) ?? throw new ModelNotFoundException<Todo>(command.TodoId.Value);
 
-        var attachment = todo.Attachments.SingleOrDefault(a => a.Id == command.AttachmentId);
+        var attachment = todo.Attachments.SingleOrDefault(a => a.Id == command.AttachmentId) ??
+                         throw new ModelNotFoundException<Attachment>(command.AttachmentId.Value);
 
-        if (attachment is null)
+        await using var transaction = await context.Database.BeginTransactionAsync(ct);
+
+        try
         {
-            throw new ModelNotFoundException<Attachment>(command.AttachmentId.Value);
+            todo.Attachments.Remove(attachment);
+
+            if (!await attachmentService.DeleteAsync(attachment, ct))
+            {
+                throw new AttachmentDeletionException(command.AttachmentId);
+            }
+
+            await context.SaveChangesAsync(ct);
+            await transaction.CommitAsync(ct);
         }
-
-        todo.Attachments.Remove(attachment);
-
-        if (!await attachments.DeleteAsync(attachment, ct))
+        catch (Exception e)
         {
-            throw new AttachmentDeletionFailedException(command.AttachmentId);
+            await transaction.RollbackAsync(ct);
+            throw;
         }
-
-        await context.SaveChangesAsync(ct);
     }
 
     [Validate]

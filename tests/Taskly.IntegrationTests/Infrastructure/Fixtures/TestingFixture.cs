@@ -1,11 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
-using Taskly.IntegrationTests.Factories;
 using Taskly.IntegrationTests.Infrastructure.Composition.Mocks.Jwt;
 using Taskly.IntegrationTests.Infrastructure.TestContainers.Azure;
 using Taskly.IntegrationTests.Infrastructure.TestContainers.Postgres;
 using Taskly.WebApi.Client.Abstractions;
 using Taskly.WebApi.Client.Common;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Infrastructure.Fixtures;
 

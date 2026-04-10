@@ -1,20 +1,11 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
 using Taskly.WebApi.Common.Shared.Dtos;
 using Taskly.WebApi.Common.Shared.Pagination;
 using Taskly.WebApi.Features.Tags.Endpoints;
-using Taskly.WebApi.Features.Tags.Models;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.IntegrationTests.Tests.Tags;
 
 public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 {
-    private static Tag CreateTag(string name, UserId userId) => new(name, userId);
-
     [Fact]
     public async Task GetTags_Should_Return401_When_Unauthenticated()
     {
@@ -67,11 +58,11 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
         var userId = CurrentUserId;
 
         // Tags belonging to the authenticated user
-        var tag1 = CreateTag("Work", userId);
-        var tag2 = CreateTag("Personal", userId);
+        var tag1 = TagFactory.Create("Work", userId);
+        var tag2 = TagFactory.Create("Personal", userId);
 
         // Tag belonging to a different user — SHOULD NOT appear
-        var tagOtherUser = CreateTag("OtherUserTag", UserId.EmptyId);
+        var tagOtherUser = TagFactory.Create("OtherUserTag", UserId.EmptyId);
 
         await using var dbContext = GetDbContext();
         dbContext.Tags.AddRange(tag1, tag2, tagOtherUser);

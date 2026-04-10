@@ -1,15 +1,3 @@
-using System.Net;
-using FluentAssertions;
-using Taskly.IntegrationTests.Extensions;
-using Taskly.IntegrationTests.Infrastructure;
-using Taskly.IntegrationTests.Infrastructure.Fixtures;
-using Taskly.WebApi.Features.Tags.Models;
-using Taskly.WebApi.Features.Todos.Endpoints;
-using Taskly.WebApi.Features.Todos.Models;
-using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
-using TodoId = Taskly.WebApi.Features.Todos.Models.TodoId;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
-
 namespace Taskly.IntegrationTests.Tests.Todos;
 
 public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
@@ -23,7 +11,7 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
             userId
         );
 
-    private static Tag CreateTag(string name, UserId userId) => new(name, userId);
+    private static Tag CreateTag(string name, UserId userId) => Tag.Create(name, userId);
 
     [Fact]
     public async Task AddTags_Should_Return401_When_Unauthenticated()

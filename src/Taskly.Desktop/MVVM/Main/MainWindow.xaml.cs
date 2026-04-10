@@ -1,9 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
-using Taskly.Shared.Attributes;
-using Wpf.Ui;
 using Wpf.Ui.Abstractions;
-using Wpf.Ui.Appearance;
-using Wpf.Ui.Controls;
 
 namespace Taskly.Desktop.MVVM.Main;
 

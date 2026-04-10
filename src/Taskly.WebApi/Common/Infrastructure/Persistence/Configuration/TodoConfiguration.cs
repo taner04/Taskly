@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Taskly.WebApi.Features.Todos.Models;
 
 namespace Taskly.WebApi.Common.Infrastructure.Persistence.Configuration;
 
@@ -40,7 +39,7 @@ internal sealed class TodoConfiguration : EntityConfiguration<Todo, TodoId>
 
         builder.Property(t => t.ReminderOffsetInMinutes)
             .IsRequired(false);
-        
+
         builder.Property(t => t.HangfireJobId)
             .IsRequired(false);
 

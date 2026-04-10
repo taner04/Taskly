@@ -5,15 +5,11 @@ using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
-using Npgsql;
 using Taskly.ServiceDefaults;
 using Taskly.Shared.Extensions;
 using Taskly.WebApi.Common.Composition.Options;
 using Taskly.WebApi.Common.Composition.Serialization;
-using Taskly.WebApi.Common.Infrastructure.Persistence;
 using Taskly.WebApi.Common.Infrastructure.Persistence.Interceptors;
-using Taskly.WebApi.Common.Shared;
-using Taskly.WebApi.Features.Todos.Models;
 
 namespace Taskly.WebApi.Common.Composition.Extensions;
 
