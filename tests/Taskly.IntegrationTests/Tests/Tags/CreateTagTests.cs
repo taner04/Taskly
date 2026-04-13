@@ -8,7 +8,7 @@ public sealed class CreateTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task CreateTag_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var unauthenticated = CreateUnauthenticatedClient();
+        var unauthenticated = GetUnauthenticatedClient();
 
         // Act
         var response = await unauthenticated.CreateTagAsync(

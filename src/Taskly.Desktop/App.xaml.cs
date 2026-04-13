@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Threading;
 using Auth0.OidcClient;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,7 @@ namespace Taskly.Desktop;
 /// <summary>
 ///     Interaction logic for App.xaml
 /// </summary>
+[SuppressMessage("ReSharper", "AsyncVoidEventHandlerMethod")]
 public partial class App
 {
     // The.NET Generic Host provides dependency injection, configuration, logging, and other services.
@@ -34,7 +36,6 @@ public partial class App
             services.AddSingleton<INavigationService, NavigationService>();
 
             services.AddPages(typeof(App).Assembly);
-            services.RegisterAutoServices(typeof(App).Assembly);
 
             services.AddApiHttpClient(options =>
             {
@@ -53,7 +54,6 @@ public partial class App
                         Domain = auth0Config.Domain,
                         ClientId = auth0Config.ClientId
                     },
-                    sp.GetRequiredService<IHostedService>(),
                     sp.GetRequiredService<IApiHttpClient>());
             });
         }).Build();
@@ -66,12 +66,12 @@ public partial class App
     /// <summary>
     ///     Occurs when the application is loading.
     /// </summary>
-    private void OnStartup(object sender, StartupEventArgs e)
+    private async void OnStartup(object sender, StartupEventArgs e)
     {
         var authService = Services.GetRequiredService<AuthenticationService>();
-        ArgumentNullException.ThrowIfNull(authService);
+        await authService.LoginAsync();
 
-        _ = authService.OnStartUpAsync();
+        await _host.StartAsync();
     }
 
 

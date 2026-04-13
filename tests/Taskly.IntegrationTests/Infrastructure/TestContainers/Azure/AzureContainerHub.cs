@@ -19,7 +19,7 @@ internal sealed class AzureContainerHub : IAsyncDisposable
         var options = new BlobClientOptions(BlobClientOptions.ServiceVersion.V2024_11_04);
         var blobServiceClient = new BlobServiceClient(_azureContainer.ConnectionString, options);
 
-        _blobContainerClient = blobServiceClient.GetBlobContainerClient(Attachment.DefaultContainer);
+        _blobContainerClient = blobServiceClient.GetBlobContainerClient(Attachment.BlobContainer);
         if (!await _blobContainerClient.ExistsAsync())
         {
             await _blobContainerClient.CreateAsync();

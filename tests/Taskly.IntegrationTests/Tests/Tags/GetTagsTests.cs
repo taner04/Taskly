@@ -10,7 +10,7 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task GetTags_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var unauthenticatedClient = CreateUnauthenticatedClient();
+        var unauthenticatedClient = GetUnauthenticatedClient();
 
         // Act
         var response = await unauthenticatedClient.GetTagsAsync(

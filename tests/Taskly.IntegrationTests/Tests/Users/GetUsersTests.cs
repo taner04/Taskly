@@ -15,7 +15,7 @@ public sealed class GetUsersTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task GetUsers_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var client = CreateUnauthenticatedClient();
+        var client = GetUnauthenticatedClient();
 
         // Act
         var response = await client.GetUsersAsync(

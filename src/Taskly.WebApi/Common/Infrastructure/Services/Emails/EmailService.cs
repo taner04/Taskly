@@ -2,12 +2,10 @@
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Taskly.Shared.Attributes;
 using Taskly.WebApi.Common.Composition.Options;
 
 namespace Taskly.WebApi.Common.Infrastructure.Services.Emails;
 
-[ServiceInjection(ServiceLifetime.Scoped)]
 public partial class EmailService(ILogger<EmailService> logger, IOptions<EmailConfig> options)
 {
     private const string SenderEmail = "noreply@shoply.com";
@@ -35,7 +33,7 @@ public partial class EmailService(ILogger<EmailService> logger, IOptions<EmailCo
             await client.SendAsync(mimeMessage, cancellationToken);
             LogEmailSentToRecipient(logger, template.To, template.Subject);
         }
-        catch (Exception e)
+        catch
         {
             LogErrorSendingEmail(logger);
         }

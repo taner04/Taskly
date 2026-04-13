@@ -28,6 +28,7 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
         <PackageReference Include="Refit"/>
         <PackageReference Include="Scalar.AspNetCore"/>
+        <PackageReference Include="Scrutor"/>
         <PackageReference Include="Vogen"/>
     </ItemGroup>
 

@@ -1,9 +1,7 @@
-﻿using Taskly.Shared.Attributes;
-using Taskly.WebApi.Common.Shared.Pagination.Exceptions;
+﻿using Taskly.WebApi.Common.Shared.Pagination.Exceptions;
 
 namespace Taskly.WebApi.Common.Shared.Pagination;
 
-[ServiceInjection(ServiceLifetime.Scoped)]
 public sealed class PaginationService(TasklyDbContext context)
 {
     public const int MaxPageSize = 100;

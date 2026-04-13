@@ -2,7 +2,6 @@ using Wpf.Ui.Abstractions;
 
 namespace Taskly.Desktop.MVVM.Main;
 
-[ServiceInjection<MainWindow, INavigationWindow>(ServiceLifetime.Singleton)]
 public partial class MainWindow : INavigationWindow
 {
     public MainWindow(

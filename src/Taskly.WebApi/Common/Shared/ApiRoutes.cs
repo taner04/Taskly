@@ -37,9 +37,7 @@ internal static class ApiRoutes
         private const string Base = "/api/attachments";
 
         public const string Download = Base + "/{attachmentId}/download";
-        public const string CompleteUpload = Base + "/{attachmentId}/complete";
-
-        public const string WebHook = Base + "/{attachmentId}/webhook";
+        public const string WebHook = Base + "/webhook";
     }
 
     public static class Users

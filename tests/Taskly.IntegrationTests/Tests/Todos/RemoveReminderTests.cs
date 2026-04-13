@@ -6,7 +6,7 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
     public async Task RemoveReminder_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var client = CreateUnauthenticatedClient();
+        var client = GetUnauthenticatedClient();
         var todoId = TodoId.From(Guid.NewGuid());
 
         // Act

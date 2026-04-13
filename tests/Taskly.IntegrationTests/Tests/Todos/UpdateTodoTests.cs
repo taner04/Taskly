@@ -14,7 +14,7 @@ public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task UpdateTodo_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var client = CreateUnauthenticatedClient();
+        var client = GetUnauthenticatedClient();
 
         // Act
         var response = await client.UpdateTodoAsync(

@@ -42,20 +42,24 @@ internal static class WebApplicationExtensions
             return app;
         }
 
-        internal async Task InitializeBlobStorage()
+        internal async Task<WebApplication> InitializeBlobStorage()
         {
             using var scope = app.Services.CreateScope();
             var attachmentService = scope.ServiceProvider.GetRequiredService<AttachmentService>();
 
             await attachmentService.InitializeAsync();
+            
+            return app;
         }
 
-        internal void AddHangfireDashboard()
+        internal WebApplication AddHangfireDashboard()
         {
             app.UseHangfireDashboard(options: new DashboardOptions
             {
                 DarkModeEnabled = true
             });
+            
+            return app;
         }
     }
 }

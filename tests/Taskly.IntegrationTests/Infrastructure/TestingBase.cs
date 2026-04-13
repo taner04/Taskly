@@ -38,7 +38,9 @@ public abstract class TestingBase(TestingFixture fixture) : IAsyncLifetime
 
     protected IApiClient CreateAuthenticatedAdminClient() => fixture.CreateAuthenticatedClient(UserRole.Admin);
 
-    protected IApiClient CreateUnauthenticatedClient() => fixture.CreateUnauthenticatedClient();
+    protected IApiClient GetUnauthenticatedClient() => fixture.GetUnauthenticatedClient();
+
+    protected IApiClient GetWebHookClient() => fixture.GetWebHookClient();
 
     protected async Task<UserId> CreateForeignUserAsync() => await fixture.CreateForeignUserAsync();
 

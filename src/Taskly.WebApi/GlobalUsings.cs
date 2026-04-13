@@ -16,4 +16,3 @@ global using Taskly.WebApi.Common.Shared.Exceptions;
 global using Taskly.WebApi.Features.Tags.Models;
 global using Taskly.WebApi.Features.Todos.Models;
 global using Taskly.WebApi.Features.Users.Models;
-global using Taskly.WebApi.Features.Todos.Models;

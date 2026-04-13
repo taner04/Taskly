@@ -1,26 +1,22 @@
 using System.Diagnostics;
 using Auth0.OidcClient;
-using Duende.IdentityModel.OidcClient;
 using Taskly.WebApi.Client.Abstractions;
 
 namespace Taskly.Desktop.Common.Infrastructure.Authentication;
 
 public sealed class AuthenticationService(
     Auth0ClientOptions options,
-    IHostedService hostedService,
     IApiHttpClient apiHttpClient)
 {
     private readonly Auth0Client _auth0Client = new(options);
 
-    public async Task OnStartUpAsync(CancellationToken cancellationToken = default)
+    public async Task LoginAsync(CancellationToken cancellationToken = default)
     {
         try
         {
-            LoginResult loginResult;
-
             while (true)
             {
-                loginResult = await _auth0Client.LoginAsync(cancellationToken);
+                var loginResult = await _auth0Client.LoginAsync(cancellationToken: cancellationToken);
 
                 if (!loginResult.IsError)
                 {
@@ -49,8 +45,6 @@ public sealed class AuthenticationService(
 
                 await Task.Delay(500, cancellationToken);
             }
-
-            await hostedService.StartAsync(cancellationToken);
         }
         catch (Exception ex)
         {

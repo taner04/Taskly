@@ -10,7 +10,7 @@ namespace Taskly.WebApi.Features.Tags.Endpoints;
 public static partial class UpdateTag
 {
     internal static void CustomizeEndpoint(
-        IEndpointConventionBuilder endpoint)
+        RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Tag));
         endpoint.RequireRateLimiting(Policies.RateLimiting.Global);

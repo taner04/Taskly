@@ -23,7 +23,7 @@ public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(
     public async Task RemoveAttachment_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var client = CreateUnauthenticatedClient();
+        var client = GetUnauthenticatedClient();
 
         // Act
         var response = await client.RemoveAttachmentFromTodoAsync(
@@ -92,7 +92,7 @@ public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(
         dbContext.Add(attachment);
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var container = GetService<BlobServiceClient>().GetBlobContainerClient("attachments");
+        var container = GetService<BlobServiceClient>().GetBlobContainerClient(Attachment.BlobContainer);
 
         await container.CreateIfNotExistsAsync(cancellationToken: CurrentCancellationToken);
 

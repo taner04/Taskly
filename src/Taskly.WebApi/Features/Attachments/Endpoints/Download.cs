@@ -8,7 +8,7 @@ namespace Taskly.WebApi.Features.Attachments.Endpoints;
 public static partial class Download
 {
     internal static void CustomizeEndpoint(
-        IEndpointConventionBuilder endpoint)
+        RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Attachment));
         endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
@@ -18,7 +18,7 @@ public static partial class Download
         Query query,
         TasklyDbContext db,
         CurrentUserService current,
-        AttachmentService attachments,
+        AttachmentService attachmentService,
         CancellationToken ct)
     {
         var userId = current.GetUserId();
@@ -30,7 +30,7 @@ public static partial class Download
                     a.Todo.UserId == userId,
                 ct) ?? throw new ModelNotFoundException<Attachment>(query.AttachmentId.Value);
 
-        var sas = attachments.GenerateDownloadSas(attachment);
+        var sas = attachmentService.GenerateDownloadSas(attachment);
 
         return new Response(
             sas.DownloadUrl,

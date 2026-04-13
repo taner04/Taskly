@@ -11,7 +11,7 @@ namespace Taskly.WebApi.Features.Todos.Endpoints;
 public static partial class UpdateReminder
 {
     internal static void CustomizeEndpoint(
-        IEndpointConventionBuilder endpoint)
+        RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
         endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
@@ -35,13 +35,14 @@ public static partial class UpdateReminder
         var todo = user.Todos.FirstOrDefault(t => t.Id == command.TodoId) ??
                    throw new ModelNotFoundException<Todo>(command.TodoId.Value);
 
+        todo.Deadline = command.Body.Deadline;
+        todo.ReminderOffsetInMinutes = command.Body.ReminderOffsetInMinutes;
+
         var hangfireJobId = jobClient.Schedule(
             () => emailService.SendEmailAsync(new ReminderEmailTemplate(user.Email, todo), ct),
             TimeSpan.FromMinutes(todo.ReminderOffsetInMinutes!.Value));
 
         todo.HangfireJobId = hangfireJobId;
-        todo.Deadline = command.Body.Deadline;
-        todo.ReminderOffsetInMinutes = command.Body.ReminderOffsetInMinutes;
 
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);

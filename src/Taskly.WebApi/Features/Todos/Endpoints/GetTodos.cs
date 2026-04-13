@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http.HttpResults;
-using Taskly.Shared.Attributes;
 using Taskly.WebApi.Common.Shared.Pagination;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
@@ -10,7 +9,7 @@ namespace Taskly.WebApi.Features.Todos.Endpoints;
 public static partial class GetTodos
 {
     internal static void CustomizeEndpoint(
-        IEndpointConventionBuilder endpoint)
+        RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
         endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
@@ -24,14 +23,13 @@ public static partial class GetTodos
         Query query,
         CurrentUserService currentUserService,
         PaginationService paginationService,
-        GetTodosMapper mapper,
         CancellationToken ct)
     {
         var userId = currentUserService.GetUserId();
 
         return await paginationService.GetPaginationResultAsync(
             query,
-            mapper,
+            new GetTodosMapper(),
             q => q.Include(t => t.Tags)
                 .Include(t => t.Attachments)
                 .Where(t => t.UserId == userId),
@@ -62,7 +60,6 @@ public static partial class GetTodos
         Guid UserId);
 }
 
-[ServiceInjection(ServiceLifetime.Singleton)]
 public sealed class GetTodosMapper : IPaginationMapper<Todo, GetTodos.Response>
 {
     public List<GetTodos.Response> Map(List<Todo> source)

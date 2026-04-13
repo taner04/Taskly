@@ -3,45 +3,38 @@ using Taskly.ServiceDefaults;
 using Taskly.WebApi.Common.Composition.Configs;
 using Taskly.WebApi.Common.Composition.Configs.OpenApi;
 using Taskly.WebApi.Common.Composition.Extensions;
+using Taskly.WebApi.Common.Composition.Extensions.ServiceCollection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddServiceDefaults();
-
-builder.Services.AddCustomJsonConverter();
-builder.Services.AddOpenApi(OpenApiConfig.Config);
-
-builder.Services.AddProblemDetails(ProblemDetailsConfig.Config);
-builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddRateLimiting();
-
-builder.Services.AddAuthenticationAndAuthorization(builder.Configuration);
-
-builder.Services.AddApplication(builder.Configuration);
-builder.Services.AddInfrastructure(builder);
-builder.Services.AddImmediate();
+_ = builder.AddServiceDefaults();
+_ = builder.Services.AddOpenApi(OpenApiConfig.Config);
+_ = builder.Services.AddProblemDetails(ProblemDetailsConfig.Config);
+_ = builder.Services.AddHttpContextAccessor();
+_ = builder.Services.AddInfrastructure(builder);
 
 var app = builder.Build();
 
-app.MapDefaultEndpoints();
+_ = app.MapDefaultEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    app.MapScalar();
-    app.AddHangfireDashboard();
+    _ = app.MapOpenApi();
+    _ = app.MapScalar();
+    _ = app.AddHangfireDashboard();
 }
 
-app.UseAuthentication();
-app.UseAuthorization();
+_ = app.UseExceptionHandler();
 
-app.UseRateLimiter();
+_ = app.UseAuthentication();
+_ = app.UseAuthorization();
 
-app.UseHttpsRedirection();
-app.MapTasklyWebApiEndpoints();
+_ = app.UseRateLimiter();
 
-await app.InitializeBlobStorage();
+_ = app.UseHttpsRedirection();
+_ = app.MapTasklyWebApiEndpoints();
+
+_ = await app.InitializeBlobStorage();
 
 app.Run();
 

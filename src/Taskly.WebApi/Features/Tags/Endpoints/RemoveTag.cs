@@ -9,7 +9,7 @@ namespace Taskly.WebApi.Features.Tags.Endpoints;
 public static partial class RemoveTag
 {
     internal static void CustomizeEndpoint(
-        IEndpointConventionBuilder endpoint)
+        RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Tag));
         endpoint.RequireRateLimiting(Policies.RateLimiting.Global);

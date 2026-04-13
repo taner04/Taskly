@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Taskly.WebApi.Common.Abstractions;
 
 namespace Taskly.WebApi.Common.Behaviors;
 
@@ -13,6 +14,11 @@ public sealed partial class UserProvisioningBehavior<TRequest, TResponse>(
         TRequest request,
         CancellationToken cancellationToken)
     {
+        if (request is IWebHookRequest)
+        {
+            return await Next(request, cancellationToken);
+        }
+
         var auth0Id = currentUserService.GetAuth0Id();
 
         var user = await context.Users

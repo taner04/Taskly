@@ -10,7 +10,7 @@ public sealed class GetUserByEmailTests(TestingFixture fixture) : TestingBase(fi
     public async Task GetUserByEmail_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var client = CreateUnauthenticatedClient();
+        var client = GetUnauthenticatedClient();
         const string email = "test@test.com";
 
         // Act

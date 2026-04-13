@@ -13,6 +13,8 @@ public class WebApiFactory(DbConnection dbConnection, string azuriteConnectionSt
     protected override void ConfigureWebHost(
         IWebHostBuilder builder)
     {
+        builder.UseEnvironment("Testing");
+
         builder.ConfigureLogging(opt =>
         {
             opt.ClearProviders();
@@ -27,5 +29,6 @@ public class WebApiFactory(DbConnection dbConnection, string azuriteConnectionSt
 
         builder.UseSetting($"ConnectionStrings:{AppHostConstants.Database}", dbConnection.ConnectionString);
         builder.UseSetting($"ConnectionStrings:{AppHostConstants.AzureBlobStorage}", azuriteConnectionString);
+        builder.UseSetting("WebHookConfig:SecretKey", TestingFixture.WebHookSecret);
     }
 }

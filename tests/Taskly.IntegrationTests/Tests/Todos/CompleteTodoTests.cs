@@ -6,7 +6,7 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
     public async Task CompleteTodo_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var client = CreateUnauthenticatedClient();
+        var client = GetUnauthenticatedClient();
         var todoId = TodoId.From(Guid.NewGuid());
 
         // Act

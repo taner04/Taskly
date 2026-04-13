@@ -30,16 +30,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "meta", "meta", "{84D27F74-D
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{FDA7101B-4AB3-41FB-913E-0DA3ADA9860F}"
-	ProjectSection(SolutionItems) = preProject
-		docs\ARCHITECTURE.md = docs\ARCHITECTURE.md
-		docs\CONTRIBUTING.md = docs\CONTRIBUTING.md
-		docs\SCRIPTS.md = docs\SCRIPTS.md
-		docs\SETUP.md = docs\SETUP.md
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assets", "assets", "{6A52FDC1-3A64-42F5-8A34-3480936497BE}"
 	ProjectSection(SolutionItems) = preProject
-		docs\assets\Architecture.png = docs\assets\Architecture.png
 		docs\assets\Logo-Transparent.png = docs\assets\Logo-Transparent.png
 		docs\assets\Logo.png = docs\assets\Logo.png
 	EndProjectSection

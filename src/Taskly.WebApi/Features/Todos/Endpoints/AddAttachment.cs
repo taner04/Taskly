@@ -11,7 +11,7 @@ namespace Taskly.WebApi.Features.Todos.Endpoints;
 public static partial class AddAttachment
 {
     internal static void CustomizeEndpoint(
-        IEndpointConventionBuilder endpoint)
+        RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
         endpoint.RequireRateLimiting(Policies.RateLimiting.Global);

@@ -6,7 +6,6 @@ namespace Taskly.Desktop.Common.Infrastructure;
 /// <summary>
 ///     Managed host of the application.
 /// </summary>
-[ServiceInjection<ApplicationHostService, IHostedService>(ServiceLifetime.Singleton)]
 public class ApplicationHostService(IServiceProvider serviceProvider) : IHostedService
 {
     private INavigationWindow _navigationWindow = null!;

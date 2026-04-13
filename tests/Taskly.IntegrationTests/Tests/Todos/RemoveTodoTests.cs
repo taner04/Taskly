@@ -14,7 +14,7 @@ public sealed class RemoveTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task RemoveTodo_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var client = CreateUnauthenticatedClient();
+        var client = GetUnauthenticatedClient();
         var todoId = TodoId.From(Guid.NewGuid());
 
         // Act

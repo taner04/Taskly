@@ -17,7 +17,7 @@ public sealed class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture
     public async Task DeleteTag_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var unauthenticated = CreateUnauthenticatedClient();
+        var unauthenticated = GetUnauthenticatedClient();
         var randomId = TagId.From(Guid.NewGuid());
 
         // Act

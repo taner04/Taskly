@@ -10,7 +10,7 @@ namespace Taskly.WebApi.Features.Users.Endpoints;
 public static partial class GetUserByEmail
 {
     internal static void CustomizeEndpoint(
-        IEndpointConventionBuilder endpoint)
+        RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(User));
         endpoint.RequireRateLimiting(Policies.RateLimiting.Global);

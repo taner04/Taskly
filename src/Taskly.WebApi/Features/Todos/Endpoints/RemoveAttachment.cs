@@ -10,7 +10,7 @@ namespace Taskly.WebApi.Features.Todos.Endpoints;
 public static partial class RemoveAttachment
 {
     internal static void CustomizeEndpoint(
-        IEndpointConventionBuilder endpoint)
+        RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
         endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
@@ -47,7 +47,7 @@ public static partial class RemoveAttachment
             await context.SaveChangesAsync(ct);
             await transaction.CommitAsync(ct);
         }
-        catch (Exception e)
+        catch
         {
             await transaction.RollbackAsync(ct);
             throw;

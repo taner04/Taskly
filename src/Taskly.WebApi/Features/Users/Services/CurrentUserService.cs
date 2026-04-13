@@ -1,10 +1,7 @@
 using System.Security.Claims;
-using Taskly.Shared.Attributes;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
 
 namespace Taskly.WebApi.Features.Users.Services;
 
-[ServiceInjection(ServiceLifetime.Scoped)]
 public sealed class CurrentUserService(IHttpContextAccessor httpContextAccessor)
 {
     public const string SubClaim = "sub";

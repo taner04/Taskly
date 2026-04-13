@@ -4,7 +4,6 @@ using Taskly.Desktop.MVVM.Settings;
 
 namespace Taskly.Desktop.MVVM.Main;
 
-[ServiceInjection(ServiceLifetime.Singleton)]
 public partial class MainWindowViewModel : ObservableObject
 {
     [ObservableProperty] private ObservableCollection<object> _footerMenuItems =

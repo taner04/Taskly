@@ -4,12 +4,15 @@ using Taskly.IntegrationTests.Infrastructure.TestContainers.Azure;
 using Taskly.IntegrationTests.Infrastructure.TestContainers.Postgres;
 using Taskly.WebApi.Client.Abstractions;
 using Taskly.WebApi.Client.Common;
+using Taskly.WebApi.Features.Attachments.WebHooks;
 
 namespace Taskly.IntegrationTests.Infrastructure.Fixtures;
 
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 public sealed class TestingFixture : IAsyncLifetime
 {
+    internal const string WebHookSecret = "my-test-secret-key";
+
     private readonly AzureContainerHub _azureContainerHub = new();
 
     private readonly PostgresContainerHub _postgresContainerHub = new();
@@ -19,6 +22,7 @@ public sealed class TestingFixture : IAsyncLifetime
     private IServiceScopeFactory _serviceScopeFactory = null!;
     private string _userJwtToken = null!;
     private WebApiFactory _webApiFactory = null!;
+    private ApiHttpClient _webHookClient = null!;
 
     public async ValueTask InitializeAsync()
     {
@@ -29,6 +33,10 @@ public sealed class TestingFixture : IAsyncLifetime
         _serviceScopeFactory = _webApiFactory.Services.GetRequiredService<IServiceScopeFactory>();
 
         _apiHttpClient = new ApiHttpClient(_webApiFactory.CreateClient());
+
+        var client = _webApiFactory.CreateClient();
+        client.DefaultRequestHeaders.Add(AttachmentWebHookConstants.RequestHeader, WebHookSecret);
+        _webHookClient = new ApiHttpClient(client);
     }
 
     public async ValueTask DisposeAsync()
@@ -63,7 +71,9 @@ public sealed class TestingFixture : IAsyncLifetime
         return _apiHttpClient.Client;
     }
 
-    public IApiClient CreateUnauthenticatedClient() => _apiHttpClient.Client;
+    public IApiClient GetUnauthenticatedClient() => _apiHttpClient.Client;
+
+    public IApiClient GetWebHookClient() => _webHookClient.Client;
 
     private void InitilizeTokens()
     {

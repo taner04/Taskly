@@ -14,7 +14,7 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
     public async Task UpdateReminder_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var client = CreateUnauthenticatedClient();
+        var client = GetUnauthenticatedClient();
         var todoId = TodoId.From(Guid.NewGuid());
 
         // Act

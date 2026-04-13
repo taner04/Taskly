@@ -17,7 +17,7 @@ public sealed class AddTagsTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task AddTags_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var unauthenticated = CreateUnauthenticatedClient();
+        var unauthenticated = GetUnauthenticatedClient();
         var todoId = TodoId.From(Guid.NewGuid());
 
         // Act

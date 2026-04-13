@@ -15,7 +15,7 @@ public sealed class AddAttachmentTests(TestingFixture fixture) : TestingBase(fix
     public async Task AddAttachment_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var unauthenticated = CreateUnauthenticatedClient();
+        var unauthenticated = GetUnauthenticatedClient();
         var randomTodoId = TodoId.From(Guid.NewGuid());
 
         // Act

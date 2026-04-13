@@ -14,7 +14,7 @@ public sealed class CreateTodoTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task CreateTodo_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var client = CreateUnauthenticatedClient();
+        var client = GetUnauthenticatedClient();
         var command = CreateValidCommand();
 
         // Act

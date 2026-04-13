@@ -31,7 +31,7 @@ public sealed class GetTodosTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task GetTodos_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var client = CreateUnauthenticatedClient();
+        var client = GetUnauthenticatedClient();
 
         // Act
         var response = await client.GetTodosAsync(

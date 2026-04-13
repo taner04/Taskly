@@ -17,7 +17,7 @@ public sealed partial class Attachment : Entity<AttachmentId>, IValidationTarget
 {
     public const long MaxFileSizeInBytes = 10 * 1024 * 1024; // 10MB
     public const int MaxFileNameLength = 255;
-    public const string DefaultContainer = "attachments";
+    public const string BlobContainer = "attachments";
 
 
     private Attachment(
@@ -31,7 +31,7 @@ public sealed partial class Attachment : Entity<AttachmentId>, IValidationTarget
         FileName = fileName;
         BlobName = blobName;
         ContentType = contentType;
-        Container = DefaultContainer;
+        Container = BlobContainer;
         Status = AttachmentStatus.Pending;
     }
 

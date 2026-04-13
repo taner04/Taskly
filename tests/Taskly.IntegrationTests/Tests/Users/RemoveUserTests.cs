@@ -10,7 +10,7 @@ public sealed class RemoveUserTests(TestingFixture fixture) : TestingBase(fixtur
     public async Task RemoveUser_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var client = CreateUnauthenticatedClient();
+        var client = GetUnauthenticatedClient();
         var userId = UserId.From(Guid.NewGuid());
 
         // Act

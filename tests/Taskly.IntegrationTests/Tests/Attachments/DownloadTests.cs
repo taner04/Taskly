@@ -8,7 +8,7 @@ public sealed class DownloadTests(TestingFixture fixture) : TestingBase(fixture)
     public async Task DownloadAttachment_Should_Return401_When_Unauthenticated()
     {
         // Arrange
-        var unauth = CreateUnauthenticatedClient();
+        var unauth = GetUnauthenticatedClient();
 
         var randomId = AttachmentId.From(Guid.NewGuid());
 

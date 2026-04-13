@@ -13,4 +13,3 @@ using Taskly.WebApi.Common.Behaviors.Logger;
 
 [assembly: InternalsVisibleTo("Taskly.WebApi.Client")]
 [assembly: InternalsVisibleTo("Taskly.IntegrationTests")]
-[assembly: InternalsVisibleTo("Taskly.UnitTests")]

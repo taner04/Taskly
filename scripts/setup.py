@@ -35,7 +35,10 @@ APPSETTINGS_API_TEMPLATE = {
     "ConnectionStrings": {
         "AzureBlobStorage": "your-azure-blob-storage-connection-string"
     },
-    "Papercut": {
+      "WebHookConfig":{
+        "SecretKey": "your-webhook-secret-key"
+    },
+    "EmailConfig": {
         "Host": "localhost",
         "Port": 25
     }
@@ -63,6 +66,17 @@ def create_appsettings_api() -> None:
     )
 
 
+def create_initial_migration() -> None:
+    """Create initial database migration."""
+    migrations_dir = project_root / "src" / "Taskly.WebApi" / "Common" / "Infrastructure" / "Persistence" / "Migrations"
+    
+    # Check if migrations directory already exists (indicates Initial migration was already created)
+    if migrations_dir.exists() and any(f.name.endswith("Initial.cs") for f in migrations_dir.glob("*.cs")):
+        console_logger.success("Initial migration already exists")
+        return
+    
+    add_migration("Initial")
+
 # =========================================================================
 # Main Entry Point
 # =========================================================================
@@ -72,10 +86,8 @@ def main() -> None:
     """Initialize all required configuration files."""
     console_logger.info("Initializing Taskly configuration files...")
     create_appsettings_api()
-    console_logger.success("Initialization completed! You can now configure your values.")
-
-    console_logger.info("Creating initial database migration...")
-    add_migration("InitialCreate")
+    create_initial_migration()
+    console_logger.success("Initialization completed!")
 
 if __name__ == "__main__":
     main()
