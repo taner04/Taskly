@@ -24,7 +24,7 @@ public class WebApiFactory(string dbConnectionString, string azureBlobConnection
 
         builder.ConfigureServices(services =>
         {
-            services.AddMockDbContext(new NpgsqlConnection(dbConnectionString));
+            services.AddMockDbContext(dbConnectionString);
             services.AddMockJwtBearerOptions();
         });
 

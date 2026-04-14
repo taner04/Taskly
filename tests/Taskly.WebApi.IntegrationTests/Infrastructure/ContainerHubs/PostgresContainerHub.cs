@@ -25,7 +25,6 @@ public sealed class PostgresContainerHub : ContainerHub<PostgreSqlContainer>
             .Options;
 
         await using var context = new TasklyDbContext(_dbContextOptions);
-
         await context.Database.MigrateAsync(CurrentCancellationToken);
 
         await InitUserAsync(context);

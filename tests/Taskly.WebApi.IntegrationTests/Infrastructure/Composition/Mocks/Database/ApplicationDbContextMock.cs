@@ -8,7 +8,7 @@ public static class ApplicationDbContextMock
 {
     internal static IServiceCollection AddMockDbContext(
         this IServiceCollection services,
-        DbConnection connection)
+        string connectionString)
     {
         services.RemoveAll<TasklyDbContext>();
         services.RemoveAll<DbContextOptions<TasklyDbContext>>();
@@ -31,7 +31,7 @@ public static class ApplicationDbContextMock
             opt.AddInterceptors(new ApplicationDbContextAuditableInterceptorMock());
             opt.EnableSensitiveDataLogging();
             opt.EnableDetailedErrors();
-            opt.UseNpgsql(connection.ConnectionString);
+            opt.UseNpgsql(connectionString);
         });
 
         return services;
