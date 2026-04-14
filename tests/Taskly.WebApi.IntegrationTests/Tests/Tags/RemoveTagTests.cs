@@ -1,6 +1,3 @@
-using Taskly.WebApi.IntegrationTests.Infrastructure;
-using Taskly.WebApi.IntegrationTests.Infrastructure.Fixtures;
-
 namespace Taskly.WebApi.IntegrationTests.Tests.Tags;
 
 public sealed class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture)

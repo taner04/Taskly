@@ -1,7 +1,4 @@
 using Taskly.WebApi.Features.Attachments.Endpoints;
-using Taskly.WebApi.IntegrationTests.Factories;
-using Taskly.WebApi.IntegrationTests.Infrastructure;
-using Taskly.WebApi.IntegrationTests.Infrastructure.Fixtures;
 
 namespace Taskly.WebApi.IntegrationTests.Tests.Attachments;
 

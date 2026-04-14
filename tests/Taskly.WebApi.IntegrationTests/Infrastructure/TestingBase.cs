@@ -1,7 +1,6 @@
 using Taskly.WebApi.Client.Abstractions;
 using Taskly.WebApi.Common.Infrastructure.Persistence;
 using Taskly.WebApi.IntegrationTests.Infrastructure.Composition.Mocks.Jwt;
-using Taskly.WebApi.IntegrationTests.Infrastructure.Fixtures;
 
 namespace Taskly.WebApi.IntegrationTests.Infrastructure;
 

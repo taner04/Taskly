@@ -1,8 +1,5 @@
 using System.Text.Json;
 using Taskly.WebApi.Features.Attachments.WebHooks;
-using Taskly.WebApi.IntegrationTests.Factories;
-using Taskly.WebApi.IntegrationTests.Infrastructure;
-using Taskly.WebApi.IntegrationTests.Infrastructure.Fixtures;
 
 namespace Taskly.WebApi.IntegrationTests.Tests.Attachments;
 

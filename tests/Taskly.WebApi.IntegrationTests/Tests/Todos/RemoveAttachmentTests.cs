@@ -1,6 +1,4 @@
 using Taskly.ServiceDefaults;
-using Taskly.WebApi.IntegrationTests.Infrastructure;
-using Taskly.WebApi.IntegrationTests.Infrastructure.Fixtures;
 
 namespace Taskly.WebApi.IntegrationTests.Tests.Todos;
 

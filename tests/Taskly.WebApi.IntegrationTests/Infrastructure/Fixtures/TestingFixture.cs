@@ -2,10 +2,8 @@ using System.Diagnostics.CodeAnalysis;
 using Taskly.WebApi.Client.Abstractions;
 using Taskly.WebApi.Client.Common;
 using Taskly.WebApi.Features.Attachments.WebHooks;
-using Taskly.WebApi.IntegrationTests.Factories;
 using Taskly.WebApi.IntegrationTests.Infrastructure.Composition.Mocks.Jwt;
-using Taskly.WebApi.IntegrationTests.Infrastructure.TestContainers.Azure;
-using Taskly.WebApi.IntegrationTests.Infrastructure.TestContainers.Postgres;
+using Taskly.WebApi.IntegrationTests.Infrastructure.ContainerHubs;
 
 namespace Taskly.WebApi.IntegrationTests.Infrastructure.Fixtures;
 
@@ -30,7 +28,7 @@ public sealed class TestingFixture : IAsyncLifetime
         InitilizeTokens();
         await InitilizeContainersAsync();
 
-        _webApiFactory = new WebApiFactory(_postgresContainerHub.DbConnection, _azureContainerHub.ConnectionString);
+        _webApiFactory = new WebApiFactory(_postgresContainerHub.ConnectionString, _azureContainerHub.ConnectionString);
         _serviceScopeFactory = _webApiFactory.Services.GetRequiredService<IServiceScopeFactory>();
 
         _apiHttpClient = new ApiHttpClient(_webApiFactory.CreateClient());

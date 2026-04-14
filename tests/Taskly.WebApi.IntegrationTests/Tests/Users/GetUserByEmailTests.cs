@@ -1,6 +1,3 @@
-using Taskly.WebApi.IntegrationTests.Infrastructure;
-using Taskly.WebApi.IntegrationTests.Infrastructure.Fixtures;
-
 namespace Taskly.WebApi.IntegrationTests.Tests.Users;
 
 public sealed class GetUserByEmailTests(TestingFixture fixture) : TestingBase(fixture)

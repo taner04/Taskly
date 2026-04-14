@@ -1,6 +1,3 @@
-using Taskly.WebApi.IntegrationTests.Infrastructure;
-using Taskly.WebApi.IntegrationTests.Infrastructure.Fixtures;
-
 namespace Taskly.WebApi.IntegrationTests.Tests.Todos;
 
 public sealed class UpdateTodoTests(TestingFixture fixture) : TestingBase(fixture)

@@ -1,8 +1,5 @@
 using Taskly.WebApi.Common.Shared.Pagination;
 using Taskly.WebApi.Features.Users.Endpoints;
-using Taskly.WebApi.IntegrationTests.Factories;
-using Taskly.WebApi.IntegrationTests.Infrastructure;
-using Taskly.WebApi.IntegrationTests.Infrastructure.Fixtures;
 
 namespace Taskly.WebApi.IntegrationTests.Tests.Users;
 

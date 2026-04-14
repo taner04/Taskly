@@ -1,9 +1,6 @@
 using Taskly.WebApi.Common.Shared.Dtos;
 using Taskly.WebApi.Common.Shared.Pagination;
 using Taskly.WebApi.Features.Tags.Endpoints;
-using Taskly.WebApi.IntegrationTests.Factories;
-using Taskly.WebApi.IntegrationTests.Infrastructure;
-using Taskly.WebApi.IntegrationTests.Infrastructure.Fixtures;
 
 namespace Taskly.WebApi.IntegrationTests.Tests.Tags;
 

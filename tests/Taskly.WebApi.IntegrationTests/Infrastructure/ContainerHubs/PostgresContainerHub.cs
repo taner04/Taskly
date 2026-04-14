@@ -1,32 +1,32 @@
-using Npgsql;
 using Taskly.WebApi.Common.Infrastructure.Persistence;
-using Taskly.WebApi.IntegrationTests.Factories;
+using Testcontainers.PostgreSql;
 
-namespace Taskly.WebApi.IntegrationTests.Infrastructure.TestContainers.Postgres;
+namespace Taskly.WebApi.IntegrationTests.Infrastructure.ContainerHubs;
 
-public sealed class PostgresContainerHub : IAsyncDisposable
+public sealed class PostgresContainerHub : ContainerHub<PostgreSqlContainer>
 {
-    private readonly PostgresContainer _postgresContainer = new();
     private DbContextOptions<TasklyDbContext> _dbContextOptions = null!;
 
-    public DbConnection DbConnection => new NpgsqlConnection(_postgresContainer.ConnectionString);
-
-    public async ValueTask DisposeAsync()
-    {
-        await _postgresContainer.DisposeAsync();
-    }
+    protected override PostgreSqlContainer BuildDockerContainer() =>
+        new PostgreSqlBuilder("postgres:latest")
+            .WithDatabase("db")
+            .WithUsername("postgres")
+            .WithPassword("postgres")
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("pg_isready"))
+            .WithCleanUp(true)
+            .Build();
 
     public async Task InitializeContainerAsync()
     {
-        await _postgresContainer.InitializeAsync();
+        await BuildAndInitializeDockerContainerAsync();
 
         _dbContextOptions = new DbContextOptionsBuilder<TasklyDbContext>()
-            .UseNpgsql(_postgresContainer.ConnectionString)
+            .UseNpgsql(ConnectionString)
             .Options;
 
         await using var context = new TasklyDbContext(_dbContextOptions);
 
-        await context.Database.MigrateAsync(TestContext.Current.CancellationToken);
+        await context.Database.MigrateAsync(CurrentCancellationToken);
 
         await InitUserAsync(context);
     }
@@ -42,7 +42,7 @@ public sealed class PostgresContainerHub : IAsyncDisposable
                            DELETE FROM "Users";
                            """;
 
-        await context.Database.ExecuteSqlRawAsync(sql, TestContext.Current.CancellationToken);
+        await context.Database.ExecuteSqlRawAsync(sql, CurrentCancellationToken);
 
         await InitUserAsync(context);
     }
@@ -55,18 +55,18 @@ public sealed class PostgresContainerHub : IAsyncDisposable
         user.SetCreated("auth0|otheruserid123");
 
         context.Users.Add(user);
-        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(CurrentCancellationToken);
 
         return user.Id;
     }
 
-    private static async Task InitUserAsync(
+    private async Task InitUserAsync(
         TasklyDbContext context)
     {
         var user = UserFactory.Create();
         user.SetCreated(UserFactory.Sub);
 
         context.Users.Add(user);
-        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(CurrentCancellationToken);
     }
 }

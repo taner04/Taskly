@@ -1,6 +1,4 @@
 using Taskly.WebApi.Features.Tags.Endpoints;
-using Taskly.WebApi.IntegrationTests.Infrastructure;
-using Taskly.WebApi.IntegrationTests.Infrastructure.Fixtures;
 
 namespace Taskly.WebApi.IntegrationTests.Tests.Tags;
 
