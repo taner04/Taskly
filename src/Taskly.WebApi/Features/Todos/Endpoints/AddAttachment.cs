@@ -26,7 +26,7 @@ public static partial class AddAttachment
         [AsParameters] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
-        AttachmentService attachments,
+        AttachmentBlobContainerService attachmentBlobContainerService,
         CancellationToken ct)
     {
         var userId = currentUserService.GetUserId();
@@ -42,7 +42,7 @@ public static partial class AddAttachment
             command.Body.ContentType
         );
 
-        var sas = attachments.GenerateUploadSas(attachment);
+        var sas = attachmentBlobContainerService.GenerateUploadSas(attachment);
 
         todo.Attachments.Add(attachment);
 

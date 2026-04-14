@@ -13,7 +13,7 @@ internal static class ServicesServiceCollection
             services.AddScoped<CurrentUserService>();
             services.AddScoped<EmailService>();
             services.AddScoped<PaginationService>();
-            services.AddSingleton<AttachmentService>();
+            services.AddSingleton<AttachmentBlobContainerService>();
 
             return services;
         }

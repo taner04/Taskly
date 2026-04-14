@@ -147,7 +147,8 @@ public sealed class CreateTodoTests(TestingFixture fixture) : TestingBase(fixtur
             .Should()
             .Be(body.TodoId.ToString());
 
-        var created = await GetDbContext().Todos
+        await using var verifyContext = GetDbContext();
+        var created = await verifyContext.Todos
             .AsNoTracking()
             .FirstOrDefaultAsync(t => t.Id == TodoId.From(body.TodoId), CurrentCancellationToken);
 

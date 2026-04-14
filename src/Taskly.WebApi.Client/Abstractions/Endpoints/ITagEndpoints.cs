@@ -6,7 +6,7 @@ public interface ITagEndpoints
 {
     [Post(ApiRoutes.Tags.Create)]
     Task<HttpResponseMessage> CreateTagAsync(
-        CreateTag.Command command,
+        [Body] CreateTag.Command command,
         CancellationToken cancellationToken = default);
 
     [Delete(ApiRoutes.Tags.Remove)]

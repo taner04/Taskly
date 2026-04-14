@@ -1,26 +1,36 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
+using Taskly.ServiceDefaults;
 
 namespace Taskly.WebApi.Features.Attachments.Services;
 
-public sealed partial class AttachmentService(
-    ILogger<AttachmentService> logger,
+public sealed partial class AttachmentBlobContainerService(
+    ILogger<AttachmentBlobContainerService> logger,
     BlobServiceClient blobServiceClient)
 {
-    private readonly BlobContainerClient _container =
-        blobServiceClient.GetBlobContainerClient(Attachment.BlobContainer);
+    private BlobContainerClient _containerClient = null!;
 
     internal async Task InitializeAsync()
     {
-        await _container.CreateIfNotExistsAsync();
+        try
+        {
+            _containerClient = blobServiceClient.GetBlobContainerClient(AppHostConstants.AzureBlobContainerName);
+            await _containerClient.CreateIfNotExistsAsync();
+            logger.LogInformation("AttachmentService initialized successfully with Azure Blob Storage.");
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to initialize AttachmentService.");
+            throw;
+        }
     }
 
     internal SasDownloadResult GenerateDownloadSas(
         Attachment attachment)
     {
-        var blob = _container.GetBlobClient(attachment.BlobName);
+        var blobClient = _containerClient.GetBlobClient(attachment.BlobName);
 
-        if (!blob.CanGenerateSasUri)
+        if (!blobClient.CanGenerateSasUri)
         {
             LogDownloadSasNotAllowed(attachment.BlobName);
             throw new InvalidOperationException("SAS generation not allowed.");
@@ -36,7 +46,7 @@ public sealed partial class AttachmentService(
 
         sasBuilder.SetPermissions(BlobSasPermissions.Read);
 
-        var sasUri = blob.GenerateSasUri(sasBuilder);
+        var sasUri = blobClient.GenerateSasUri(sasBuilder);
 
         LogDownloadSasGenerated(attachment.BlobName);
 
@@ -46,7 +56,7 @@ public sealed partial class AttachmentService(
     internal SasUploadResult GenerateUploadSas(
         Attachment attachment)
     {
-        var blobClient = _container.GetBlobClient(attachment.BlobName);
+        var blobClient = _containerClient.GetBlobClient(attachment.BlobName);
 
         if (!blobClient.CanGenerateSasUri)
         {
@@ -57,7 +67,7 @@ public sealed partial class AttachmentService(
 
         var sasBuilder = new BlobSasBuilder
         {
-            BlobContainerName = _container.Name,
+            BlobContainerName = _containerClient.Name,
             BlobName = attachment.BlobName,
             Resource = "blob",
             ExpiresOn = DateTime.UtcNow.AddMinutes(10)
@@ -78,7 +88,7 @@ public sealed partial class AttachmentService(
     {
         try
         {
-            var blob = _container.GetBlobClient(attachment.BlobName);
+            var blob = _containerClient.GetBlobClient(attachment.BlobName);
             var response = await blob.DeleteIfExistsAsync(cancellationToken: ct);
 
             if (response.Value)

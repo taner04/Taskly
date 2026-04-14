@@ -1,3 +1,5 @@
+using Taskly.ServiceDefaults;
+
 namespace Taskly.IntegrationTests.Infrastructure.TestContainers.Azure;
 
 internal sealed class AzureContainerHub : IAsyncDisposable
@@ -16,14 +18,10 @@ internal sealed class AzureContainerHub : IAsyncDisposable
     {
         await _azureContainer.InitializeAsync();
 
-        var options = new BlobClientOptions(BlobClientOptions.ServiceVersion.V2024_11_04);
-        var blobServiceClient = new BlobServiceClient(_azureContainer.ConnectionString, options);
+        var blobServiceClient = new BlobServiceClient(_azureContainer.ConnectionString);
+        _blobContainerClient = blobServiceClient.GetBlobContainerClient(AppHostConstants.AzureBlobContainerName);
 
-        _blobContainerClient = blobServiceClient.GetBlobContainerClient(Attachment.BlobContainer);
-        if (!await _blobContainerClient.ExistsAsync())
-        {
-            await _blobContainerClient.CreateAsync();
-        }
+        await _blobContainerClient.CreateIfNotExistsAsync();
     }
 
     public async Task ResetContainerAsync()

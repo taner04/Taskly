@@ -64,7 +64,8 @@ public sealed class RemoveTodoTests(TestingFixture fixture) : TestingBase(fixtur
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var exists = await GetDbContext().Todos
+        await using var verifyContext = GetDbContext();
+        var exists = await verifyContext.Todos
             .AnyAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
         exists.Should().BeFalse();
@@ -92,7 +93,8 @@ public sealed class RemoveTodoTests(TestingFixture fixture) : TestingBase(fixtur
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         await response.ContainsErrorCode("Todo.NotFound", CurrentCancellationToken);
 
-        var stillExists = await GetDbContext().Todos
+        await using var verifyContext = GetDbContext();
+        var stillExists = await verifyContext.Todos
             .AnyAsync(t => t.Id == foreignTodo.Id, CurrentCancellationToken);
 
         stillExists.Should().BeTrue();

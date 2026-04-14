@@ -67,7 +67,8 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await GetDbContext().Todos
+        await using var verifyContext = GetDbContext();
+        var updated = await verifyContext.Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
@@ -98,7 +99,8 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await GetDbContext().Todos
+        await using var verifyContext = GetDbContext();
+        var updated = await verifyContext.Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
@@ -130,7 +132,8 @@ public sealed class CompleteTodoTests(TestingFixture fixture) : TestingBase(fixt
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         await response.ContainsErrorCode("Todo.NotFound", CurrentCancellationToken);
 
-        var unchanged = await GetDbContext().Todos
+        await using var verifyContext = GetDbContext();
+        var unchanged = await verifyContext.Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == foreignTodo.Id, CurrentCancellationToken);
 

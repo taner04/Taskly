@@ -90,7 +90,8 @@ public sealed class AddAttachmentTests(TestingFixture fixture) : TestingBase(fix
         result.BlobPath.Should().NotBeNullOrWhiteSpace();
 
         // Validate database state
-        var createdAttachment = await GetDbContext().Attachments
+        await using var verifyContext = GetDbContext();
+        var createdAttachment = await verifyContext.Attachments
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Id == AttachmentId.From(result.AttachmentId), CurrentCancellationToken);
 

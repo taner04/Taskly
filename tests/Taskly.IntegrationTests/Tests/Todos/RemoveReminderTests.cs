@@ -56,7 +56,8 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await GetDbContext().Todos
+        await using var verifyContext = GetDbContext();
+        var updated = await verifyContext.Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
@@ -87,7 +88,8 @@ public sealed class RemoveReminderTests(TestingFixture fixture) : TestingBase(fi
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         await response.ContainsErrorCode("Todo.NotFound", CurrentCancellationToken);
 
-        var unchanged = await GetDbContext().Todos
+        await using var verifyContext = GetDbContext();
+        var unchanged = await verifyContext.Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == foreignTodo.Id, CurrentCancellationToken);
 

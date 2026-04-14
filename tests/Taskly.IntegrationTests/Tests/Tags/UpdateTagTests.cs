@@ -101,7 +101,8 @@ public sealed class UpdateTagTests(TestingFixture fixture) : TestingBase(fixture
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await GetDbContext().Tags
+        await using var verifyContext = GetDbContext();
+        var updated = await verifyContext.Tags
             .AsNoTracking()
             .FirstAsync(t => t.Id == tag.Id, CurrentCancellationToken);
 

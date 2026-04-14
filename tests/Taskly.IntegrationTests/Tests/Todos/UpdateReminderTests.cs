@@ -201,7 +201,8 @@ public sealed class UpdateReminderTests(TestingFixture fixture) : TestingBase(fi
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updated = await GetDbContext().Todos
+        await using var verifyContext = GetDbContext();
+        var updated = await verifyContext.Todos
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 

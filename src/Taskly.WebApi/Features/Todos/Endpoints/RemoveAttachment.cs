@@ -20,7 +20,7 @@ public static partial class RemoveAttachment
         Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
-        AttachmentService attachmentService,
+        AttachmentBlobContainerService attachmentBlobContainerService,
         CancellationToken ct)
     {
         var userId = currentUserService.GetUserId();
@@ -39,7 +39,7 @@ public static partial class RemoveAttachment
         {
             todo.Attachments.Remove(attachment);
 
-            if (!await attachmentService.DeleteAsync(attachment, ct))
+            if (!await attachmentBlobContainerService.DeleteAsync(attachment, ct))
             {
                 throw new AttachmentDeletionException(command.AttachmentId);
             }

@@ -1,3 +1,4 @@
+using Taskly.ServiceDefaults;
 using Taskly.WebApi.Common.Shared.Models;
 using Taskly.WebApi.Features.Attachments.Exceptions;
 
@@ -17,8 +18,7 @@ public sealed partial class Attachment : Entity<AttachmentId>, IValidationTarget
 {
     public const long MaxFileSizeInBytes = 10 * 1024 * 1024; // 10MB
     public const int MaxFileNameLength = 255;
-    public const string BlobContainer = "attachments";
-
+    private const string BlobContainerName = AppHostConstants.AzureBlobContainerName;
 
     private Attachment(
         TodoId todoId,
@@ -31,7 +31,7 @@ public sealed partial class Attachment : Entity<AttachmentId>, IValidationTarget
         FileName = fileName;
         BlobName = blobName;
         ContentType = contentType;
-        Container = BlobContainer;
+        Container = BlobContainerName;
         Status = AttachmentStatus.Pending;
     }
 

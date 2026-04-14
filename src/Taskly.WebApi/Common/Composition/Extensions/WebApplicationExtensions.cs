@@ -45,10 +45,10 @@ internal static class WebApplicationExtensions
         internal async Task<WebApplication> InitializeBlobStorage()
         {
             using var scope = app.Services.CreateScope();
-            var attachmentService = scope.ServiceProvider.GetRequiredService<AttachmentService>();
+            var attachmentService = scope.ServiceProvider.GetRequiredService<AttachmentBlobContainerService>();
 
             await attachmentService.InitializeAsync();
-            
+
             return app;
         }
 
@@ -58,7 +58,7 @@ internal static class WebApplicationExtensions
             {
                 DarkModeEnabled = true
             });
-            
+
             return app;
         }
     }

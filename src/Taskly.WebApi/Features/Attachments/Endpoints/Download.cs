@@ -18,7 +18,7 @@ public static partial class Download
         Query query,
         TasklyDbContext db,
         CurrentUserService current,
-        AttachmentService attachmentService,
+        AttachmentBlobContainerService attachmentBlobContainerService,
         CancellationToken ct)
     {
         var userId = current.GetUserId();
@@ -30,7 +30,7 @@ public static partial class Download
                     a.Todo.UserId == userId,
                 ct) ?? throw new ModelNotFoundException<Attachment>(query.AttachmentId.Value);
 
-        var sas = attachmentService.GenerateDownloadSas(attachment);
+        var sas = attachmentBlobContainerService.GenerateDownloadSas(attachment);
 
         return new Response(
             sas.DownloadUrl,

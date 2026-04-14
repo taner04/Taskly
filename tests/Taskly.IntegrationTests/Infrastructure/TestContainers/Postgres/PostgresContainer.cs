@@ -3,7 +3,7 @@ using Testcontainers.PostgreSql;
 
 namespace Taskly.IntegrationTests.Infrastructure.TestContainers.Postgres;
 
-public sealed class PostgresContainer : Container
+public sealed class PostgresContainer : ContainerHub
 {
     public string ConnectionString => DockerContainer.GetConnectionString();
 

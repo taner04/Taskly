@@ -53,7 +53,7 @@ public interface ITodoEndpoints
     [Put(ApiRoutes.Todos.Update)]
     Task<HttpResponseMessage> UpdateTodoAsync(
         TodoId todoId,
-        [Body] UpdateTodo.Command.CommandBody body,
+        UpdateTodo.Command.CommandBody body,
         CancellationToken cancellationToken = default);
 
     [Delete(ApiRoutes.Todos.RemoveReminder)]
@@ -64,6 +64,6 @@ public interface ITodoEndpoints
     [Put(ApiRoutes.Todos.UpdateReminder)]
     Task<HttpResponseMessage> UpdateReminderAsync(
         TodoId todoId,
-        [Body] UpdateReminder.Command.CommandBody body,
+        UpdateReminder.Command.CommandBody body,
         CancellationToken cancellationToken = default);
 }

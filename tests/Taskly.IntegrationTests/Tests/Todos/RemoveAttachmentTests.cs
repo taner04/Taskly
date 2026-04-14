@@ -1,3 +1,5 @@
+using Taskly.ServiceDefaults;
+
 namespace Taskly.IntegrationTests.Tests.Todos;
 
 public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(fixture)
@@ -92,7 +94,7 @@ public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(
         dbContext.Add(attachment);
         await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
-        var container = GetService<BlobServiceClient>().GetBlobContainerClient(Attachment.BlobContainer);
+        var container = GetService<BlobServiceClient>().GetBlobContainerClient(AppHostConstants.AzureBlobContainerName);
 
         await container.CreateIfNotExistsAsync(cancellationToken: CurrentCancellationToken);
 
@@ -111,7 +113,8 @@ public sealed class RemoveAttachmentTests(TestingFixture fixture) : TestingBase(
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var exists = await GetDbContext().Attachments
+        await using var verifyContext = GetDbContext();
+        var exists = await verifyContext.Attachments
             .AnyAsync(a => a.Id == attachment.Id, CurrentCancellationToken);
 
         exists.Should().BeFalse();

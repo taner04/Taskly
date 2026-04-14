@@ -49,8 +49,8 @@ cd Taskly
 3. Create an **API** in Auth0 and set the **Identifier** (Audience)
 4. Copy **Domain**, **Client ID**, **Client Secret**, and **API Audience**
 5. Set the following URLs in Auth0 application settings:
-   - **Allowed Callback URLs**: `https://localhost:{PORT}/scalar/v1/oauth2-redirect.html`
-   - **Allowed Logout URLs**: `https://localhost:{PORT}/scalar/v1`
+    - **Allowed Callback URLs**: `https://localhost:{PORT}/scalar/v1/oauth2-redirect.html`
+    - **Allowed Logout URLs**: `https://localhost:{PORT}/scalar/v1`
 
 ### 3. Create appsettings.json
 
@@ -126,8 +126,6 @@ Taskly/
     ├── Taskly.MigrationService/ # Database migrations
     └── Taskly.ServiceDefaults/  # Shared configuration
 ```
-
-
 
 ## 📄 License
 

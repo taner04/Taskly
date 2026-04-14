@@ -47,7 +47,8 @@ public sealed class CreateTagTests(TestingFixture fixture) : TestingBase(fixture
         var tagId = TagId.From(Guid.Parse(uriLocation.ToString().Split('/').Last()));
         tagId.Should().NotBeNull();
 
-        var createdTag = await GetDbContext().Tags
+        await using var verifyContext = GetDbContext();
+        var createdTag = await verifyContext.Tags
             .AsNoTracking()
             .FirstOrDefaultAsync(t => t.Id == tagId, CurrentCancellationToken);
 

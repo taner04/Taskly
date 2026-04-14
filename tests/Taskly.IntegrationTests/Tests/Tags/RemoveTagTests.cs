@@ -67,7 +67,8 @@ public sealed class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        (await GetDbContext().Tags
+        await using var verifyContext = GetDbContext();
+        (await verifyContext.Tags
                 .AnyAsync(t => t.Id == tag.Id, CurrentCancellationToken))
             .Should().BeFalse();
     }
@@ -97,14 +98,15 @@ public sealed class RemoveTagTests(TestingFixture fixture) : TestingBase(fixture
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updatedTodo = await GetDbContext().Todos
+        await using var verifyContext = GetDbContext();
+        var updatedTodo = await verifyContext.Todos
             .Include(t => t.Tags)
             .AsNoTracking()
             .FirstAsync(t => t.Id == todo.Id, CurrentCancellationToken);
 
         updatedTodo.Tags.Should().BeEmpty();
 
-        (await GetDbContext().Tags.AnyAsync(t => t.Id == tag.Id, CurrentCancellationToken))
+        (await verifyContext.Tags.AnyAsync(t => t.Id == tag.Id, CurrentCancellationToken))
             .Should().BeFalse();
     }
 }

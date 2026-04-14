@@ -1,3 +1,4 @@
+using Taskly.ServiceDefaults;
 using Taskly.WebApi.Common.Composition.Extensions.ServiceCollection.Modules;
 
 namespace Taskly.WebApi.Common.Composition.Extensions.ServiceCollection;
@@ -8,6 +9,8 @@ internal static class ServiceCollectionExtensions
     {
         internal IServiceCollection AddInfrastructure(WebApplicationBuilder builder)
         {
+            builder.AddAzureBlobServiceClient(AppHostConstants.AzureBlobContainerName);
+
             services
                 .AddCustomJsonConverter()
                 .AddTasklyConfiguration(builder)
@@ -16,7 +19,6 @@ internal static class ServiceCollectionExtensions
                 .AddTasklyWebApiBehaviors()
                 .AddTasklyWebApiHandlers()
                 .AddTasklyDbContext(builder)
-                .AddTasklyAzureBlobClient(builder.Configuration)
                 .AddTasklyServices()
                 .AddTasklyAttachmentEventStrategies()
                 .AddTasklyHangfire(builder);

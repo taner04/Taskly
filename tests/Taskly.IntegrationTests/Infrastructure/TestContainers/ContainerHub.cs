@@ -2,7 +2,7 @@ using DotNet.Testcontainers.Containers;
 
 namespace Taskly.IntegrationTests.Infrastructure.TestContainers;
 
-public abstract class Container : IAsyncDisposable
+public abstract class ContainerHub : IAsyncDisposable
 {
     private const int MaxRetryAttempts = 5;
     protected DockerContainer DockerContainer = null!;

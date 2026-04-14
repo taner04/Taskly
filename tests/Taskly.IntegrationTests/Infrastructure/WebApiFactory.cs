@@ -7,7 +7,7 @@ using Taskly.ServiceDefaults;
 
 namespace Taskly.IntegrationTests.Infrastructure;
 
-public class WebApiFactory(DbConnection dbConnection, string azuriteConnectionString)
+public class WebApiFactory(DbConnection dbConnection, string azureBlobConnectionString)
     : WebApplicationFactory<WebApi.Program>
 {
     protected override void ConfigureWebHost(
@@ -28,7 +28,7 @@ public class WebApiFactory(DbConnection dbConnection, string azuriteConnectionSt
         });
 
         builder.UseSetting($"ConnectionStrings:{AppHostConstants.Database}", dbConnection.ConnectionString);
-        builder.UseSetting($"ConnectionStrings:{AppHostConstants.AzureBlobStorage}", azuriteConnectionString);
+        builder.UseSetting($"ConnectionStrings:{AppHostConstants.AzureBlobContainerName}", azureBlobConnectionString);
         builder.UseSetting("WebHookConfig:SecretKey", TestingFixture.WebHookSecret);
     }
 }

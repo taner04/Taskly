@@ -29,12 +29,14 @@ public sealed class GetTagsTests(TestingFixture fixture) : TestingBase(fixture)
 
         // Ensure DB is empty for this user
         var userId = CurrentUserId;
-        var existing = await GetDbContext().Tags
+
+        await using var dbContext = GetDbContext();
+        var existing = await dbContext.Tags
             .Where(t => t.UserId == userId)
             .ToListAsync(CurrentCancellationToken);
 
-        GetDbContext().Tags.RemoveRange(existing);
-        await GetDbContext().SaveChangesAsync(CurrentCancellationToken);
+        dbContext.Tags.RemoveRange(existing);
+        await dbContext.SaveChangesAsync(CurrentCancellationToken);
 
         // Act
         var response = await client.GetTagsAsync(
