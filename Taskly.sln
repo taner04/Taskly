@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.AppHost", "tools\Tas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.ServiceDefaults", "tools\Taskly.ServiceDefaults\Taskly.ServiceDefaults.csproj", "{B429E56C-013C-4D25-8D21-0CE723BFC521}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.IntegrationTests", "tests\Taskly.IntegrationTests\Taskly.IntegrationTests.csproj", "{728B2DC3-4499-471E-BA6F-75F2F419026F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.WebApi.IntegrationTests", "tests\Taskly.WebApi.IntegrationTests\Taskly.WebApi.IntegrationTests.csproj", "{728B2DC3-4499-471E-BA6F-75F2F419026F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taskly.WebApi", "src\Taskly.WebApi\Taskly.WebApi.csproj", "{509037D3-8796-4D97-B265-B34041AF3C14}"
 EndProject

@@ -1,3 +1,3 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Taskly.IntegrationTests")]
+[assembly: InternalsVisibleTo("Taskly.WebApi.IntegrationTests")]

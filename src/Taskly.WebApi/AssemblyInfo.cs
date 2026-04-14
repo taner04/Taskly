@@ -12,4 +12,4 @@ using Taskly.WebApi.Common.Behaviors.Logger;
     conversions: Conversions.Default | Conversions.EfCoreValueConverter)]
 
 [assembly: InternalsVisibleTo("Taskly.WebApi.Client")]
-[assembly: InternalsVisibleTo("Taskly.IntegrationTests")]
+[assembly: InternalsVisibleTo("Taskly.WebApi.IntegrationTests")]
