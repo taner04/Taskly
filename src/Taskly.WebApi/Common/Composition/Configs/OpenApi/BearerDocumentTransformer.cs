@@ -36,7 +36,12 @@ internal sealed class BearerDocumentTransformer(IOptions<Auth0Config> options) :
                 {
                     AuthorizationUrl = new Uri($"https://{_auth0Config.Domain}/authorize"),
                     TokenUrl = new Uri($"https://{_auth0Config.Domain}/oauth/token"),
-                    Scopes = new Dictionary<string, string>()
+                    Scopes = new Dictionary<string, string>
+                    {
+                        { "openid", "OpenID Connect scope" },
+                        { "profile", "Profile information scope" },
+                        { "email", "Email information scope" }
+                    }
                 }
             }
         };

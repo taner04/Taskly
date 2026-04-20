@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Taskly.WebApi.Common.Abstractions;
 
 namespace Taskly.WebApi.Common.Behaviors;
@@ -30,7 +29,7 @@ public sealed partial class UserProvisioningBehavior<TRequest, TResponse>(
             LogUserNotFound(auth0Id);
 
             user = User.Create(
-                currentUserService.GetClaimValue<string>(ClaimTypes.Email),
+                currentUserService.GetClaimValue<string>("email"),
                 auth0Id
             );
 

@@ -104,8 +104,8 @@ The API will be available at `https://localhost:{PORT}/scalar/v1` with interacti
 | **Authentication** | Auth0, JWT Bearer                 |
 | **File Storage**   | Azure Blob Storage                |
 | **Email Service**  | MailKit, Hangfire                 |
+| **API Client**     | Refit, HttpClientFactory          |
 | **Infrastructure** | Docker, .NET Aspire               |
-| **Testing**        | xUnit, Refit, Integration Tests   |
 
 ---
 
@@ -118,9 +118,7 @@ Taskly/
 │   ├── Taskly.Desktop/          # WPF Desktop Client (IN PROGRESS)
 │   ├── Taskly.WebApi/           # ASP.NET Core API
 │   ├── Taskly.Shared/           # Shared utilities
-│   └── Taskly.WebApi.Client/    # API client library
-├── tests/
-│   └── Taskly.IntegrationTests/ # Integration and unit tests
+│   └── Taskly.WebApi.Client/    # API client library (Refit)
 └── tools/
     ├── Taskly.AppHost/          # .NET Aspire orchestration
     ├── Taskly.MigrationService/ # Database migrations

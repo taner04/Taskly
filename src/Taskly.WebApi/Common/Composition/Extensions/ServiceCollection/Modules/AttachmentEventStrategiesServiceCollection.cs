@@ -1,5 +1,6 @@
 ﻿using Taskly.WebApi.Features.Attachments.WebHooks;
 using Taskly.WebApi.Features.Attachments.WebHooks.EventStrategies;
+using Taskly.WebApi.Features.Attachments.WebHooks.EventStrategies.Strategies;
 
 namespace Taskly.WebApi.Common.Composition.Extensions.ServiceCollection.Modules;
 

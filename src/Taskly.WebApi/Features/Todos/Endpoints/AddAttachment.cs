@@ -7,20 +7,19 @@ namespace Taskly.WebApi.Features.Todos.Endpoints;
 //TODO: Add support for multiple files
 [Handler]
 [MapPost(ApiRoutes.Todos.AddAttachment)]
-[Authorize(Policy = Policies.Roles.User)]
+[Authorize(Policy = Security.Policies.User)]
 public static partial class AddAttachment
 {
     internal static void CustomizeEndpoint(
         RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
-        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
+        endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
     internal static Ok<Response> TransformResult(
         Response response) =>
         TypedResults.Ok(response);
-
 
     private static async ValueTask<Response> HandleAsync(
         [AsParameters] Command command,
@@ -56,11 +55,16 @@ public static partial class AddAttachment
         );
     }
 
+    public sealed record Response(
+        Guid AttachmentId,
+        string UploadUrl,
+        string BlobPath);
+
     [Validate]
     public sealed partial record Command : IValidationTarget<Command>
     {
-        [NotEmpty] [FromRoute] public required TodoId TodoId { get; init; }
-        [NotNull] public required CommandBody Body { get; init; }
+        [FromRoute] [NotEmpty] public required TodoId TodoId { get; init; }
+        [FromBody] [NotNull] public required CommandBody Body { get; init; }
 
         [Validate]
         public sealed partial record CommandBody : IValidationTarget<CommandBody>
@@ -69,9 +73,4 @@ public static partial class AddAttachment
             [NotEmpty] public required string ContentType { get; init; }
         }
     }
-
-    public sealed record Response(
-        Guid AttachmentId,
-        string UploadUrl,
-        string BlobPath);
 }

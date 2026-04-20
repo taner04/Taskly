@@ -1,3 +1,4 @@
+using Taskly.Shared.Extensions;
 using Taskly.WebApi.Common.Composition.Options;
 using Taskly.WebApi.Common.Composition.Serialization;
 
@@ -9,9 +10,12 @@ internal static class ConfigurationServiceCollection
     {
         internal IServiceCollection AddTasklyConfiguration(WebApplicationBuilder builder)
         {
-            services.AddConfig<WebHookConfig>(builder);
-            services.AddConfig<Auth0Config>(builder);
-            services.AddConfig<EmailConfig>(builder);
+            var isTestEnv = builder.Environment.IsEnvironment("Testing");
+            var configuration = builder.Configuration;
+
+            services.AddConfig<WebHookConfig>(configuration, isTestEnv);
+            services.AddConfig<Auth0Config>(configuration, isTestEnv);
+            services.AddConfig<EmailConfig>(configuration, isTestEnv);
 
             return services;
         }
@@ -23,22 +27,6 @@ internal static class ConfigurationServiceCollection
                 options.SerializerOptions.Converters.Add(new FlexibleEnumConverter<TodoPriority>());
                 options.SerializerOptions.Converters.Add(new FlexibleDateTimeConverter());
             });
-
-            return services;
-        }
-
-        private IServiceCollection AddConfig<TOptions>(WebApplicationBuilder builder) where TOptions : class
-        {
-            var sectionName = typeof(TOptions).Name;
-
-            var options = services.AddOptions<TOptions>()
-                .Bind(builder.Configuration.GetSection(sectionName));
-
-            if (!builder.Environment.IsEnvironment("Testing"))
-            {
-                options.ValidateDataAnnotations()
-                    .ValidateOnStart();
-            }
 
             return services;
         }

@@ -1,18 +1,20 @@
 using Microsoft.AspNetCore.Http.HttpResults;
+using Taskly.Shared.Pagination;
 using Taskly.WebApi.Common.Shared.Pagination;
+using Taskly.WebApi.Features.Tags.Endpoints;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
 [Handler]
 [MapGet(ApiRoutes.Todos.GetTodos)]
-[Authorize(Policy = Policies.Roles.User)]
+[Authorize(Policy = Security.Policies.User)]
 public static partial class GetTodos
 {
     internal static void CustomizeEndpoint(
         RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
-        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
+        endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
     internal static Ok<PaginationResult<Response>> TransformResult(
@@ -20,7 +22,7 @@ public static partial class GetTodos
         TypedResults.Ok(result);
 
     private static async ValueTask<PaginationResult<Response>> HandleAsync(
-        Query query,
+        PaginationQuery query,
         CurrentUserService currentUserService,
         PaginationService paginationService,
         CancellationToken ct)
@@ -36,28 +38,22 @@ public static partial class GetTodos
             ct);
     }
 
-    public sealed record Query(
-        int PageIndex,
-        int
-            PageSize) : PaginationQuery(PageIndex, PageSize);
-
-    public sealed record AttachmentDto(
-        Guid Id,
-        string FileName,
-        long Size,
-        string ContentType,
-        string DownloadUrl
-    );
-
     public sealed record Response(
         Guid Id,
         string Title,
         string? Description,
-        TodoPriority Priority,
+        int Priority,
         bool IsCompleted,
-        List<TagDto> Tags,
-        List<AttachmentDto> Attachments,
-        Guid UserId);
+        DateTimeOffset CreatedAt,
+        List<GetTags.Response> Tags,
+        List<GetTodoAttachments> Attachments);
+
+    public sealed record GetTodoAttachments(
+        Guid Id,
+        string FileName,
+        long Size,
+        string ContentType
+    );
 }
 
 public sealed class GetTodosMapper : IPaginationMapper<Todo, GetTodos.Response>
@@ -68,17 +64,16 @@ public sealed class GetTodosMapper : IPaginationMapper<Todo, GetTodos.Response>
             todo.Id.Value,
             todo.Title,
             todo.Description,
-            todo.Priority,
+            (int)todo.Priority,
             todo.IsCompleted,
-            todo.Tags.Select(TagDto.FromDomain).ToList(),
-            todo.Attachments.Select(attachment => new GetTodos.AttachmentDto(
+            todo.CreatedAt,
+            todo.Tags.Select(t => new GetTags.Response(t.Id.Value, t.Name)).ToList(),
+            todo.Attachments.Select(attachment => new GetTodos.GetTodoAttachments(
                 attachment.Id.Value,
                 attachment.FileName,
                 attachment.FileSize,
-                attachment.ContentType,
-                $"/attachments/{attachment.Id.Value}/download"
-            )).ToList(),
-            todo.UserId.Value
+                attachment.ContentType
+            )).ToList()
         )).ToList();
     }
 }

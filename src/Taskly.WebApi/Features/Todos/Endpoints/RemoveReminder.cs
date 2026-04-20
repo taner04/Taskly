@@ -5,18 +5,18 @@ namespace Taskly.WebApi.Features.Todos.Endpoints;
 
 [Handler]
 [MapDelete(ApiRoutes.Todos.RemoveReminder)]
-[Authorize(Policy = Policies.Roles.User)]
+[Authorize(Policy = Security.Policies.User)]
 public static partial class RemovReminder
 {
     internal static void CustomizeEndpoint(
         RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
-        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
+        endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
     private static async ValueTask HandleAsync(
-        Command command,
+        [AsParameters] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
         IBackgroundJobClient jobClient,

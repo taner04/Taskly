@@ -5,14 +5,14 @@ namespace Taskly.WebApi.Features.Todos.Endpoints;
 
 [Handler]
 [MapDelete(ApiRoutes.Todos.RemoveTag)]
-[Authorize(Policy = Policies.Roles.User)]
+[Authorize(Policy = Security.Policies.User)]
 public static partial class RemoveTag
 {
     internal static void CustomizeEndpoint(
         RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
-        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
+        endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
     private static async ValueTask HandleAsync(

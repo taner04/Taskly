@@ -6,18 +6,18 @@ namespace Taskly.WebApi.Features.Todos.Endpoints;
 
 [Handler]
 [MapDelete(ApiRoutes.Todos.RemoveAttachment)]
-[Authorize(Policy = Policies.Roles.User)]
+[Authorize(Policy = Security.Policies.User)]
 public static partial class RemoveAttachment
 {
     internal static void CustomizeEndpoint(
         RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
-        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
+        endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
     private static async ValueTask HandleAsync(
-        Command command,
+        [AsParameters] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
         AttachmentBlobContainerService attachmentBlobContainerService,

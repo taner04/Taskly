@@ -2,7 +2,7 @@ namespace Taskly.WebApi.Features.Attachments.WebHooks;
 
 public abstract record AttachmentEventData
 {
-    internal sealed record Completed(long FileSize) : AttachmentEventData;
+    public sealed record Completed(long FileSize) : AttachmentEventData;
 
-    internal sealed record Failed : AttachmentEventData;
+    public sealed record Failed : AttachmentEventData;
 }

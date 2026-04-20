@@ -1,4 +1,5 @@
-﻿using Taskly.WebApi.Common.Shared.Pagination.Exceptions;
+﻿using Taskly.Shared.Pagination;
+using Taskly.WebApi.Common.Shared.Pagination.Exceptions;
 
 namespace Taskly.WebApi.Common.Shared.Pagination;
 
@@ -6,10 +7,16 @@ public sealed class PaginationService(TasklyDbContext context)
 {
     public const int MaxPageSize = 100;
 
-    public async Task<PaginationResult<TEntity>> GetPaginationResultAsync<TEntity>(
+    public async Task<PaginationResult<TTarget>> GetPaginationResultAsync<TEntity, TTarget>(
         PaginationQuery paginationQuery,
-        CancellationToken cancellationToken) where TEntity : class =>
-        await ExecutePaginationAsync(context.Set<TEntity>().AsNoTracking(), paginationQuery, cancellationToken);
+        IPaginationMapper<TEntity, TTarget> mapper,
+        CancellationToken cancellationToken) where TEntity : class
+    {
+        var result =
+            await ExecutePaginationAsync(context.Set<TEntity>().AsNoTracking(), paginationQuery, cancellationToken);
+
+        return MapResult(result, mapper.Map);
+    }
 
     public async Task<PaginationResult<TTarget>> GetPaginationResultAsync<TEntity, TTarget>(
         PaginationQuery paginationQuery,

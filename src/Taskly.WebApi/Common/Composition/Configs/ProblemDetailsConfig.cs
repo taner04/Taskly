@@ -13,7 +13,7 @@ internal static class ProblemDetailsConfig
 
             var problemDetails = ctx.Exception switch
             {
-                ValidationException validation => new ApiProblemDetails
+                ValidationException validation => new WebApiProblemDetails
                 {
                     Status = StatusCodes.Status400BadRequest,
                     Title = "Validation failed.",
@@ -27,7 +27,7 @@ internal static class ProblemDetailsConfig
                         )
                 },
 
-                TasklyException modelsException => new ApiProblemDetails
+                TasklyException modelsException => new WebApiProblemDetails
                 {
                     Status = (int)modelsException.StatusCode,
                     Title = modelsException.Title,
@@ -35,7 +35,7 @@ internal static class ProblemDetailsConfig
                     ErrorCode = modelsException.ErrorCode
                 },
 
-                UnauthorizedAccessException => new ApiProblemDetails
+                UnauthorizedAccessException => new WebApiProblemDetails
                 {
                     Status = StatusCodes.Status401Unauthorized,
                     Title = "Unauthorized",
@@ -43,7 +43,7 @@ internal static class ProblemDetailsConfig
                     ErrorCode = "Unauthorized.Access"
                 },
 
-                _ => new ApiProblemDetails
+                _ => new WebApiProblemDetails
                 {
                     Status = StatusCodes.Status500InternalServerError,
                     Title = "Internal Server Error",

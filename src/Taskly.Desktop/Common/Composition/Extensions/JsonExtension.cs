@@ -1,22 +1,19 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace Taskly.Desktop.Common.Composition.Extensions;
 
 public static class JsonExtension
 {
-    private static readonly JsonSerializerOptions DefaultOptions = new()
-    {
-        WriteIndented = true
-    };
-
-    public static void ToJson<T>(this T obj, string path) where T : class
+    public static void ToJson<T>(this T obj, string path)
     {
         if (obj == null)
         {
             throw new ArgumentNullException(nameof(obj), "Object to serialize cannot be null.");
         }
 
-        var json = JsonSerializer.Serialize(obj, DefaultOptions);
+#pragma warning disable CA1869
+        var json = JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true });
+#pragma warning restore CA1869
 
         File.WriteAllText(path, json);
     }

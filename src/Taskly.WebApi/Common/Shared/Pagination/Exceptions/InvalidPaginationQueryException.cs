@@ -1,4 +1,6 @@
-﻿namespace Taskly.WebApi.Common.Shared.Pagination.Exceptions;
+﻿using Taskly.Shared.Pagination;
+
+namespace Taskly.WebApi.Common.Shared.Pagination.Exceptions;
 
 internal sealed class InvalidPaginationQueryException : TasklyException
 {
@@ -10,7 +12,7 @@ internal sealed class InvalidPaginationQueryException : TasklyException
 
     public static void ThrowIfInvalidPaginationQuery(PaginationQuery paginationQuery)
     {
-        if (paginationQuery is { PageIndex: < 1, PageSize: > PaginationService.MaxPageSize or < 1 })
+        if (paginationQuery is { PageIndex: < 0, PageSize: > PaginationService.MaxPageSize or < 1 })
         {
             throw new InvalidPaginationQueryException(
                 "Invalid pagination query",

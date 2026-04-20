@@ -1,25 +1,19 @@
-using Microsoft.AspNetCore.Http.HttpResults;
-
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
 [Handler]
 [MapPost(ApiRoutes.Todos.Create)]
-[Authorize(Policy = Policies.Roles.User)]
+[Authorize(Policy = Security.Policies.User)]
 public static partial class CreateTodo
 {
     internal static void CustomizeEndpoint(
         RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
-        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
+        endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    internal static Created<Response> TransformResult(
-        Response response) =>
-        TypedResults.Created($"api/todos/{response.TodoId}", response);
-
-    private static async ValueTask<Response> HandleAsync(
-        Command command,
+    private static async ValueTask HandleAsync(
+        [FromBody] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
         CancellationToken ct)
@@ -30,8 +24,6 @@ public static partial class CreateTodo
 
         await context.Todos.AddAsync(newTodo, ct);
         await context.SaveChangesAsync(ct);
-
-        return new Response(newTodo.Id.Value);
     }
 
     [Validate]
@@ -41,6 +33,4 @@ public static partial class CreateTodo
         public string? Description { get; init; }
         public required TodoPriority Priority { get; init; }
     }
-
-    public sealed record Response(Guid TodoId);
 }

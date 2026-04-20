@@ -1,0 +1,99 @@
+<Page
+    x:Class="Taskly.Desktop.Features.Todo.Pages.Todos.TodosPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:todos="clr-namespace:Taskly.Desktop.Features.Todo.Pages.Todos"
+    xmlns:models="clr-namespace:Taskly.Desktop.Features.Todo.Models"
+    xmlns:components="clr-namespace:Taskly.Desktop.Features.Todo.Pages.Todos.Components"
+    Title="TodoPage"
+    d:DataContext="{d:DesignInstance todos:TodosPage,
+                                     IsDesignTimeCreatable=False}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    mc:Ignorable="d">
+
+    <ui:PassiveScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <Grid Margin="40,20,40,40">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!--  Header Section with Create Button  -->
+            <Grid Grid.Row="0" Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <ui:Button
+                        Padding="20,10"
+                        Appearance="Primary"
+                        Content="Create Todo"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Icon="Add24"
+                        ToolTip="Create a new todo" />
+                    <ui:Button
+                        Margin="8,0,0,0"
+                        Padding="20,10"
+                        Appearance="Primary"
+                        Command="{Binding ViewModel.RefreshPageCommand}"
+                        Content="Refresh"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Icon="ArrowClockwise24"
+                        ToolTip="Refresh list" />
+                </StackPanel>
+            </Grid>
+
+            <!--  Todos List Container  -->
+            <ListView
+                Grid.Row="1"
+                Padding="0"
+                HorizontalContentAlignment="Stretch"
+                Background="Transparent"
+                BorderThickness="0"
+                ItemsSource="{Binding ViewModel.Models}"
+                SelectedItem="{Binding ViewModel.SelectedModel, Mode=TwoWay}">
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:TodoModel}">
+                        <components:TodosPageItem
+                            Margin="0,0,0,12"
+                            Attachments="{Binding Attachments}"
+                            DeleteCommand="{Binding DataContext.ViewModel.DeleteModelCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                            Description="{Binding Description}"
+                            EditCommand="{Binding DataContext.ViewModel.EditModelCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                            Tags="{Binding Tags}"
+                            Title="{Binding Title}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListViewItem">
+                                    <ContentPresenter HorizontalAlignment="Stretch" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </Grid>
+    </ui:PassiveScrollViewer>
+</Page>

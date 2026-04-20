@@ -22,8 +22,7 @@ internal static class AuthenticationServiceCollection
             {
                 options.Authority = $"https://{auth0Config.Domain}";
                 options.Audience = auth0Config.Audience;
-                options.MapInboundClaims =
-                    false; // Prevents mapping of standard JWT claims to Microsoft-specific claim types
+                options.MapInboundClaims = false;
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -35,10 +34,10 @@ internal static class AuthenticationServiceCollection
             });
 
             services.AddAuthorizationBuilder()
-                .AddPolicy(Policies.Roles.Admin,
-                    policy => policy.RequireClaim("permissions", "admin:create", "admin:read"))
-                .AddPolicy(Policies.Roles.User,
-                    policy => policy.RequireClaim("permissions", "user:create", "user:read"));
+                .AddPolicy(Security.Policies.Admin,
+                    policy => policy.RequireClaim("permissions", "admin:write", "admin:read"))
+                .AddPolicy(Security.Policies.User,
+                    policy => policy.RequireClaim("permissions", "user:write", "user:read"));
 
             return services;
         }

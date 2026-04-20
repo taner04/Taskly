@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Taskly.WebApi.Features.Users.Endpoints.Responses;
 using Taskly.WebApi.Features.Users.Exceptions;
 using ValidationResult = Immediate.Validations.Shared.ValidationResult;
 
@@ -6,17 +7,17 @@ namespace Taskly.WebApi.Features.Users.Endpoints;
 
 [Handler]
 [MapGet(ApiRoutes.Users.GetByEmail)]
-[Authorize(Policy = Policies.Roles.Admin)]
+[Authorize(Policy = Security.Policies.Admin)]
 public static partial class GetUserByEmail
 {
     internal static void CustomizeEndpoint(
         RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(User));
-        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
+        endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    private static async ValueTask<User> HandleAsync(
+    private static async ValueTask<GetUserResponse> HandleAsync(
         [AsParameters] Query query,
         TasklyDbContext context,
         CancellationToken ct)
@@ -24,7 +25,11 @@ public static partial class GetUserByEmail
         var user = await context.Users
             .SingleOrDefaultAsync(u => u.Email == query.Email, ct) ?? throw new UserNotFoundException(query.Email);
 
-        return user;
+        return new GetUserResponse(
+            user.Id.Value,
+            user.Email,
+            user.Auth0Id
+        );
     }
 
     [Validate]

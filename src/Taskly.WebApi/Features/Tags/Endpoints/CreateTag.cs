@@ -1,26 +1,21 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Taskly.WebApi.Features.Tags.Exceptions;
 
 namespace Taskly.WebApi.Features.Tags.Endpoints;
 
 [Handler]
 [MapPost(ApiRoutes.Tags.Create)]
-[Authorize(Policy = Policies.Roles.User)]
+[Authorize(Policy = Security.Policies.User)]
 public static partial class CreateTag
 {
     internal static void CustomizeEndpoint(
         RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Tag));
-        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
+        endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    internal static Created<Response> TransformResult(
-        Response response) =>
-        TypedResults.Created($"api/todos/{response.TagId}", response);
-
-    private static async ValueTask<Response> HandleAsync(
-        Command command,
+    private static async ValueTask HandleAsync(
+        [FromBody] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
         CancellationToken ct)
@@ -35,8 +30,6 @@ public static partial class CreateTag
         var newTag = Tag.Create(command.TagName, userId);
         context.Tags.Add(newTag);
         await context.SaveChangesAsync(ct);
-
-        return new Response(newTag.Id.Value);
     }
 
     [Validate]
@@ -44,6 +37,4 @@ public static partial class CreateTag
     {
         [NotEmpty] public required string TagName { get; init; }
     }
-
-    public sealed record Response(Guid TagId);
 }

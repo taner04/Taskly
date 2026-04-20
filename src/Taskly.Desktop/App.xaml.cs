@@ -1,13 +1,17 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Threading;
-using Auth0.OidcClient;
 using Microsoft.Extensions.Configuration;
-using Taskly.Desktop.Common.Composition.Extensions;
 using Taskly.Desktop.Common.Composition.Options;
-using Taskly.Desktop.Common.Infrastructure.Authentication;
+using Taskly.Desktop.Common.Infrastructure;
+using Taskly.Desktop.Features.Home;
+using Taskly.Desktop.Features.Main;
+using Taskly.Desktop.Features.Settings;
+using Taskly.Desktop.Features.Tag.Pages.EditTag;
+using Taskly.Desktop.Features.Tag.Pages.Tags;
+using Taskly.Desktop.Features.Todo.Pages.EditTodo;
+using Taskly.Desktop.Features.Todo.Pages.Todos;
 using Taskly.Shared.Extensions;
-using Taskly.WebApi.Client.Abstractions;
-using Taskly.WebApi.Client.Common.Extensions;
+using Taskly.WebApi.Client;
 using Wpf.Ui.DependencyInjection;
 
 namespace Taskly.Desktop;
@@ -15,14 +19,8 @@ namespace Taskly.Desktop;
 /// <summary>
 ///     Interaction logic for App.xaml
 /// </summary>
-[SuppressMessage("ReSharper", "AsyncVoidEventHandlerMethod")]
 public partial class App
 {
-    // The.NET Generic Host provides dependency injection, configuration, logging, and other services.
-    // https://docs.microsoft.com/dotnet/core/extensions/generic-host
-    // https://docs.microsoft.com/dotnet/core/extensions/dependency-injection
-    // https://docs.microsoft.com/dotnet/core/extensions/configuration
-    // https://docs.microsoft.com/dotnet/core/extensions/logging
     // ReSharper disable once InconsistentNaming
     private static readonly IHost _host = Host
         .CreateDefaultBuilder()
@@ -31,31 +29,50 @@ public partial class App
         {
             services.AddNavigationViewPageProvider();
 
+            // App Host
+            services.AddHostedService<ApplicationHostService>();
+
+            // Theme manipulation
             services.AddSingleton<IThemeService, ThemeService>();
+
+            // TaskBar manipulation
             services.AddSingleton<ITaskBarService, TaskBarService>();
+
+            // Service containing navigation, same as INavigationWindow... but without window
             services.AddSingleton<INavigationService, NavigationService>();
 
-            services.AddPages(typeof(App).Assembly);
+            // Main window with navigation
+            services.AddSingleton<INavigationWindow, MainWindow>();
+            services.AddSingleton<MainWindowViewModel>();
 
-            services.AddApiHttpClient(options =>
+            services.AddSingleton<HomePage>();
+            services.AddSingleton<HomePageViewModel>();
+            services.AddSingleton<TodosPage>();
+            services.AddSingleton<TodosPageViewModel>();
+            services.AddSingleton<TagsPage>();
+            services.AddSingleton<TagsPageViewModel>();
+            services.AddSingleton<SettingsPage>();
+            services.AddSingleton<SettingsPageViewModel>();
+
+            services.AddSingleton<EditTodoPage>();
+            services.AddSingleton<EditTodoPageViewModel>();
+
+            services.AddSingleton<EditTagPage>();
+            services.AddSingleton<EditTagPageViewModel>();
+
+            var configuration = context.Configuration;
+            var isTestEnv = context.HostingEnvironment.IsEnvironment("Testing");
+            services.AddConfig<Auth0Config>(configuration, isTestEnv);
+
+            services.AddWebApiClient(options =>
             {
-                var apiConfig = context.Configuration.GetOptions<ApiConfig>();
+                var apiConfig = configuration.GetOptions<ApiConfig>();
 
                 options.BaseAddress = new Uri(apiConfig.BaseAddress);
                 options.Timeout = TimeSpan.FromSeconds(apiConfig.TimeoutInSeconds);
             });
 
-            services.AddSingleton(sp =>
-            {
-                var auth0Config = context.Configuration.GetOptions<Auth0Config>();
-
-                return new AuthenticationService(new Auth0ClientOptions
-                    {
-                        Domain = auth0Config.Domain,
-                        ClientId = auth0Config.ClientId
-                    },
-                    sp.GetRequiredService<IApiHttpClient>());
-            });
+            services.AddSingleton<AuthenticationService>();
         }).Build();
 
     /// <summary>
@@ -66,11 +83,9 @@ public partial class App
     /// <summary>
     ///     Occurs when the application is loading.
     /// </summary>
+    // ReSharper disable once AsyncVoidEventHandlerMethod
     private async void OnStartup(object sender, StartupEventArgs e)
     {
-        var authService = Services.GetRequiredService<AuthenticationService>();
-        await authService.LoginAsync();
-
         await _host.StartAsync();
     }
 
@@ -78,6 +93,7 @@ public partial class App
     /// <summary>
     ///     Occurs when the application is closing.
     /// </summary>
+    // ReSharper disable once AsyncVoidEventHandlerMethod
     private async void OnExit(object sender, ExitEventArgs e)
     {
         await _host.StopAsync();

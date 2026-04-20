@@ -13,7 +13,7 @@ public static partial class AttachmentEventWebHook
     {
         endpoint.WithTags(nameof(Attachment));
         endpoint.AllowAnonymous();
-        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
+        endpoint.RequireRateLimiting(Security.RateLimiting.Global);
         endpoint.AddEndpointFilter<WebHookSecretEndpointFilter>();
     }
 

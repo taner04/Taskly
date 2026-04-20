@@ -1,6 +1,6 @@
 namespace Taskly.WebApi.Common.Shared;
 
-internal static class ApiRoutes
+public static class ApiRoutes
 {
     public static class Todos
     {

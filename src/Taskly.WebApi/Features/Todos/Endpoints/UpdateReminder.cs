@@ -7,18 +7,18 @@ namespace Taskly.WebApi.Features.Todos.Endpoints;
 
 [Handler]
 [MapPut(ApiRoutes.Todos.UpdateReminder)]
-[Authorize(Policy = Policies.Roles.User)]
+[Authorize(Policy = Security.Policies.User)]
 public static partial class UpdateReminder
 {
     internal static void CustomizeEndpoint(
         RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
-        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
+        endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
     private static async ValueTask HandleAsync(
-        Command command,
+        [FromBody] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
         IBackgroundJobClient jobClient,
@@ -52,7 +52,7 @@ public static partial class UpdateReminder
     public sealed partial record Command : IValidationTarget<Command>
     {
         [NotEmpty] [FromRoute] public required TodoId TodoId { get; init; }
-        [NotNull] public required CommandBody Body { get; init; } = null!;
+        [FromBody] [NotNull] public required CommandBody Body { get; init; } = null!;
 
         [Validate]
         public sealed partial record CommandBody : IValidationTarget<CommandBody>

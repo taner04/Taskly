@@ -4,14 +4,14 @@ namespace Taskly.WebApi.Features.Todos.Endpoints;
 
 [Handler]
 [MapPost(ApiRoutes.Todos.Complete)]
-[Authorize(Policy = Policies.Roles.User)]
+[Authorize(Policy = Security.Policies.User)]
 public static partial class CompleteTodo
 {
     internal static void CustomizeEndpoint(
         RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(Todo));
-        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
+        endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
     private static async ValueTask HandleAsync(
@@ -40,7 +40,7 @@ public static partial class CompleteTodo
     public sealed partial record Command : IValidationTarget<Command>
     {
         [FromRoute] [NotEmpty] public required TodoId TodoId { get; init; }
-        [NotNull] public required CommandBody Body { get; init; } = null!;
+        [NotNull] [FromBody] public required CommandBody Body { get; init; } = null!;
 
         [Validate]
         public sealed partial record CommandBody : IValidationTarget<CommandBody>

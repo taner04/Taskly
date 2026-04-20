@@ -27,7 +27,37 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Taskly.Shared\Taskly.Shared.csproj"/>
         <ProjectReference Include="..\Taskly.WebApi.Client\Taskly.WebApi.Client.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Page Update="MVVM\Tag\Pages\TagsPage\TagsPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="MVVM\Todo\Pages\Todos\TodosPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Features\Tags\Pages\Tags\TagsPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Features\Todos\Pages\Todos\TodosPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <XamlRuntime>Wpf</XamlRuntime>
+            <SubType>Designer</SubType>
+        </Page>
+        <Page Update="Features\Todos\Pages\Todos\Components\TodosPageItem.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+        <Page Update="Features\Tags\Pages\Tags\Components\TagsPageItem.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
     </ItemGroup>
 
 </Project>

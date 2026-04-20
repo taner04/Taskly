@@ -12,7 +12,7 @@ internal static class RateLimitingServiceCollection
             {
                 options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
-                options.AddPolicy(Policies.RateLimiting.Global, context =>
+                options.AddPolicy(Security.RateLimiting.Global, context =>
                 {
                     var userSub = context.User.FindFirst(CurrentUserService.SubClaim)?.Value;
 

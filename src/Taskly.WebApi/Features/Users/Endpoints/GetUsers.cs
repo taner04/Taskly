@@ -1,23 +1,24 @@
+using Taskly.Shared.Pagination;
 using Taskly.WebApi.Common.Shared.Pagination;
+using Taskly.WebApi.Features.Users.Endpoints.Responses;
+using Taskly.WebApi.Features.Users.Mapper;
 
 namespace Taskly.WebApi.Features.Users.Endpoints;
 
 [Handler]
 [MapGet(ApiRoutes.Users.GetUsers)]
-[Authorize(Policy = Policies.Roles.Admin)]
+[Authorize(Policy = Security.Policies.Admin)]
 public static partial class GetUsers
 {
     internal static void CustomizeEndpoint(
         RouteHandlerBuilder endpoint)
     {
         endpoint.WithTags(nameof(User));
-        endpoint.RequireRateLimiting(Policies.RateLimiting.Global);
+        endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    private static async ValueTask<PaginationResult<User>> HandleAsync(
-        Query query,
+    private static async ValueTask<PaginationResult<GetUserResponse>> HandleAsync(
+        PaginationQuery query,
         PaginationService paginationService,
-        CancellationToken ct) => await paginationService.GetPaginationResultAsync<User>(query, ct);
-
-    public sealed record Query(int PageIndex, int PageSize) : PaginationQuery(PageIndex, PageSize);
+        CancellationToken ct) => await paginationService.GetPaginationResultAsync(query, new UserMapper(), ct);
 }

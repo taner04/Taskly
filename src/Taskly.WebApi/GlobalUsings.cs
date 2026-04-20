@@ -1,6 +1,5 @@
 global using Taskly.WebApi.Features.Attachments.Models;
 global using Taskly.WebApi.Features.Users.Services;
-global using Taskly.WebApi.Common.Shared.Dtos;
 global using Immediate.Handlers.Shared;
 global using Immediate.Validations.Shared;
 global using Immediate.Apis.Shared;
