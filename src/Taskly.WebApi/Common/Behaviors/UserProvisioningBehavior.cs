@@ -1,4 +1,5 @@
 using Taskly.WebApi.Common.Abstractions;
+using Taskly.WebApi.Features.Users.Common.Models;
 
 namespace Taskly.WebApi.Common.Behaviors;
 

@@ -1,6 +1,7 @@
-using Taskly.WebApi.Features.Tags.Exceptions;
-using Taskly.WebApi.Features.Todos.Specifications;
-using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
+using Taskly.WebApi.Features.Tags.Common.Exceptions;
+using Taskly.WebApi.Features.Todos.Common.Extensions;
+using Taskly.WebApi.Features.Todos.Common.Specifications;
+using TagId = Taskly.WebApi.Features.Tags.Common.Models.TagId;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
@@ -16,7 +17,11 @@ public static partial class AddTags
         endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    private static async ValueTask HandleAsync(
+    internal static Ok<GetTodoResponse> TransformResult(
+        GetTodoResponse result) =>
+        TypedResults.Ok(result);
+
+    private static async ValueTask<GetTodoResponse> HandleAsync(
         [AsParameters] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
@@ -24,7 +29,7 @@ public static partial class AddTags
     {
         var userId = currentUserService.GetUserId();
 
-        var spec = new TodoByUserIdWithTagsSpecification(command.TodoId, userId);
+        var spec = new TodoByUserIdSpecification(command.TodoId, userId);
         var todo = await context.Todos
             .WithSpecification(spec)
             .SingleOrDefaultAsync(ct) ?? throw new ModelNotFoundException<Todo>(command.TodoId.Value);
@@ -46,6 +51,8 @@ public static partial class AddTags
 
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);
+
+        return todo.ToGetTodoResponse();
     }
 
     [Validate]

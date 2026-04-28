@@ -1,5 +1,6 @@
 using Hangfire;
-using Taskly.WebApi.Features.Todos.Specifications;
+using Taskly.WebApi.Features.Todos.Common.Extensions;
+using Taskly.WebApi.Features.Todos.Common.Specifications;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
@@ -15,7 +16,11 @@ public static partial class RemovReminder
         endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    private static async ValueTask HandleAsync(
+    internal static Ok<GetTodoResponse> TransformResult(
+        GetTodoResponse response) =>
+        TypedResults.Ok(response);
+
+    private static async ValueTask<GetTodoResponse> HandleAsync(
         [AsParameters] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
@@ -48,6 +53,8 @@ public static partial class RemovReminder
 
         context.Update(todo);
         await context.SaveChangesAsync(ct);
+
+        return todo.ToGetTodoResponse();
     }
 
     [Validate]

@@ -1,5 +1,6 @@
-using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
+using AttachmentId = Taskly.WebApi.Features.Attachments.Common.Models.AttachmentId;
+using TagId = Taskly.WebApi.Features.Tags.Common.Models.TagId;
+using UserId = Taskly.WebApi.Features.Users.Common.Models.UserId;
 
 namespace Taskly.WebApi.Common.Infrastructure.Persistence.Configuration;
 

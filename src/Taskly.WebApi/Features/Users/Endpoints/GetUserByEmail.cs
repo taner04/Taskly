@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using Taskly.WebApi.Features.Users.Endpoints.Responses;
-using Taskly.WebApi.Features.Users.Exceptions;
+using Taskly.Shared.WebApi.Responses.Users;
+using Taskly.WebApi.Features.Users.Common.Exceptions;
+using Taskly.WebApi.Features.Users.Common.Models;
 using ValidationResult = Immediate.Validations.Shared.ValidationResult;
 
 namespace Taskly.WebApi.Features.Users.Endpoints;

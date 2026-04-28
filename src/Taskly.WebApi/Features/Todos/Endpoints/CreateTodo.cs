@@ -1,3 +1,5 @@
+using Taskly.WebApi.Features.Todos.Common.Extensions;
+
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
 [Handler]
@@ -12,7 +14,11 @@ public static partial class CreateTodo
         endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    private static async ValueTask HandleAsync(
+    internal static Created<GetTodoResponse> TransformResult(
+        GetTodoResponse result) =>
+        TypedResults.Created(ApiRoutes.Todos.Create, result);
+
+    private static async ValueTask<GetTodoResponse> HandleAsync(
         [FromBody] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
@@ -20,10 +26,12 @@ public static partial class CreateTodo
     {
         var userId = currentUserService.GetUserId();
 
-        var newTodo = Todo.Create(command.Title, command.Description, command.Priority, userId);
+        var todo = Todo.Create(command.Title, command.Description, command.Priority, userId);
 
-        await context.Todos.AddAsync(newTodo, ct);
+        await context.Todos.AddAsync(todo, ct);
         await context.SaveChangesAsync(ct);
+
+        return todo.ToGetTodoResponse();
     }
 
     [Validate]

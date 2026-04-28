@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using AttachmentId = Taskly.WebApi.Features.Attachments.Common.Models.AttachmentId;
 
 namespace Taskly.WebApi.Common.Infrastructure.Persistence.Configuration;
 

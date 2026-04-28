@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Taskly.Shared.Pagination;
+using Taskly.Shared.WebApi.Responses.Tags;
 using Taskly.WebApi.Common.Shared.Pagination;
 
 namespace Taskly.WebApi.Features.Tags.Endpoints;
@@ -16,11 +16,11 @@ public static partial class GetTags
         endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    internal static Ok<PaginationResult<Response>> TransformResult(
-        PaginationResult<Response> result) =>
+    internal static Ok<PaginationResult<GetTagResponse>> TransformResult(
+        PaginationResult<GetTagResponse> result) =>
         TypedResults.Ok(result);
 
-    private static async ValueTask<PaginationResult<Response>> HandleAsync(
+    private static async ValueTask<PaginationResult<GetTagResponse>> HandleAsync(
         PaginationQuery query,
         CurrentUserService currentUserService,
         PaginationService paginationService,
@@ -34,16 +34,13 @@ public static partial class GetTags
             q => q.Where(t => t.UserId == userId),
             ct);
     }
-
-
-    public sealed record Response(Guid Id, string Name);
 }
 
-public sealed class GetTagsMapper : IPaginationMapper<Tag, GetTags.Response>
+public sealed class GetTagsMapper : IPaginationMapper<Tag, GetTagResponse>
 {
-    public List<GetTags.Response> Map(List<Tag> source)
+    public IEnumerable<GetTagResponse> Map(IEnumerable<Tag> source)
     {
-        return source.Select(t => new GetTags.Response(
+        return source.Select(t => new GetTagResponse(
             t.Id.Value,
             t.Name
         )).ToList();

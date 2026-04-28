@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Configuration;
-
 namespace Taskly.Shared.Extensions;
 
 public static class ConfigurationExtensions

@@ -1,8 +1,8 @@
 ﻿namespace Taskly.Shared.Pagination;
 
-public sealed class PaginationResult<T>(List<T> items, int pageIndex, int totalPages, int totalCount)
+public sealed class PaginationResult<T>(IEnumerable<T> items, int pageIndex, int totalPages, int totalCount)
 {
-    public List<T> Items { get; } = items;
+    public IEnumerable<T> Items { get; } = items;
     public int PageIndex { get; } = pageIndex;
     public int TotalPages { get; } = totalPages;
     public int TotalCount { get; } = totalCount;

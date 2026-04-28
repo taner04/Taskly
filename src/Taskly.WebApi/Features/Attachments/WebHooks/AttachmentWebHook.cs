@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Taskly.WebApi.Common.Abstractions;
 using Taskly.WebApi.Features.Attachments.WebHooks.EventStrategies;
+using AttachmentId = Taskly.WebApi.Features.Attachments.Common.Models.AttachmentId;
 
 namespace Taskly.WebApi.Features.Attachments.WebHooks;
 

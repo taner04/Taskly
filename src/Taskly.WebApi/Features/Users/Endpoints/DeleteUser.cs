@@ -1,4 +1,5 @@
-using UserId = Taskly.WebApi.Features.Users.Models.UserId;
+using Taskly.WebApi.Features.Users.Common.Models;
+using UserId = Taskly.WebApi.Features.Users.Common.Models.UserId;
 
 namespace Taskly.WebApi.Features.Users.Endpoints;
 

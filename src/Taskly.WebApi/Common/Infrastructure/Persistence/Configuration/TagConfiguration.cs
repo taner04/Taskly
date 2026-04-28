@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TagId = Taskly.WebApi.Features.Tags.Common.Models.TagId;
 
 namespace Taskly.WebApi.Common.Infrastructure.Persistence.Configuration;
 

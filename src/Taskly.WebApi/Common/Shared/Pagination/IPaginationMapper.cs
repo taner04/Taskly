@@ -1,6 +1,6 @@
 ﻿namespace Taskly.WebApi.Common.Shared.Pagination;
 
-public interface IPaginationMapper<TEntity, TTarget>
+public interface IPaginationMapper<in TEntity, out TTarget>
 {
-    List<TTarget> Map(List<TEntity> source);
+    IEnumerable<TTarget> Map(IEnumerable<TEntity> source);
 }

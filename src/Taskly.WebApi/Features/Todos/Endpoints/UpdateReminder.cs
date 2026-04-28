@@ -1,7 +1,10 @@
 using Hangfire;
 using Taskly.WebApi.Common.Infrastructure.Services.Emails;
-using Taskly.WebApi.Features.Todos.EmailTemplates;
-using Taskly.WebApi.Features.Todos.Exceptions;
+using Taskly.WebApi.Features.Todos.Common.EmailTemplates;
+using Taskly.WebApi.Features.Todos.Common.Exceptions;
+using Taskly.WebApi.Features.Todos.Common.Extensions;
+using Taskly.WebApi.Features.Todos.Common.Specifications;
+using Taskly.WebApi.Features.Users.Common.Models;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
@@ -17,7 +20,11 @@ public static partial class UpdateReminder
         endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    private static async ValueTask HandleAsync(
+    internal static Ok<GetTodoResponse> TransformResult(
+        GetTodoResponse response) =>
+        TypedResults.Ok(response);
+
+    private static async ValueTask<GetTodoResponse> HandleAsync(
         [FromBody] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
@@ -29,11 +36,13 @@ public static partial class UpdateReminder
 
         var userId = currentUserService.GetUserId();
 
-        var user = await context.Users.Include(u => u.Todos)
-            .FirstOrDefaultAsync(u => u.Id == userId, ct) ?? throw new ModelNotFoundException<User>(userId.Value);
+        var spec = new TodoByUserIdSpecification(command.TodoId, userId);
+        var todo = await context.Todos
+            .WithSpecification(spec)
+            .SingleOrDefaultAsync(ct) ?? throw new ModelNotFoundException<Todo>(command.TodoId.Value);
 
-        var todo = user.Todos.FirstOrDefault(t => t.Id == command.TodoId) ??
-                   throw new ModelNotFoundException<Todo>(command.TodoId.Value);
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId, ct) ??
+                   throw new ModelNotFoundException<User>(userId.Value);
 
         todo.Deadline = command.Body.Deadline;
         todo.ReminderOffsetInMinutes = command.Body.ReminderOffsetInMinutes;
@@ -46,6 +55,8 @@ public static partial class UpdateReminder
 
         context.Todos.Update(todo);
         await context.SaveChangesAsync(ct);
+
+        return todo.ToGetTodoResponse();
     }
 
     [Validate]

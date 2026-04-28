@@ -2,7 +2,8 @@ using Hangfire;
 using Scalar.AspNetCore;
 using Taskly.Shared.Extensions;
 using Taskly.WebApi.Common.Composition.Options;
-using Taskly.WebApi.Features.Attachments.Services;
+using AttachmentBlobContainerService =
+    Taskly.WebApi.Features.Attachments.Common.Services.AttachmentBlobContainerService;
 
 namespace Taskly.WebApi.Common.Composition.Extensions;
 

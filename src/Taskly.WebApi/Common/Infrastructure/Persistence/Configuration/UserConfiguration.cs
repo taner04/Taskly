@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Taskly.WebApi.Features.Users.Common.Models;
+using UserId = Taskly.WebApi.Features.Users.Common.Models.UserId;
 
 namespace Taskly.WebApi.Common.Infrastructure.Persistence.Configuration;
 

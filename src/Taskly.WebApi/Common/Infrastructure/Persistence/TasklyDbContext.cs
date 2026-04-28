@@ -1,4 +1,5 @@
 using Taskly.WebApi.Common.Infrastructure.Persistence.Configuration;
+using Taskly.WebApi.Features.Users.Common.Models;
 
 namespace Taskly.WebApi.Common.Infrastructure.Persistence;
 

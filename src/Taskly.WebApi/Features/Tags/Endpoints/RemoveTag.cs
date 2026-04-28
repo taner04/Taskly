@@ -1,5 +1,5 @@
-using Taskly.WebApi.Features.Tags.Specifications;
-using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
+using Taskly.WebApi.Features.Tags.Common.Specifications;
+using TagId = Taskly.WebApi.Features.Tags.Common.Models.TagId;
 
 namespace Taskly.WebApi.Features.Tags.Endpoints;
 

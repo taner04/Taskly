@@ -1,4 +1,4 @@
-using Taskly.WebApi.Features.Todos.Specifications;
+using Taskly.WebApi.Features.Todos.Common.Specifications;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 

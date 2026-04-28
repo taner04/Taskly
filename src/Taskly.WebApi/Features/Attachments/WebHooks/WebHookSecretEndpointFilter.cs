@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Options;
-using Taskly.WebApi.Common.Composition.Options;
+using Taskly.Shared.Options;
 
 namespace Taskly.WebApi.Features.Attachments.WebHooks;
 
 internal sealed class WebHookSecretEndpointFilter(
     IOptions<WebHookConfig> options) : IEndpointFilter
 {
-    private readonly WebHookConfig _config = options.Value ?? new WebHookConfig();
+    private readonly WebHookConfig _config = options.Value ?? throw new ArgumentNullException(nameof(options));
 
     public ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {

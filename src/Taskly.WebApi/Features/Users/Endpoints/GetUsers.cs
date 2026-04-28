@@ -1,7 +1,8 @@
 using Taskly.Shared.Pagination;
+using Taskly.Shared.WebApi.Responses.Users;
 using Taskly.WebApi.Common.Shared.Pagination;
-using Taskly.WebApi.Features.Users.Endpoints.Responses;
-using Taskly.WebApi.Features.Users.Mapper;
+using Taskly.WebApi.Features.Users.Common.Mapper;
+using Taskly.WebApi.Features.Users.Common.Models;
 
 namespace Taskly.WebApi.Features.Users.Endpoints;
 
@@ -20,5 +21,6 @@ public static partial class GetUsers
     private static async ValueTask<PaginationResult<GetUserResponse>> HandleAsync(
         PaginationQuery query,
         PaginationService paginationService,
-        CancellationToken ct) => await paginationService.GetPaginationResultAsync(query, new UserMapper(), ct);
+        CancellationToken ct) =>
+        await paginationService.GetPaginationResultAsync(query, new UserMapper(), ct);
 }

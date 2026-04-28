@@ -1,4 +1,5 @@
 using Taskly.Shared.Extensions;
+using Taskly.Shared.Options;
 using Taskly.WebApi.Common.Composition.Options;
 using Taskly.WebApi.Common.Composition.Serialization;
 

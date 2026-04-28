@@ -55,7 +55,7 @@ public sealed class PaginationService(TasklyDbContext context)
 
     private static PaginationResult<TTarget> MapResult<TSource, TTarget>(
         PaginationResult<TSource> source,
-        Func<List<TSource>, List<TTarget>> mapFunc) =>
+        Func<IEnumerable<TSource>, IEnumerable<TTarget>> mapFunc) =>
         new(
             mapFunc(source.Items),
             source.PageIndex,

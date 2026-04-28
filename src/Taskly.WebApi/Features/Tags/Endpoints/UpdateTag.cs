@@ -1,6 +1,7 @@
-using Taskly.WebApi.Features.Tags.Exceptions;
-using Taskly.WebApi.Features.Tags.Specifications;
-using TagId = Taskly.WebApi.Features.Tags.Models.TagId;
+using Taskly.Shared.WebApi.Responses.Tags;
+using Taskly.WebApi.Features.Tags.Common.Exceptions;
+using Taskly.WebApi.Features.Tags.Common.Specifications;
+using TagId = Taskly.WebApi.Features.Tags.Common.Models.TagId;
 
 namespace Taskly.WebApi.Features.Tags.Endpoints;
 
@@ -16,7 +17,11 @@ public static partial class UpdateTag
         endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    private static async ValueTask HandleAsync(
+    internal static Ok<GetTagResponse> TransformResult(
+        GetTagResponse result) =>
+        TypedResults.Ok(result);
+
+    private static async ValueTask<GetTagResponse> HandleAsync(
         [AsParameters] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
@@ -36,6 +41,8 @@ public static partial class UpdateTag
 
         context.Tags.Update(tag);
         await context.SaveChangesAsync(ct);
+
+        return new GetTagResponse(tag.Id.Value, tag.Name);
     }
 
     [Validate]

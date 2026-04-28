@@ -1,4 +1,5 @@
-using Taskly.WebApi.Features.Tags.Exceptions;
+using Taskly.Shared.WebApi.Responses.Tags;
+using Taskly.WebApi.Features.Tags.Common.Exceptions;
 
 namespace Taskly.WebApi.Features.Tags.Endpoints;
 
@@ -14,7 +15,11 @@ public static partial class CreateTag
         endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    private static async ValueTask HandleAsync(
+    internal static Created<GetTagResponse> TransformResult(
+        GetTagResponse result) =>
+        TypedResults.Created(ApiRoutes.Tags.Create, result);
+
+    private static async ValueTask<GetTagResponse> HandleAsync(
         [FromBody] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
@@ -30,6 +35,8 @@ public static partial class CreateTag
         var newTag = Tag.Create(command.TagName, userId);
         context.Tags.Add(newTag);
         await context.SaveChangesAsync(ct);
+
+        return new GetTagResponse(newTag.Id.Value, newTag.Name);
     }
 
     [Validate]

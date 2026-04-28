@@ -1,4 +1,7 @@
-using Taskly.WebApi.Features.Attachments.Services;
+using Taskly.Shared.WebApi.Responses.Attachments;
+using AttachmentBlobContainerService =
+    Taskly.WebApi.Features.Attachments.Common.Services.AttachmentBlobContainerService;
+using AttachmentId = Taskly.WebApi.Features.Attachments.Common.Models.AttachmentId;
 
 namespace Taskly.WebApi.Features.Attachments.Endpoints;
 
@@ -14,7 +17,7 @@ public static partial class DownloadAttachment
         endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    private static async ValueTask<Response> HandleAsync(
+    private static async ValueTask<DownloadAttachmentResponse> HandleAsync(
         Query query,
         TasklyDbContext db,
         CurrentUserService current,
@@ -32,15 +35,11 @@ public static partial class DownloadAttachment
 
         var sas = attachmentBlobContainerService.GenerateDownloadSas(attachment);
 
-        return new Response(
+        return new DownloadAttachmentResponse(
             sas.DownloadUrl,
             attachment.FileName
         );
     }
-
-    public sealed record Response(
-        string DownloadUrl,
-        string FileName);
 
     [Validate]
     public sealed partial record Query : IValidationTarget<Query>

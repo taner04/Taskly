@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Http.HttpResults;
-using Taskly.WebApi.Features.Attachments.Services;
-using Taskly.WebApi.Features.Todos.Specifications;
+using Taskly.WebApi.Features.Todos.Common.Extensions;
+using Taskly.WebApi.Features.Todos.Common.Specifications;
+using AttachmentBlobContainerService =
+    Taskly.WebApi.Features.Attachments.Common.Services.AttachmentBlobContainerService;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
@@ -17,11 +18,11 @@ public static partial class AddAttachment
         endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    internal static Ok<Response> TransformResult(
-        Response response) =>
+    internal static Ok<AddAttachmentResponse> TransformResult(
+        AddAttachmentResponse response) =>
         TypedResults.Ok(response);
 
-    private static async ValueTask<Response> HandleAsync(
+    private static async ValueTask<AddAttachmentResponse> HandleAsync(
         [AsParameters] Command command,
         TasklyDbContext context,
         CurrentUserService currentUserService,
@@ -30,7 +31,7 @@ public static partial class AddAttachment
     {
         var userId = currentUserService.GetUserId();
 
-        var spec = new TodoByUserIdSpecificationWithAttachmentsSpec(command.TodoId, userId);
+        var spec = new TodoByUserIdSpecification(command.TodoId, userId);
         var todo = await context.Todos
             .WithSpecification(spec)
             .SingleOrDefaultAsync(ct) ?? throw new ModelNotFoundException<Todo>(command.TodoId.Value);
@@ -48,17 +49,8 @@ public static partial class AddAttachment
         context.Update(todo);
         await context.SaveChangesAsync(ct);
 
-        return new Response(
-            attachment.Id.Value,
-            sas.UploadUrl,
-            sas.BlobPath
-        );
+        return new AddAttachmentResponse(todo.ToGetTodoResponse(), sas.UploadUrl);
     }
-
-    public sealed record Response(
-        Guid AttachmentId,
-        string UploadUrl,
-        string BlobPath);
 
     [Validate]
     public sealed partial record Command : IValidationTarget<Command>

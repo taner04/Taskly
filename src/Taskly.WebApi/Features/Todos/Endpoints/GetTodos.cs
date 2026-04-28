@@ -1,7 +1,6 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Taskly.Shared.Pagination;
+using Taskly.Shared.WebApi.Responses.Tags;
 using Taskly.WebApi.Common.Shared.Pagination;
-using Taskly.WebApi.Features.Tags.Endpoints;
 
 namespace Taskly.WebApi.Features.Todos.Endpoints;
 
@@ -17,11 +16,11 @@ public static partial class GetTodos
         endpoint.RequireRateLimiting(Security.RateLimiting.Global);
     }
 
-    internal static Ok<PaginationResult<Response>> TransformResult(
-        PaginationResult<Response> result) =>
+    internal static Ok<PaginationResult<GetTodoResponse>> TransformResult(
+        PaginationResult<GetTodoResponse> result) =>
         TypedResults.Ok(result);
 
-    private static async ValueTask<PaginationResult<Response>> HandleAsync(
+    private static async ValueTask<PaginationResult<GetTodoResponse>> HandleAsync(
         PaginationQuery query,
         CurrentUserService currentUserService,
         PaginationService paginationService,
@@ -37,38 +36,21 @@ public static partial class GetTodos
                 .Where(t => t.UserId == userId),
             ct);
     }
-
-    public sealed record Response(
-        Guid Id,
-        string Title,
-        string? Description,
-        int Priority,
-        bool IsCompleted,
-        DateTimeOffset CreatedAt,
-        List<GetTags.Response> Tags,
-        List<GetTodoAttachments> Attachments);
-
-    public sealed record GetTodoAttachments(
-        Guid Id,
-        string FileName,
-        long Size,
-        string ContentType
-    );
 }
 
-public sealed class GetTodosMapper : IPaginationMapper<Todo, GetTodos.Response>
+public sealed class GetTodosMapper : IPaginationMapper<Todo, GetTodoResponse>
 {
-    public List<GetTodos.Response> Map(List<Todo> source)
+    public IEnumerable<GetTodoResponse> Map(IEnumerable<Todo> source)
     {
-        return source.Select(todo => new GetTodos.Response(
+        return source.Select(todo => new GetTodoResponse(
             todo.Id.Value,
             todo.Title,
             todo.Description,
             (int)todo.Priority,
             todo.IsCompleted,
             todo.CreatedAt,
-            todo.Tags.Select(t => new GetTags.Response(t.Id.Value, t.Name)).ToList(),
-            todo.Attachments.Select(attachment => new GetTodos.GetTodoAttachments(
+            todo.Tags.Select(t => new GetTagResponse(t.Id.Value, t.Name)).ToList(),
+            todo.Attachments.Select(attachment => new GetTodoAttachments(
                 attachment.Id.Value,
                 attachment.FileName,
                 attachment.FileSize,

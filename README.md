@@ -49,7 +49,7 @@ cd Taskly
 3. Create an **API** in Auth0 and set the **Identifier** (Audience)
 4. Copy **Domain**, **Client ID**, **Client Secret**, and **API Audience**
 5. Set the following URLs in Auth0 application settings:
-    - **Allowed Callback URLs**: `https://localhost:{PORT}/scalar/v1/oauth2-redirect.html`
+    - **Allowed Callback URLs**: `https://localhost:{PORT}/scalar/v1/`
     - **Allowed Logout URLs**: `https://localhost:{PORT}/scalar/v1`
 
 ### 3. Create appsettings.json
@@ -115,7 +115,6 @@ The API will be available at `https://localhost:{PORT}/scalar/v1` with interacti
 Taskly/
 ├── docs/                        # Documentation
 ├── src/
-│   ├── Taskly.Desktop/          # WPF Desktop Client (IN PROGRESS)
 │   ├── Taskly.WebApi/           # ASP.NET Core API
 │   ├── Taskly.Shared/           # Shared utilities
 │   └── Taskly.WebApi.Client/    # API client library (Refit)

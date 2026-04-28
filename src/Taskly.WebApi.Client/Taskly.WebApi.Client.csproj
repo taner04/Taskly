@@ -7,12 +7,4 @@
         <ProjectReference Include="..\Taskly.Shared\Taskly.Shared.csproj"/>
         <ProjectReference Include="..\Taskly.WebApi\Taskly.WebApi.csproj"/>
     </ItemGroup>
-    <ItemGroup>
-        <Folder Include="Features\Attachments\Services\"/>
-        <Folder Include="Features\Tags\Dtos\"/>
-        <Folder Include="Features\Tags\Services\"/>
-        <Folder Include="Features\Todos\Dtos\"/>
-        <Folder Include="Features\Todos\Services\"/>
-        <Folder Include="Features\Users\Services\"/>
-    </ItemGroup>
 </Project>

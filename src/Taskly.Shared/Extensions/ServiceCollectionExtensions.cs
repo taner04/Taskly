@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace Taskly.Shared.Extensions;
+﻿namespace Taskly.Shared.Extensions;
 
 public static class ServiceCollectionExtensions
 {

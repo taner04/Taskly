@@ -1,4 +1,6 @@
-﻿namespace Taskly.WebApi.Features.Attachments.WebHooks.EventStrategies.Strategies;
+﻿using Taskly.WebApi.Features.Attachments.Common.Models;
+
+namespace Taskly.WebApi.Features.Attachments.WebHooks.EventStrategies.Strategies;
 
 internal sealed class AttachmentUploadCompletedEventStrategy(
     TasklyDbContext context,
