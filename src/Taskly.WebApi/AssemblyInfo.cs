@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using Taskly.WebApi.Common.Behaviors;
-using Taskly.WebApi.Common.Behaviors.Logger;
 
 [assembly: Behaviors(
     typeof(LoggingBehavior<,>),

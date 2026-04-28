@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace Taskly.WebApi.Common.Behaviors.Logger;
+namespace Taskly.WebApi.Common.Behaviors;
 
 public sealed partial class LoggingBehavior<TRequest, TResponse>(
     ILogger<LoggingBehavior<TRequest, TResponse>> logger,
