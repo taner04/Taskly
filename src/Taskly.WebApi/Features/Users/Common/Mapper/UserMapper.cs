@@ -4,7 +4,7 @@ using Taskly.WebApi.Features.Users.Common.Models;
 
 namespace Taskly.WebApi.Features.Users.Common.Mapper;
 
-internal sealed class UserMapper : IPaginationMapper<User, GetUserResponse>
+internal sealed class UserMapper : IMapper<User, GetUserResponse>
 {
     public IEnumerable<GetUserResponse> Map(IEnumerable<User> source)
     {

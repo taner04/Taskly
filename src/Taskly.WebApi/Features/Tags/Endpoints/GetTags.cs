@@ -36,7 +36,7 @@ public static partial class GetTags
     }
 }
 
-public sealed class GetTagsMapper : IPaginationMapper<Tag, GetTagResponse>
+public sealed class GetTagsMapper : IMapper<Tag, GetTagResponse>
 {
     public IEnumerable<GetTagResponse> Map(IEnumerable<Tag> source)
     {

@@ -9,7 +9,7 @@ public sealed class PaginationService(TasklyDbContext context)
 
     public async Task<PaginationResult<TTarget>> GetPaginationResultAsync<TEntity, TTarget>(
         PaginationQuery paginationQuery,
-        IPaginationMapper<TEntity, TTarget> mapper,
+        IMapper<TEntity, TTarget> mapper,
         CancellationToken cancellationToken) where TEntity : class
     {
         var result =
@@ -20,7 +20,7 @@ public sealed class PaginationService(TasklyDbContext context)
 
     public async Task<PaginationResult<TTarget>> GetPaginationResultAsync<TEntity, TTarget>(
         PaginationQuery paginationQuery,
-        IPaginationMapper<TEntity, TTarget> mapper,
+        IMapper<TEntity, TTarget> mapper,
         Func<IQueryable<TEntity>, IQueryable<TEntity>> filter,
         CancellationToken cancellationToken) where TEntity : class
     {

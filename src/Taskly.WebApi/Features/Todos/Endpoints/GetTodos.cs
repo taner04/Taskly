@@ -38,7 +38,7 @@ public static partial class GetTodos
     }
 }
 
-public sealed class GetTodosMapper : IPaginationMapper<Todo, GetTodoResponse>
+public sealed class GetTodosMapper : IMapper<Todo, GetTodoResponse>
 {
     public IEnumerable<GetTodoResponse> Map(IEnumerable<Todo> source)
     {
