@@ -1,6 +1,5 @@
 <div align="center">
   <img src="docs/assets/Logo-Transparent.png" alt="Taskly Logo" width="300" height="300" />
-  <p><strong>Built for doing — not for deciding what to do.</strong></p>
 </div>
 
 # Taskly
