@@ -5,9 +5,6 @@
 
 # Taskly
 
-✨ A stunning, responsive task management API. Built with **C#** and **.NET 10** on the backend, featuring seamless
-authentication with **Auth0** and cloud-native architecture with **.NET Aspire**.
-
 ---
 
 ## 🎯 Features
@@ -18,8 +15,7 @@ authentication with **Auth0** and cloud-native architecture with **.NET Aspire**
 - **💾 Data Persistence** — PostgreSQL database with Entity Framework Core
 - **📂 File Storage** — Azure Blob Storage with secure SAS URLs for attachments
 - **📉 Event Webhooks** — Webhook-based attachment upload completion with secure secret key validation
-- **📧 Email Reminders** — Hangfire-scheduled reminder emails via SMTP
-- **🧪 Comprehensive Testing** — Integration tests with real database context
+- **📧 Email Reminders** — Hangfire-scheduled reminder emails via MailKit
 - **☁️ Cloud-Native** — Built with .NET Aspire for easy cloud deployment
 - **📖 Interactive API Docs** — Scalar UI for API exploration
 
@@ -92,20 +88,6 @@ dotnet run --project ./tools/Taskly.AppHost
 ```
 
 The API will be available at `https://localhost:{PORT}/scalar/v1` with interactive API documentation.
-
----
-
-## 🛠️ Tech Stack
-
-| Layer              | Technology                        |
-|--------------------|-----------------------------------|
-| **Backend**        | .NET 10, ASP.NET Core, C#         |
-| **Database**       | PostgreSQL, Entity Framework Core |
-| **Authentication** | Auth0, JWT Bearer                 |
-| **File Storage**   | Azure Blob Storage                |
-| **Email Service**  | MailKit, Hangfire                 |
-| **API Client**     | Refit, HttpClientFactory          |
-| **Infrastructure** | Docker, .NET Aspire               |
 
 ---
 
