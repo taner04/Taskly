@@ -6,7 +6,8 @@ public sealed class UserService(IRefitWebApiClient webApiHttpClient) : IUserServ
 {
     public async Task<WebClientResult> DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
     {
-        return await HttpOrchestrator.OrchestrateAsync(() => webApiHttpClient.DeleteUserAsync(userId, cancellationToken),
+        return await HttpOrchestrator.OrchestrateAsync(
+            () => webApiHttpClient.DeleteUserAsync(userId, cancellationToken),
             cancellationToken);
     }
 
