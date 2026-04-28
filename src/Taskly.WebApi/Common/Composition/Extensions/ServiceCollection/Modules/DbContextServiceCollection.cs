@@ -4,7 +4,7 @@ using Taskly.WebApi.Common.Infrastructure.Persistence.Interceptors;
 
 namespace Taskly.WebApi.Common.Composition.Extensions.ServiceCollection.Modules;
 
-internal static class TasklyDbContextServiceCollection
+internal static class DbContextServiceCollection
 {
     extension(IServiceCollection services)
     {
